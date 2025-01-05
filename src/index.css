@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+  .modal-shadow {
+    @apply shadow-lg shadow-[rgba(54,78,126,0.25)];
+  }
+}
