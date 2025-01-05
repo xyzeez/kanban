@@ -7,7 +7,7 @@ interface AppContextType {
   theme: Theme;
   toggleTheme: () => void;
   openSideBar: boolean;
-  toggleSidebarState: () => void;
+  toggleSidebarState: (state: boolean) => void;
 }
 
 interface AppProviderProps {
@@ -25,8 +25,8 @@ export const AppProvider = ({ children }: AppProviderProps) => {
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
   };
 
-  const toggleSidebarState = () => {
-    setOpenSideBar((prev) => !prev);
+  const toggleSidebarState = (state: boolean) => {
+    setOpenSideBar(state);
   };
 
   return (

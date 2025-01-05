@@ -12,11 +12,11 @@ const AppLayout: FC = () => {
         <div className="col-start-1 col-end-2 row-start-1 row-end-2 md:col-end-3">
           <Header />
         </div>
-        <div className="hidden md:col-start-1 md:col-end-2 md:row-start-2 md:row-end-3 md:block">
+        <div className="hidden md:col-start-1 md:col-end-2 md:row-start-2 md:row-end-3 md:grid">
           <SideBarNav />
         </div>
       </AppProvider>
-      <main className="bg-grey-100 col-start-1 col-end-2 row-start-2 row-end-3 md:col-start-2 md:col-end-3"></main>
+      <main className="col-start-1 col-end-2 row-start-2 row-end-3 bg-grey-100 md:col-start-2 md:col-end-3"></main>
     </div>
   );
 };

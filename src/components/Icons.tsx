@@ -1,7 +1,7 @@
 // Types
 type Icon = { className: string };
 
-export const ChevronDown = ({ className }: Icon) => {
+export const ChevronDownIcon = ({ className }: Icon) => {
   return (
     <svg className={className} xmlns="http://www.w3.org/2000/svg">
       <path
@@ -14,7 +14,7 @@ export const ChevronDown = ({ className }: Icon) => {
   );
 };
 
-export const Board = ({ className }: Icon) => {
+export const BoardIcon = ({ className }: Icon) => {
   return (
     <svg className={className} xmlns="http://www.w3.org/2000/svg">
       <path
@@ -25,7 +25,7 @@ export const Board = ({ className }: Icon) => {
   );
 };
 
-export const Plus = ({ className }: Icon) => {
+export const PlusIcon = ({ className }: Icon) => {
   return (
     <svg className={className} xmlns="http://www.w3.org/2000/svg">
       <path
@@ -36,7 +36,7 @@ export const Plus = ({ className }: Icon) => {
   );
 };
 
-export const LightTheme = ({ className }: Icon) => {
+export const LightThemeIcon = ({ className }: Icon) => {
   return (
     <svg className={className} xmlns="http://www.w3.org/2000/svg">
       <path
@@ -47,7 +47,7 @@ export const LightTheme = ({ className }: Icon) => {
   );
 };
 
-export const DarkTheme = ({ className }: Icon) => {
+export const DarkThemeIcon = ({ className }: Icon) => {
   return (
     <svg className={className} xmlns="http://www.w3.org/2000/svg">
       <path
@@ -58,7 +58,7 @@ export const DarkTheme = ({ className }: Icon) => {
   );
 };
 
-export const Ellipsis = ({ className }: Icon) => {
+export const EllipsisIcon = ({ className }: Icon) => {
   return (
     <svg className={className} xmlns="http://www.w3.org/2000/svg">
       <g fill="currentColor" fillRule="evenodd">
@@ -70,7 +70,7 @@ export const Ellipsis = ({ className }: Icon) => {
   );
 };
 
-export const Hide = ({ className }: Icon) => {
+export const HideIcon = ({ className }: Icon) => {
   return (
     <svg className={className} xmlns="http://www.w3.org/2000/svg">
       <path
@@ -81,7 +81,7 @@ export const Hide = ({ className }: Icon) => {
   );
 };
 
-export const Show = ({ className }: Icon) => {
+export const ShowIcon = ({ className }: Icon) => {
   return (
     <svg className={className} xmlns="http://www.w3.org/2000/svg">
       <path

@@ -2,6 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .btn {
+    @apply flex flex-row items-center gap-3 rounded-3xl font-bold transition-colors xl:gap-4;
+  }
+
+  .text-btn {
+    @apply flex flex-row items-center gap-3 text-base font-bold transition-colors xl:gap-4;
+  }
+
+  .icon-btn {
+    @apply rounded-3xl px-[18px] py-[10px] transition-colors;
+  }
+
+  .btn-large {
+    @apply px-6 py-3 text-base;
+  }
+
+  .btn-small {
+    @apply text-[14px];
+  }
+
+  .btn-primary {
+    @apply bg-purple text-white hover:bg-purple-light;
+  }
+}
+
 @layer utilities {
   .modal-shadow {
     @apply shadow-lg shadow-[rgba(54,78,126,0.25)];

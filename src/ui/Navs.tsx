@@ -6,12 +6,12 @@ import { useApp } from "../contexts/AppContext";
 
 // Components
 import {
-  Board,
-  DarkTheme,
-  Hide,
-  LightTheme,
-  Plus,
-  Show,
+  BoardIcon,
+  DarkThemeIcon,
+  HideIcon,
+  LightThemeIcon,
+  PlusIcon,
+  ShowIcon,
 } from "../components/Icons";
 
 // Types
@@ -20,34 +20,31 @@ interface BoardItemProps {
   to: string;
 }
 
-interface SidebarToggleProps {
-  type: "hide" | "show";
-}
-
 const BoardItem: FC<BoardItemProps> = ({ title, to }) => (
   <NavLink
     to={to}
     className={({ isActive }) =>
-      `flex w-full max-w-[276px] flex-row items-center gap-3 rounded-r-full px-6 py-4 text-base font-bold xl:gap-4 xl:px-8 ${isActive ? "bg-purple text-white" : "text-grey-500"} `
+      `text-btn w-full max-w-[276px] rounded-r-full px-6 py-4 xl:px-8 ${isActive ? "bg-purple text-white" : "text-grey-500"} `
     }
   >
-    <Board className="size-4" />
+    <BoardIcon className="size-4" />
     <span>{title}</span>
   </NavLink>
 );
 
-const CreateBoardButton: FC = () => (
-  <button className="flex flex-row items-center gap-3 text-base font-bold text-purple xl:gap-4">
-    <Plus className="size-4" />
-    <span>Create New Board</span>
-  </button>
-);
-
+const CreateBoardButton: FC = () => {
+  return (
+    <button className="text-btn text-purple">
+      <PlusIcon className="size-4" />
+      Create New Board
+    </button>
+  );
+};
 const BoardList: FC = () => (
   <menu className="pr-3 font-sans">
     <li className="mb-5 pl-6">
-      <h2 className="text-grey-500 text-xs font-bold tracking-[2.4px]">
-        ALL BOARDS (3)
+      <h2 className="text-xs font-bold tracking-[2.4px] text-grey-500">
+        ALL BOARDICONS (3)
       </h2>
     </li>
     <li>
@@ -63,8 +60,8 @@ const ThemeToggle: FC = () => {
   const { theme, toggleTheme } = useApp();
 
   return (
-    <div className="bg-grey-100 text-grey-500 flex w-full flex-row items-center justify-center gap-6 rounded-md py-[14px]">
-      <LightTheme className="size-4" />
+    <div className="flex w-full flex-row items-center justify-center gap-6 rounded-md bg-grey-100 py-[14px] text-grey-500">
+      <LightThemeIcon className="size-4" />
       <button
         onClick={toggleTheme}
         className={`relative h-5 w-10 rounded-full bg-purple after:absolute after:top-[3px] after:size-[14px] after:rounded-full after:bg-white after:transition-all after:duration-200 ${
@@ -72,30 +69,8 @@ const ThemeToggle: FC = () => {
         }`}
         aria-label={`Switch to ${theme === "light" ? "dark" : "light"} theme`}
       />
-      <DarkTheme className="size-4" />
+      <DarkThemeIcon className="size-4" />
     </div>
-  );
-};
-
-const SidebarToggle: FC<SidebarToggleProps> = ({ type }) => {
-  const { toggleSidebarState } = useApp();
-
-  return type === "hide" ? (
-    <button
-      onClick={toggleSidebarState}
-      className="text-grey-500 flex flex-row items-center gap-[10px] text-base font-bold"
-      aria-label="Hide sidebar"
-    >
-      <Hide className="h-4 w-[18px]" />
-      <span>Hide Sidebar</span>
-    </button>
-  ) : (
-    <button
-      onClick={toggleSidebarState}
-      className="absolute bottom-8 left-full w-14 rounded-r-full bg-purple p-5 text-white"
-    >
-      <Show className="h-[10px] w-4" />
-    </button>
   );
 };
 
@@ -109,26 +84,36 @@ export const MobileNav: FC = () => (
 );
 
 export const SideBarNav: FC = () => {
-  const { openSideBar } = useApp();
+  const { openSideBar, toggleSidebarState } = useApp();
 
   return (
-    <div className="relative h-full w-max">
+    <div className="relative">
       <div
-        className={`border-grey-100 flex h-full flex-col gap-6 overflow-hidden border-r bg-white pb-8 pt-4 font-sans ${
-          openSideBar
-            ? "w-[260px] xl:w-[300px]"
-            : "-ml-1 w-0 overflow-hidden xl:w-0"
-        } xl:pb-12`}
+        className={`flex h-full flex-col gap-6 overflow-hidden whitespace-nowrap border-r border-grey-100 bg-white pb-8 pt-4 font-sans transition-all xl:pb-12 ${openSideBar ? "w-[260px] max-w-[260px] opacity-100 xl:w-[300px] xl:max-w-[300px]" : "max-w-0 opacity-0"}`}
       >
         <BoardList />
         <div className="mt-auto flex flex-col gap-[30px] px-3 xl:gap-6 xl:px-6">
           <ThemeToggle />
           <div className="pl-3 xl:pl-2">
-            <SidebarToggle type="hide" />
+            <button
+              onClick={() => toggleSidebarState(false)}
+              className="flex flex-row items-center gap-[10px] text-base font-bold text-grey-500"
+              aria-label="HideIcon sidebar"
+            >
+              <HideIcon className="h-4 w-[18px]" />
+              <span>HideIcon Sidebar</span>
+            </button>
           </div>
         </div>
       </div>
-      {!openSideBar && <SidebarToggle type="show" />}
+      {!openSideBar && (
+        <button
+          onClick={() => toggleSidebarState(true)}
+          className="absolute bottom-8 left-full w-14 rounded-r-full bg-purple p-5 text-white"
+        >
+          <ShowIcon className="h-[10px] w-4" />
+        </button>
+      )}
     </div>
   );
 };
