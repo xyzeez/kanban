@@ -19,14 +19,14 @@ const Header: FC = () => {
   };
 
   return (
-    <header className="relative grid grid-cols-[auto_1fr] bg-white px-4 md:px-6">
+    <header className="relative grid grid-cols-[auto_1fr] bg-white transition-colors dark:bg-grey-800">
       <div
-        className={`flex items-center border-b border-grey-100 py-4 md:border-r md:pr-4 xl:pr-8 ${openSideBar ? "md:w-[236px] md:border-b-0 xl:w-[276px]" : "w-auto"}`}
+        className={`flex items-center border-b border-grey-100 py-4 pl-4 transition-all dark:border-grey-700 md:border-r md:pl-6 md:pr-4 xl:pr-8 ${openSideBar ? "border-b-white dark:border-b-grey-800 md:w-[260px] md:max-w-[260px] xl:w-[300px] xl:max-w-[300px]" : "w-auto md:w-[210px] md:max-w-[210px]"}`}
       >
         <Logo />
       </div>
-      <div className="relative flex w-full flex-row items-center justify-between border-b border-grey-100 py-4 pl-4 md:pl-6 xl:pb-7 xl:pt-5">
-        <div className="font-sans text-lg font-bold text-black md:text-xl xl:text-2xl">
+      <div className="relative flex w-full flex-row items-center justify-between border-b border-grey-100 py-4 pl-4 pr-4 transition-colors dark:border-grey-700 md:pl-6 md:pr-6 xl:pb-7 xl:pt-5">
+        <div className="font-sans text-lg font-bold text-black transition-colors dark:text-white md:text-xl xl:text-2xl">
           <h1 className="hidden md:block">Platform Launch</h1>
           <button
             onClick={() => toggleNavState()}
@@ -36,7 +36,7 @@ const Header: FC = () => {
             <ChevronDownIcon className="h-2 w-3 text-purple" />
           </button>
           {openNav && (
-            <div className="absolute top-[calc(100%+16px)] z-10 w-full">
+            <div className="absolute left-0 top-[calc(100%+16px)] z-10 w-full">
               <MobileNav />
             </div>
           )}
@@ -50,7 +50,7 @@ const Header: FC = () => {
             Add New Task
           </button>
           <button>
-            <EllipsisIcon className="h-5 w-[5px] text-grey-500" />
+            <EllipsisIcon className="h-5 w-[5px] text-grey-500 transition-colors dark:text-grey-200" />
           </button>
         </div>
       </div>

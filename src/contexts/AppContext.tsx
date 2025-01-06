@@ -1,4 +1,13 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
+
+// Utils
+import { getTheme } from "../utils";
 
 // Types
 type Theme = "light" | "dark";
@@ -14,11 +23,11 @@ interface AppProviderProps {
   children: ReactNode;
 }
 
-// Variables
+// Contexts
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider = ({ children }: AppProviderProps) => {
-  const [theme, setTheme] = useState<Theme>("light");
+  const [theme, setTheme] = useState<Theme>(getTheme);
   const [openSideBar, setOpenSideBar] = useState(true);
 
   const toggleTheme = () => {
@@ -28,6 +37,13 @@ export const AppProvider = ({ children }: AppProviderProps) => {
   const toggleSidebarState = (state: boolean) => {
     setOpenSideBar(state);
   };
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    root.classList.remove("light", "dark");
+    root.classList.add(theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
 
   return (
     <AppContext.Provider

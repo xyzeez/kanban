@@ -11,6 +11,7 @@ node_modules
 dist
 dist-ssr
 *.local
+.env
 
 # Editor directories and files
 .vscode/*
@@ -22,25 +23,3 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-kanban-task-management-web-app/.gitignore
-kanban-task-management-web-app/preview.jpg
-kanban-task-management-web-app/README-template.md
-kanban-task-management-web-app/README.md
-kanban-task-management-web-app/starter-code/.gitignore
-kanban-task-management-web-app/starter-code/data.json
-kanban-task-management-web-app/starter-code/index.html
-kanban-task-management-web-app/starter-code/assets/favicon-32x32.png
-kanban-task-management-web-app/starter-code/assets/icon-add-task-mobile.svg
-kanban-task-management-web-app/starter-code/assets/icon-board.svg
-kanban-task-management-web-app/starter-code/assets/icon-check.svg
-kanban-task-management-web-app/starter-code/assets/icon-chevron-down.svg
-kanban-task-management-web-app/starter-code/assets/icon-chevron-up.svg
-kanban-task-management-web-app/starter-code/assets/icon-cross.svg
-kanban-task-management-web-app/starter-code/assets/icon-dark-theme.svg
-kanban-task-management-web-app/starter-code/assets/icon-hide-sidebar.svg
-kanban-task-management-web-app/starter-code/assets/icon-light-theme.svg
-kanban-task-management-web-app/starter-code/assets/icon-show-sidebar.svg
-kanban-task-management-web-app/starter-code/assets/icon-vertical-ellipsis.svg
-kanban-task-management-web-app/starter-code/assets/logo-dark.svg
-kanban-task-management-web-app/starter-code/assets/logo-light.svg
-kanban-task-management-web-app/starter-code/assets/logo-mobile.svg

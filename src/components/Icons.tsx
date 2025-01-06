@@ -1,3 +1,6 @@
+import { ring2 } from "ldrs";
+ring2.register();
+
 // Types
 type Icon = { className: string };
 
@@ -90,4 +93,8 @@ export const ShowIcon = ({ className }: Icon) => {
       />
     </svg>
   );
+};
+
+export const SpinnerIcon = () => {
+  return <l-ring-2 size={24} color="currentColor" />;
 };

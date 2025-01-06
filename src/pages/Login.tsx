@@ -1,0 +1,93 @@
+import { FC, useState } from "react";
+import { Navigate } from "react-router";
+import { SubmitHandler, useForm } from "react-hook-form";
+
+// Contexts
+import { useAuth } from "../contexts/authContext";
+
+// Components
+import Logo from "../components/Logo";
+import { HideIcon, ShowIcon, SpinnerIcon } from "../components/Icons";
+
+// Types
+interface Inputs {
+  email: string;
+  password: string;
+}
+
+const Login: FC = () => {
+  const { login, isAuthenticated } = useAuth();
+  const [showPassword, setShowPasswords] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { isSubmitting },
+  } = useForm<Inputs>();
+
+  const togglePassword = () => {
+    return setShowPasswords((prev) => !prev);
+  };
+
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    try {
+      const { email, password } = data;
+      await login(email, password);
+      reset();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  if (isAuthenticated) return <Navigate to="/" />;
+
+  return (
+    <main className="flex items-center justify-center">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex w-full max-w-96 flex-col gap-8 font-sans text-black transition-colors dark:text-grey-500"
+      >
+        <Logo full={true} />
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2">
+            <label htmlFor="email" className="font-bold">
+              Email
+            </label>
+            <input
+              type="email"
+              id="email"
+              placeholder="example@example.com"
+              className="rounded-3xl bg-white px-5 py-3 text-purple outline-none ring-purple transition-colors focus:ring-1 dark:bg-grey-800"
+              {...register("email", { required: true })}
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <label htmlFor="password" className="font-bold">
+              Password
+            </label>
+            <div className="relative rounded-3xl bg-white px-5 py-3 text-purple outline-none ring-purple transition-colors focus-within:ring-1 dark:bg-grey-800">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                placeholder="********************************"
+                className="w-full bg-transparent outline-none"
+                {...register("password", { required: true })}
+              />
+              <span className="absolute inset-y-0 right-5 flex items-center justify-center">
+                <button type="button" onClick={togglePassword}>
+                  {showPassword && <ShowIcon className="h-3 w-5" />}
+                  {!showPassword && <HideIcon className="h-4 w-5" />}
+                </button>
+              </span>
+            </div>
+          </div>
+        </div>
+        <button type="submit" className="btn btn-primary btn-large">
+          {isSubmitting ? <SpinnerIcon /> : <span>Sign In</span>}
+        </button>
+      </form>
+    </main>
+  );
+};
+
+export default Login;

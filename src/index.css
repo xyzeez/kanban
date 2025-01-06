@@ -4,7 +4,7 @@
 
 @layer components {
   .btn {
-    @apply flex flex-row items-center gap-3 rounded-3xl font-bold transition-colors xl:gap-4;
+    @apply flex flex-row items-center justify-center gap-3 rounded-3xl text-center font-bold transition-colors xl:gap-4;
   }
 
   .text-btn {
@@ -30,6 +30,6 @@
 
 @layer utilities {
   .modal-shadow {
-    @apply shadow-lg shadow-[rgba(54,78,126,0.25)];
+    @apply shadow-lg shadow-[hsla(220,40%,35%,0)];
   }
 }
