@@ -10,9 +10,11 @@ import {
   DarkThemeIcon,
   HideIcon,
   LightThemeIcon,
+  LogoutIcon,
   PlusIcon,
   ShowIcon,
 } from "../components/Icons";
+import { useAuth } from "../contexts/authContext";
 
 // Types
 interface BoardItemProps {
@@ -74,27 +76,40 @@ const ThemeToggle: FC = () => {
   );
 };
 
-export const MobileNav: FC = () => (
-  <div className="modal-shadow flex w-full max-w-[264px] flex-col gap-4 rounded-lg bg-white py-4 font-sans transition-colors dark:bg-grey-800">
-    <BoardList />
-    <div className="pl-4 pr-3">
-      <ThemeToggle />
+export const MobileNav: FC = () => {
+  const { logout } = useAuth();
+
+  return (
+    <div className="modal-shadow flex w-full max-w-[264px] flex-col gap-4 rounded-lg bg-white py-4 font-sans transition-colors dark:bg-grey-800">
+      <BoardList />
+      <div className="pl-4 pr-3">
+        <ThemeToggle />
+        <button
+          onClick={logout}
+          className="mt-4 flex flex-row items-center gap-[10px] text-base font-bold text-grey-500"
+          aria-label="HideIcon sidebar"
+        >
+          <LogoutIcon className="size-5" />
+          <span>Logout</span>
+        </button>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export const SideBarNav: FC = () => {
   const { openSideBar, toggleSidebarState } = useApp();
+  const { logout } = useAuth();
 
   return (
     <div className="relative">
       <div
-        className={`flex h-full flex-col gap-6 overflow-hidden whitespace-nowrap border-r border-grey-100 bg-white pb-8 pt-4 font-sans transition-all dark:border-grey-700 dark:bg-grey-800 xl:pb-12 ${openSideBar ? "w-[260px] max-w-[260px] opacity-100 xl:w-[300px] xl:max-w-[300px]" : "max-w-0 border-none opacity-0"}`}
+        className={`flex h-full flex-col gap-6 overflow-hidden whitespace-nowrap border-r border-grey-100 bg-white pb-8 pt-4 font-sans transition-all dark:border-grey-700 dark:bg-grey-800 ${openSideBar ? "w-[260px] max-w-[260px] opacity-100 xl:w-[300px] xl:max-w-[300px]" : "max-w-0 border-none opacity-0"}`}
       >
         <BoardList />
         <div className="mt-auto flex flex-col gap-[30px] px-3 xl:gap-6 xl:px-6">
           <ThemeToggle />
-          <div className="pl-3 xl:pl-2">
+          <div className="flex flex-col gap-4 pl-3 xl:pl-2">
             <button
               onClick={() => toggleSidebarState(false)}
               className="flex flex-row items-center gap-[10px] text-base font-bold text-grey-500"
@@ -102,6 +117,14 @@ export const SideBarNav: FC = () => {
             >
               <HideIcon className="h-4 w-[18px]" />
               <span>Hide Sidebar</span>
+            </button>
+            <button
+              onClick={logout}
+              className="flex flex-row items-center gap-[10px] text-base font-bold text-grey-500"
+              aria-label="HideIcon sidebar"
+            >
+              <LogoutIcon className="size-5" />
+              <span>Logout</span>
             </button>
           </div>
         </div>

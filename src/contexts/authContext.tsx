@@ -18,7 +18,12 @@ type User = {
 
 type AuthContextType = {
   user: User;
-  login: (email: string, password: string) => Promise<void>;
+  signup: (
+    email: string,
+    password: string,
+    passwordConfirm: string,
+  ) => Promise<void>;
+  login: (email: string, password: string, remember: boolean) => Promise<void>;
   logout: () => Promise<void>;
   isAuthenticated: boolean;
 };
@@ -69,19 +74,55 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           email: data.user.email,
         });
       } catch (error) {
+        console.log(error);
         setUser(null);
-      } finally {
-        // setIsLoading(false);
       }
     };
     void checkAuth();
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const signup = async (
+    email: string,
+    password: string,
+    passwordConfirm: string,
+  ) => {
+    try {
+      const { data } = await axiosInstance.post<LoginResponse>(
+        "/auth/register",
+        {
+          email,
+          password,
+          passwordConfirm,
+        },
+      );
+
+      return setUser({
+        id: data.user.id,
+        email: data.user.email,
+      });
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const { response } = error as AxiosError<ErrorResponse>;
+
+        if (response?.status === 401) {
+          throw new Error("Invalid email or password");
+        }
+
+        const errorMessage =
+          response?.data?.message || "An error occurred during registration";
+        throw new Error(errorMessage);
+      }
+
+      throw new Error("An unexpected error occurred");
+    }
+  };
+
+  const login = async (email: string, password: string, remember: boolean) => {
     try {
       const { data } = await axiosInstance.post<LoginResponse>("/auth/login", {
         email,
         password,
+        remember,
       });
 
       return setUser({
@@ -107,6 +148,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const logout = async () => {
     try {
+      await axiosInstance.get("/auth/logout");
       setUser(null);
     } catch (error) {
       console.log(error);
@@ -118,6 +160,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     <AuthContext.Provider
       value={{
         user,
+        signup,
         login,
         logout,
         isAuthenticated: !!user,
