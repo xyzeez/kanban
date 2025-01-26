@@ -14,11 +14,11 @@ interface Column {
 
 interface Board {
   name: string;
-  columns: Column[];
-  ownerId: string;
-  createdAt: string;
-  updatedAt: string;
-  unassignedColumn: Column;
+  columns?: Column[];
+  ownerId?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  unassignedColumn?: Column;
   id: string;
   slug: string;
 }
@@ -60,13 +60,16 @@ export const useBoards = (boardName?: string) => {
         const board = boardsQuery.data.find(
           (board) => board.name === boardName,
         );
-        if (board) return board;
-      }
-      const { data } = await axiosInstance.get<ApiResponse>(
-        `/boards/name/${boardName}`,
-      );
 
-      return data.data?.board;
+        if (board?.id) {
+          const { data } = await axiosInstance.get<ApiResponse>(
+            `/boards/${board.id}`,
+          );
+          return data.data?.board;
+        }
+      }
+
+      return undefined;
     },
     enabled: isAuthenticated && !!boardName,
   });
