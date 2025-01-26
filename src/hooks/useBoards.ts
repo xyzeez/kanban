@@ -20,6 +20,7 @@ interface Board {
   updatedAt: string;
   unassignedColumn: Column;
   id: string;
+  slug: string;
 }
 
 interface CreateBoardDto {
@@ -32,21 +33,42 @@ interface ApiResponse {
   data: {
     board: Board;
     boards: Board[];
-  };
+  } | null;
 }
 
-export const useBoards = () => {
+export const useBoards = (boardName?: string) => {
   const queryClient = useQueryClient();
   const { user, isAuthenticated } = useAuth();
   const queryKey = ["boards", user?.id];
+  const singleBoardKey = ["board", boardName, user?.id];
 
-  const query = useQuery<Board[]>({
+  const boardsQuery = useQuery<Board[]>({
     queryKey,
     queryFn: async () => {
       const { data } = await axiosInstance.get<ApiResponse>("/boards");
-      return data.data.boards;
+      return data.data?.boards ?? [];
     },
     enabled: isAuthenticated,
+  });
+
+  const singleBoardQuery = useQuery<Board | undefined>({
+    queryKey: singleBoardKey,
+    queryFn: async () => {
+      if (!boardName) return undefined;
+
+      if (boardsQuery.data) {
+        const board = boardsQuery.data.find(
+          (board) => board.name === boardName,
+        );
+        if (board) return board;
+      }
+      const { data } = await axiosInstance.get<ApiResponse>(
+        `/boards/name/${boardName}`,
+      );
+
+      return data.data?.board;
+    },
+    enabled: isAuthenticated && !!boardName,
   });
 
   const createBoard = useMutation({
@@ -55,6 +77,7 @@ export const useBoards = () => {
         "/boards",
         newBoard,
       );
+      if (!data.data?.board) throw new Error("Failed to create board");
       return data.data.board;
     },
     onSuccess: async () => {
@@ -62,10 +85,23 @@ export const useBoards = () => {
     },
   });
 
+  const deleteBoard = useMutation({
+    mutationFn: async (boardId: string) => {
+      const { data } = await axiosInstance.delete<ApiResponse>(
+        `/boards/${boardId}`,
+      );
+      return data.data;
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey });
+    },
+  });
+
   return {
-    ...query,
+    ...boardsQuery,
+    activeBoard: singleBoardQuery.data,
+    isLoadingBoard: singleBoardQuery.isLoading,
     createBoard: createBoard.mutateAsync,
-    // updateBoard,
-    // deleteBoard,
+    deleteBoard: deleteBoard.mutateAsync,
   };
 };

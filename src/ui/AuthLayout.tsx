@@ -15,7 +15,7 @@ const AuthLayout: FC = () => {
   if (isAuthenticated) return <Navigate to="/" />;
 
   return (
-    <div className="grid min-h-screen bg-grey-100 p-4 dark:bg-grey-900">
+    <div className="grid min-h-screen bg-grey-100 p-4 transition-colors dark:bg-grey-900">
       <Outlet />
     </div>
   );

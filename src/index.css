@@ -8,7 +8,7 @@
   }
 
   .text-btn {
-    @apply flex flex-row items-center gap-3 text-base font-bold transition-colors xl:gap-4;
+    @apply flex flex-row items-center gap-3 text-base font-medium transition-colors xl:gap-4;
   }
 
   .icon-btn {
@@ -20,7 +20,7 @@
   }
 
   .btn-small {
-    @apply px-4 py-2 text-sm;
+    @apply px-4 py-3 text-sm;
   }
 
   .btn-primary {
@@ -28,7 +28,11 @@
   }
 
   .btn-sec {
-    @apply bg-purple/10 text-purple hover:bg-purple/25 dark:bg-white dark:hover:bg-white;
+    @apply bg-purple/10 text-purple transition-colors hover:bg-purple/25 dark:bg-white dark:hover:bg-white;
+  }
+
+  .btn-warn {
+    @apply bg-red text-white hover:bg-red-light;
   }
 }
 

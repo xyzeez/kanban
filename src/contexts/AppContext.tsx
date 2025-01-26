@@ -13,6 +13,8 @@ interface AppContextType {
   toggleSidebar: (state: boolean) => void;
   openMobileNav: boolean;
   toggleMobileNav: (state?: boolean) => void;
+  openBoardOptions: boolean;
+  toggleBoardOptions: (state?: boolean) => void;
 }
 
 interface AppProviderProps {
@@ -29,6 +31,7 @@ const AppProvider = ({ children }: AppProviderProps) => {
   const [theme, setTheme] = useState<Theme>(getTheme);
   const [openSideBar, setOpenSideBar] = useState(true);
   const [openMobileNav, setOpenMobileNav] = useState(false);
+  const [openBoardOptions, setOpenBoardOptions] = useState(false);
 
   const toggleTheme = () => {
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
@@ -40,6 +43,10 @@ const AppProvider = ({ children }: AppProviderProps) => {
 
   const toggleMobileNav = (state?: boolean) => {
     setOpenMobileNav((prev) => state ?? !prev);
+  };
+
+  const toggleBoardOptions = (state?: boolean) => {
+    setOpenBoardOptions((prev) => state ?? !prev);
   };
 
   useEffect(() => {
@@ -58,6 +65,8 @@ const AppProvider = ({ children }: AppProviderProps) => {
         toggleSidebar,
         openMobileNav,
         toggleMobileNav,
+        openBoardOptions,
+        toggleBoardOptions,
       }}
     >
       {children}

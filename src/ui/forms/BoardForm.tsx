@@ -41,7 +41,7 @@ const CreateBoardForm: FC = () => {
       const board = await createBoard(data);
       reset();
       setModalElement(null);
-      void navigate(`/${board.name}`);
+      void navigate(`/${board.slug}`);
     } catch (error) {
       console.log(error);
     }
@@ -52,13 +52,13 @@ const CreateBoardForm: FC = () => {
       onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col gap-6 font-sans"
     >
-      <h2 className="text-lg font-bold text-black dark:text-white">
+      <h2 className="text-lg font-bold text-black transition-colors dark:text-white">
         Add New Board
       </h2>
       <div className="flex flex-col gap-2">
         <label
           htmlFor="name"
-          className="text-xs font-bold text-grey-500 dark:text-white"
+          className="text-xs font-bold text-grey-500 transition-colors dark:text-white"
         >
           Board Name
         </label>
@@ -73,7 +73,7 @@ const CreateBoardForm: FC = () => {
       <div className="flex flex-col gap-2">
         <label
           htmlFor="columns"
-          className="text-xs font-bold text-grey-500 dark:text-white"
+          className="text-xs font-bold text-grey-500 transition-colors dark:text-white"
         >
           Board Columns
         </label>

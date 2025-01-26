@@ -21,9 +21,6 @@ import {
 // UIs
 import CreateBoardForm from "./forms/BoardForm.tsx";
 
-// Utils
-import { toSlug } from "../utils.ts";
-
 // Types
 interface BoardItemProps {
   title: string;
@@ -34,7 +31,7 @@ const BoardItem: FC<BoardItemProps> = ({ title, to }) => (
   <NavLink
     to={to}
     className={({ isActive }) =>
-      `text-btn w-full max-w-[276px] rounded-r-full px-6 py-4 capitalize xl:px-8 ${isActive ? "bg-purple text-white" : "text-grey-500"} `
+      `text-btn w-full max-w-[276px] rounded-r-full px-6 py-4 font-bold capitalize xl:px-8 ${isActive ? "bg-purple text-white" : "text-grey-500"} `
     }
   >
     <BoardIcon className="size-4" />
@@ -52,7 +49,7 @@ const CreateBoardButton: FC = () => {
         toggleMobileNav(false);
         setModalElement(<CreateBoardForm />);
       }}
-      className="text-btn text-purple"
+      className="text-btn font-bold text-purple"
     >
       <PlusIcon className="size-4" />
       Create New Board
@@ -71,7 +68,7 @@ const BoardList: FC = () => {
       </li>
       {boards?.map((board) => (
         <li key={board.id}>
-          <BoardItem title={board.name} to={toSlug(board.name)} />
+          <BoardItem title={board.name} to={board.slug} />
         </li>
       ))}
       <li className="w-full max-w-[276px] px-6 py-4 xl:px-8">

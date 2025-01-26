@@ -27,7 +27,7 @@ const AppLayout: FC = () => {
 
     // Set active board if on root path and boards exist
     if (location.pathname === "/" && boards?.length) {
-      void navigate(`/${boards[0].name}`);
+      void navigate(`/${boards[0].slug}`);
     }
   }, [location.pathname, boards, navigate]);
 

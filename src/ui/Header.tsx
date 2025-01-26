@@ -10,9 +10,19 @@ import { ChevronDownIcon, EllipsisIcon, PlusIcon } from "../components/Icons";
 
 // UIs
 import { MobileNav } from "./Navs";
+import DeleteBoard from "./modals/DeleteBoard";
+import { useModal } from "../hooks/useModal";
 
 const Header: FC = () => {
-  const { openSideBar, openMobileNav, toggleMobileNav } = useApp();
+  const {
+    openSideBar,
+    openMobileNav,
+    toggleMobileNav,
+    openBoardOptions,
+    toggleBoardOptions,
+  } = useApp();
+  const { setModalElement } = useModal();
+
   const location = useLocation();
 
   const currentPath =
@@ -30,15 +40,14 @@ const Header: FC = () => {
       <div className="relative flex w-full flex-row items-center justify-between border-b border-grey-100 py-4 pl-4 pr-4 transition-colors dark:border-grey-700 md:pl-6 md:pr-6 xl:pb-7 xl:pt-5">
         <div className="font-sans text-lg font-bold text-black transition-colors dark:text-white md:text-xl xl:text-2xl">
           <h1 className="hidden capitalize md:block">{currentPath}</h1>
-          {currentPath && (
-            <button
-              onClick={() => toggleMobileNav()}
-              className="flex flex-row items-center gap-2 md:hidden"
-            >
-              <span className="capitalize">{currentPath}</span>
-              <ChevronDownIcon className="h-2 w-3 text-purple" />
-            </button>
-          )}
+          <button
+            onClick={() => toggleMobileNav()}
+            className="flex flex-row items-center gap-2 md:hidden"
+          >
+            {currentPath && <span className="capitalize">{currentPath}</span>}
+            <ChevronDownIcon className="h-2 w-3 text-purple" />
+          </button>
+
           {openMobileNav && (
             <div className="absolute left-0 top-[calc(100%+16px)] z-10 w-full">
               <MobileNav />
@@ -53,9 +62,25 @@ const Header: FC = () => {
             <PlusIcon className="size-3" />
             Add New Task
           </button>
-          <button>
+          <button onClick={() => toggleBoardOptions()}>
             <EllipsisIcon className="h-5 w-[5px] text-grey-500 transition-colors dark:text-grey-200" />
           </button>
+          {openBoardOptions && (
+            <div className="absolute right-1 top-[calc(100%+16px)] z-10 flex w-[calc(100%-32px)] justify-end md:right-3 md:w-[calc(100%-48px)]">
+              <div className="flex w-full max-w-48 flex-col gap-4 rounded-lg bg-white p-4 shadow-lg transition-colors dark:bg-grey-800">
+                <button className="text-btn text-grey-500">Edit Board</button>
+                <button
+                  onClick={() => {
+                    setModalElement(<DeleteBoard />);
+                    toggleBoardOptions(false);
+                  }}
+                  className="text-btn text-red"
+                >
+                  Delete Board
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
       {openMobileNav && (

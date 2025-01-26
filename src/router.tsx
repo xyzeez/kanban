@@ -37,7 +37,7 @@ const router = createBrowserRouter([
             element: <EmptyState type="board" />,
           },
           {
-            path: "/:column",
+            path: "/:board",
             element: <Board />,
           },
         ],
