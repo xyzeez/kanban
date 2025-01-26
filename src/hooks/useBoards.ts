@@ -49,7 +49,7 @@ export const useBoards = () => {
     enabled: isAuthenticated,
   });
 
-  const createBoard = useMutation<Board, Error, CreateBoardDto>({
+  const createBoard = useMutation({
     mutationFn: async (newBoard: CreateBoardDto) => {
       const { data } = await axiosInstance.post<ApiResponse>(
         "/boards",

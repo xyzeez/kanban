@@ -1,4 +1,5 @@
 import { FC } from "react";
+import { useNavigate } from "react-router";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 
 // Hooks
@@ -28,6 +29,7 @@ const CreateBoardForm: FC = () => {
   });
   const { createBoard } = useBoards();
   const { setModalElement } = useModal();
+  const navigate = useNavigate();
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -36,9 +38,10 @@ const CreateBoardForm: FC = () => {
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
-      await createBoard(data);
+      const board = await createBoard(data);
       reset();
       setModalElement(null);
+      void navigate(`/${board.name}`);
     } catch (error) {
       console.log(error);
     }
