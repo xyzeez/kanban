@@ -1,5 +1,5 @@
-import { FC } from "react";
-import { useNavigate } from "react-router";
+import { FC, useEffect } from "react";
+import { useNavigate, useParams } from "react-router";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 
 // Hooks
@@ -9,13 +9,24 @@ import { useBoards } from "../../hooks/useBoards";
 // Components
 import { CrossIcon, PlusIcon, SpinnerIcon } from "../../components/Icons";
 
+// Utils
+import { fromSlug } from "../../utils";
+
 // Types
+interface BoardFormProps {
+  toEdit?: boolean;
+}
+
 interface Inputs {
   name: string;
   columns: { title: string }[];
 }
 
-const CreateBoardForm: FC = () => {
+const BoardForm: FC<BoardFormProps> = ({ toEdit }) => {
+  const { board } = useParams<{ board: string }>();
+  const { activeBoard, createBoard, updateBoard, isLoadingBoard } = useBoards(
+    fromSlug(board ?? ""),
+  );
   const {
     register,
     handleSubmit,
@@ -24,10 +35,11 @@ const CreateBoardForm: FC = () => {
     formState: { isSubmitting },
   } = useForm<Inputs>({
     defaultValues: {
-      columns: [{ title: "" }],
+      name: activeBoard?.name || "",
+      columns: activeBoard?.columns || [{ title: "" }],
     },
   });
-  const { createBoard } = useBoards();
+
   const { setModalElement } = useModal();
   const navigate = useNavigate();
 
@@ -36,16 +48,36 @@ const CreateBoardForm: FC = () => {
     name: "columns",
   });
 
+  useEffect(() => {
+    if (toEdit && activeBoard) {
+      reset({
+        name: activeBoard.name,
+        columns: activeBoard.columns,
+      });
+    }
+  }, [toEdit, activeBoard, reset]);
+
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     try {
-      const board = await createBoard(data);
-      reset();
-      setModalElement(null);
-      void navigate(`/${board.slug}`);
+      if (!toEdit) {
+        const board = await createBoard(data);
+        void navigate(`/${board.slug}`);
+      } else if (activeBoard) {
+        const board = await updateBoard({
+          boardId: activeBoard.id,
+          updateData: data,
+        });
+        void navigate(`/${board.slug}`);
+      }
     } catch (error) {
       console.log(error);
+    } finally {
+      reset();
+      setModalElement(null);
     }
   };
+
+  if (isLoadingBoard) return <SpinnerIcon />;
 
   return (
     <form
@@ -53,7 +85,7 @@ const CreateBoardForm: FC = () => {
       className="flex flex-col gap-6 font-sans"
     >
       <h2 className="text-lg font-bold text-black transition-colors dark:text-white">
-        Add New Board
+        {toEdit ? "Edit Board" : "Add New Board"}
       </h2>
       <div className="flex flex-col gap-2">
         <label
@@ -108,12 +140,17 @@ const CreateBoardForm: FC = () => {
       </div>
       <button
         type="submit"
+        disabled={isLoadingBoard}
         className="btn btn-primary btn-small text-sm font-bold"
       >
-        {isSubmitting ? <SpinnerIcon /> : <span>Create New Board</span>}
+        {isSubmitting ? (
+          <SpinnerIcon />
+        ) : (
+          <span>{toEdit ? "Save Changes" : "Create New Board"}</span>
+        )}
       </button>
     </form>
   );
 };
 
-export default CreateBoardForm;
+export default BoardForm;

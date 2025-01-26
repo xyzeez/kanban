@@ -3,6 +3,7 @@ import { useLocation } from "react-router";
 
 // Hooks
 import { useApp } from "../hooks/useApp";
+import { useModal } from "../hooks/useModal";
 
 // Components
 import Logo from "../components/Logo";
@@ -10,8 +11,8 @@ import { ChevronDownIcon, EllipsisIcon, PlusIcon } from "../components/Icons";
 
 // UIs
 import { MobileNav } from "./Navs";
+import BoardForm from "./forms/BoardForm";
 import DeleteBoard from "./modals/DeleteBoard";
-import { useModal } from "../hooks/useModal";
 
 const Header: FC = () => {
   const {
@@ -68,7 +69,15 @@ const Header: FC = () => {
           {openBoardOptions && (
             <div className="absolute right-1 top-[calc(100%+16px)] z-10 flex w-[calc(100%-32px)] justify-end md:right-3 md:w-[calc(100%-48px)]">
               <div className="flex w-full max-w-48 flex-col gap-4 rounded-lg bg-white p-4 shadow-lg transition-colors dark:bg-grey-800">
-                <button className="text-btn text-grey-500">Edit Board</button>
+                <button
+                  onClick={() => {
+                    setModalElement(<BoardForm toEdit={true} />);
+                    toggleBoardOptions(false);
+                  }}
+                  className="text-btn text-grey-500"
+                >
+                  Edit Board
+                </button>
                 <button
                   onClick={() => {
                     setModalElement(<DeleteBoard />);

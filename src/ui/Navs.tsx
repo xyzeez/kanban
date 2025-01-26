@@ -19,7 +19,7 @@ import {
 } from "../components/Icons";
 
 // UIs
-import CreateBoardForm from "./forms/BoardForm.tsx";
+import BoardForm from "./forms/BoardForm.tsx";
 
 // Types
 interface BoardItemProps {
@@ -47,7 +47,7 @@ const CreateBoardButton: FC = () => {
     <button
       onClick={() => {
         toggleMobileNav(false);
-        setModalElement(<CreateBoardForm />);
+        setModalElement(<BoardForm />);
       }}
       className="text-btn font-bold text-purple"
     >

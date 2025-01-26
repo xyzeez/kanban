@@ -23,9 +23,9 @@ interface Board {
   slug: string;
 }
 
-interface CreateBoardDto {
+interface BoardDto {
   name: string;
-  columns: { title: string }[];
+  columns: { id?: string; title: string }[];
 }
 
 interface ApiResponse {
@@ -72,7 +72,7 @@ export const useBoards = (boardName?: string) => {
   });
 
   const createBoard = useMutation({
-    mutationFn: async (newBoard: CreateBoardDto) => {
+    mutationFn: async (newBoard: BoardDto) => {
       const { data } = await axiosInstance.post<ApiResponse>(
         "/boards",
         newBoard,
@@ -97,11 +97,33 @@ export const useBoards = (boardName?: string) => {
     },
   });
 
+  const updateBoard = useMutation({
+    mutationFn: async ({
+      boardId,
+      updateData,
+    }: {
+      boardId: string;
+      updateData: BoardDto;
+    }) => {
+      const { data } = await axiosInstance.patch<ApiResponse>(
+        `/boards/${boardId}`,
+        updateData,
+      );
+      if (!data.data?.board) throw new Error("Failed to update board");
+      return data.data.board;
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey });
+      await queryClient.invalidateQueries({ queryKey: singleBoardKey });
+    },
+  });
+
   return {
     ...boardsQuery,
     activeBoard: singleBoardQuery.data,
     isLoadingBoard: singleBoardQuery.isLoading,
     createBoard: createBoard.mutateAsync,
     deleteBoard: deleteBoard.mutateAsync,
+    updateBoard: updateBoard.mutateAsync,
   };
 };
