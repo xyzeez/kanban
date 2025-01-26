@@ -28,7 +28,7 @@
   }
 
   .btn-sec {
-    @apply bg-purple/10 text-purple hover:bg-purple/25;
+    @apply bg-purple/10 text-purple hover:bg-purple/25 dark:bg-white dark:hover:bg-white;
   }
 }
 

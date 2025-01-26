@@ -25,7 +25,7 @@ const ModalProvider = ({ children }: ModalProviderProps) => {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="m-auto w-full max-w-[480px] rounded-md bg-white p-6"
+            className="m-auto w-full max-w-[480px] rounded-md bg-white p-6 dark:bg-grey-800"
           >
             {modalElement}
           </div>

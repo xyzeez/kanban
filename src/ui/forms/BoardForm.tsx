@@ -52,21 +52,29 @@ const CreateBoardForm: FC = () => {
       onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col gap-6 font-sans"
     >
-      <h2 className="text-lg font-bold text-black">Add New Board</h2>
+      <h2 className="text-lg font-bold text-black dark:text-white">
+        Add New Board
+      </h2>
       <div className="flex flex-col gap-2">
-        <label htmlFor="name" className="text-xs font-bold text-grey-500">
+        <label
+          htmlFor="name"
+          className="text-xs font-bold text-grey-500 dark:text-white"
+        >
           Board Name
         </label>
         <input
           type="text"
           id="name"
           placeholder="e.g Web Design"
-          className="rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 text-sm font-medium text-black outline-none ring-purple transition-colors focus:ring-1"
+          className="rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 text-sm font-medium text-black outline-none ring-purple transition-colors placeholder:text-black/25 focus:ring-1 dark:bg-transparent dark:text-white dark:placeholder:text-white/25"
           {...register("name", { required: true })}
         />
       </div>
       <div className="flex flex-col gap-2">
-        <label htmlFor="columns" className="text-xs font-bold text-grey-500">
+        <label
+          htmlFor="columns"
+          className="text-xs font-bold text-grey-500 dark:text-white"
+        >
           Board Columns
         </label>
         <div className="flex flex-col gap-3">
@@ -75,13 +83,13 @@ const CreateBoardForm: FC = () => {
               <input
                 type="text"
                 placeholder="e.g Todo"
-                className="w-full rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 text-sm font-medium text-black outline-none ring-purple transition-colors focus:ring-1"
+                className="w-full rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 text-sm font-medium text-black outline-none ring-purple transition-colors placeholder:text-black/25 focus:ring-1 dark:bg-transparent dark:text-white dark:placeholder:text-white/25"
                 {...register(`columns.${index}.title`, { required: true })}
               />
               <button
                 type="button"
                 onClick={() => remove(index)}
-                className="text-grey-500 hover:text-grey-700"
+                className="text-grey-500"
                 aria-label="Remove Column"
               >
                 <CrossIcon className="size-4" />
