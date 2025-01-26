@@ -1,5 +1,6 @@
-import { ring2 } from "ldrs";
+import { ring2, dotPulse } from "ldrs";
 ring2.register();
+dotPulse.register();
 
 // Types
 type Icon = { className: string };
@@ -125,6 +126,21 @@ export const LogoutIcon = ({ className }: Icon) => {
   );
 };
 
+export const CrossIcon = ({ className }: Icon) => {
+  return (
+    <svg className={className} xmlns="http://www.w3.org/2000/svg">
+      <g fill="currentColor" fillRule="evenodd">
+        <path d="m12.728 0 2.122 2.122L2.122 14.85 0 12.728z" />
+        <path d="M0 2.122 2.122 0 14.85 12.728l-2.122 2.122z" />
+      </g>
+    </svg>
+  );
+};
+
 export const SpinnerIcon = () => {
   return <l-ring-2 size={24} color="currentColor" />;
+};
+
+export const LoaderIcon = () => {
+  return <l-dot-pulse size={48} color="currentColor" />;
 };

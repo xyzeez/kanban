@@ -3,8 +3,10 @@ import MobileLogo from "../assets/logo-mobile.svg";
 import LogoLight from "../assets/logo-light.svg";
 import LogoDark from "../assets/logo-dark.svg";
 
+// Hooks
+import { useApp } from "../hooks/useApp";
+
 // Contexts
-import { useApp } from "../contexts/AppContext";
 
 // Types
 type LogoProps = {

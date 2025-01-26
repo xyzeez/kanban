@@ -2,8 +2,8 @@ import { FC, useState } from "react";
 import { Link, Navigate } from "react-router";
 import { SubmitHandler, useForm } from "react-hook-form";
 
-// Contexts
-import { useAuth } from "../contexts/authContext";
+// Hooks
+import { useAuth } from "../hooks/useAuth";
 
 // Components
 import Logo from "../components/Logo";

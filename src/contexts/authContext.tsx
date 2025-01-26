@@ -1,10 +1,4 @@
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, ReactNode, useEffect, useState } from "react";
 import axios, { AxiosError } from "axios";
 
 // Configs
@@ -26,6 +20,7 @@ type AuthContextType = {
   login: (email: string, password: string, remember: boolean) => Promise<void>;
   logout: () => Promise<void>;
   isAuthenticated: boolean;
+  isLoading: boolean;
 };
 
 interface AuthProviderProps {
@@ -61,21 +56,27 @@ const axiosInstance = axios.create({
 // Context
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: AuthProviderProps) => {
+const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
         const { data } =
           await axiosInstance.get<CheckAuthResponse>("/users/me");
-        return setUser({
+        setUser({
           id: data.user.id,
           email: data.user.email,
         });
+        setIsAuthenticated(true);
       } catch (error) {
-        console.log(error);
+        console.error("Auth check failed:", error);
         setUser(null);
+        setIsAuthenticated(false);
+      } finally {
+        setIsLoading(false);
       }
     };
     void checkAuth();
@@ -101,19 +102,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         email: data.user.email,
       });
     } catch (error) {
-      if (axios.isAxiosError(error)) {
+      if (axios.isAxiosError(error) && error.response) {
         const { response } = error as AxiosError<ErrorResponse>;
-
-        if (response?.status === 401) {
-          throw new Error("Invalid email or password");
-        }
-
         const errorMessage =
           response?.data?.message || "An error occurred during registration";
         throw new Error(errorMessage);
       }
-
-      throw new Error("An unexpected error occurred");
     }
   };
 
@@ -125,10 +119,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         remember,
       });
 
-      return setUser({
+      setUser({
         id: data.user.id,
         email: data.user.email,
       });
+      setIsAuthenticated(true);
+      return;
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const { response } = error as AxiosError<ErrorResponse>;
@@ -150,6 +146,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     try {
       await axiosInstance.get("/auth/logout");
       setUser(null);
+      setIsAuthenticated(false);
     } catch (error) {
       console.log(error);
       throw new Error("Failed to logout");
@@ -163,7 +160,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         signup,
         login,
         logout,
-        isAuthenticated: !!user,
+        isAuthenticated,
+        isLoading,
       }}
     >
       {children}
@@ -171,10 +169,4 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   );
 };
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
-};
+export { AuthContext, AuthProvider, axiosInstance };

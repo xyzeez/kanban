@@ -1,10 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useState,
-  ReactNode,
-  useEffect,
-} from "react";
+import { createContext, useState, ReactNode, useEffect } from "react";
 
 // Utils
 import { getTheme } from "../utils";
@@ -16,26 +10,36 @@ interface AppContextType {
   theme: Theme;
   toggleTheme: () => void;
   openSideBar: boolean;
-  toggleSidebarState: (state: boolean) => void;
+  toggleSidebar: (state: boolean) => void;
+  openMobileNav: boolean;
+  toggleMobileNav: (state?: boolean) => void;
 }
 
 interface AppProviderProps {
   children: ReactNode;
 }
 
+// Initialize theme
+document.documentElement.classList.add(getTheme());
+
 // Contexts
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
-export const AppProvider = ({ children }: AppProviderProps) => {
+const AppProvider = ({ children }: AppProviderProps) => {
   const [theme, setTheme] = useState<Theme>(getTheme);
   const [openSideBar, setOpenSideBar] = useState(true);
+  const [openMobileNav, setOpenMobileNav] = useState(false);
 
   const toggleTheme = () => {
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
   };
 
-  const toggleSidebarState = (state: boolean) => {
+  const toggleSidebar = (state: boolean) => {
     setOpenSideBar(state);
+  };
+
+  const toggleMobileNav = (state?: boolean) => {
+    setOpenMobileNav((prev) => state ?? !prev);
   };
 
   useEffect(() => {
@@ -51,7 +55,9 @@ export const AppProvider = ({ children }: AppProviderProps) => {
         theme,
         toggleTheme,
         openSideBar,
-        toggleSidebarState,
+        toggleSidebar,
+        openMobileNav,
+        toggleMobileNav,
       }}
     >
       {children}
@@ -59,11 +65,4 @@ export const AppProvider = ({ children }: AppProviderProps) => {
   );
 };
 
-// Create a custom hook for using the context
-export const useApp = () => {
-  const context = useContext(AppContext);
-  if (context === undefined) {
-    throw new Error("useApp must be used within an AppProvider");
-  }
-  return context;
-};
+export { AppContext, AppProvider };

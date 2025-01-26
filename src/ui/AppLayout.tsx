@@ -1,16 +1,37 @@
-import { FC } from "react";
-import { Navigate, useLocation } from "react-router";
+import { FC, useEffect } from "react";
+import { Navigate, Outlet, useLocation, useNavigate } from "react-router";
 
-// Contexts
-import { useAuth } from "../contexts/authContext";
+// Hooks
+import { useBoards } from "../hooks/useBoards";
+import { useModal } from "../hooks/useModal";
+import { useApp } from "../hooks/useApp";
+import { useAuth } from "../hooks/useAuth";
 
 // UIs
 import Header from "./Header";
 import { SideBarNav } from "./Navs";
+import LoadingScreen from "./placeholders/LoadingScreen";
 
 const AppLayout: FC = () => {
-  const { isAuthenticated } = useAuth();
+  const { setModalElement } = useModal();
+  const { toggleMobileNav } = useApp();
+  const { isAuthenticated, isLoading } = useAuth();
+  const { data: boards } = useBoards();
   const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Close any open modals on route change
+    setModalElement(null);
+    toggleMobileNav(false);
+
+    // Set active board if on root path and boards exist
+    if (location.pathname === "/" && boards?.length) {
+      void navigate(`/${boards[0].name}`);
+    }
+  }, [location.pathname, boards, navigate]);
+
+  if (isLoading) return <LoadingScreen />;
 
   if (!isAuthenticated)
     return <Navigate to="/login" state={{ from: location }} replace />;
@@ -23,7 +44,9 @@ const AppLayout: FC = () => {
       <div className="hidden bg-white transition-all dark:bg-grey-800 md:col-start-1 md:col-end-2 md:row-start-2 md:row-end-3 md:grid">
         <SideBarNav />
       </div>
-      <main className="col-start-1 col-end-2 row-start-2 row-end-3 bg-grey-100 transition-colors dark:bg-grey-900 md:col-start-2 md:col-end-3"></main>
+      <main className="col-start-1 col-end-2 row-start-2 row-end-3 bg-grey-100 transition-colors dark:bg-grey-900 md:col-start-2 md:col-end-3">
+        <Outlet />
+      </main>
     </div>
   );
 };

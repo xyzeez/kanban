@@ -1,11 +1,16 @@
 import { FC } from "react";
 import { Navigate, Outlet } from "react-router";
 
-// Contexts
-import { useAuth } from "../contexts/authContext";
+// Hooks
+import { useAuth } from "../hooks/useAuth";
+
+// UIs
+import LoadingScreen from "./placeholders/LoadingScreen";
 
 const AuthLayout: FC = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) return <LoadingScreen />;
 
   if (isAuthenticated) return <Navigate to="/" />;
 

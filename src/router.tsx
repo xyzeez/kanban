@@ -4,10 +4,12 @@ import { createBrowserRouter } from "react-router";
 import RootLayout from "./ui/RootLayout";
 import AuthLayout from "./ui/AuthLayout";
 import AppLayout from "./ui/AppLayout";
+import EmptyState from "./ui/placeholders/EmptyState";
 
 // Pages
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Board from "./pages/Board";
 
 const router = createBrowserRouter([
   {
@@ -29,6 +31,16 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <AppLayout />,
+        children: [
+          {
+            index: true,
+            element: <EmptyState type="board" />,
+          },
+          {
+            path: "/:column",
+            element: <Board />,
+          },
+        ],
       },
     ],
   },

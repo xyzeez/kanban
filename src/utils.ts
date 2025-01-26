@@ -5,3 +5,11 @@ export const getTheme = () => {
     ? "dark"
     : "light";
 };
+
+export const toSlug = (str: string): string => {
+  return str
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .trim();
+};

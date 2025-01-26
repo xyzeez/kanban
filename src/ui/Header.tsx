@@ -1,7 +1,8 @@
-import { FC, useState } from "react";
+import { FC } from "react";
+import { useLocation } from "react-router";
 
-// Contexts
-import { useApp } from "../contexts/AppContext";
+// Hooks
+import { useApp } from "../hooks/useApp";
 
 // Components
 import Logo from "../components/Logo";
@@ -11,12 +12,13 @@ import { ChevronDownIcon, EllipsisIcon, PlusIcon } from "../components/Icons";
 import { MobileNav } from "./Navs";
 
 const Header: FC = () => {
-  const [openNav, setOpenNav] = useState(false);
-  const { openSideBar } = useApp();
+  const { openSideBar, openMobileNav, toggleMobileNav } = useApp();
+  const location = useLocation();
 
-  const toggleNavState = (state?: boolean) => {
-    setOpenNav((prev) => state ?? !prev);
-  };
+  const currentPath =
+    location.pathname === "/"
+      ? ""
+      : location.pathname.split("/").pop()?.replace(/-/g, " ") || "";
 
   return (
     <header className="relative grid grid-cols-[auto_1fr] bg-white transition-colors dark:bg-grey-800">
@@ -27,15 +29,17 @@ const Header: FC = () => {
       </div>
       <div className="relative flex w-full flex-row items-center justify-between border-b border-grey-100 py-4 pl-4 pr-4 transition-colors dark:border-grey-700 md:pl-6 md:pr-6 xl:pb-7 xl:pt-5">
         <div className="font-sans text-lg font-bold text-black transition-colors dark:text-white md:text-xl xl:text-2xl">
-          <h1 className="hidden md:block">Platform Launch</h1>
-          <button
-            onClick={() => toggleNavState()}
-            className="flex flex-row items-center gap-2 md:hidden"
-          >
-            <span>Platform Launch</span>
-            <ChevronDownIcon className="h-2 w-3 text-purple" />
-          </button>
-          {openNav && (
+          <h1 className="hidden capitalize md:block">{currentPath}</h1>
+          {currentPath && (
+            <button
+              onClick={() => toggleMobileNav()}
+              className="flex flex-row items-center gap-2 md:hidden"
+            >
+              <span className="capitalize">{currentPath}</span>
+              <ChevronDownIcon className="h-2 w-3 text-purple" />
+            </button>
+          )}
+          {openMobileNav && (
             <div className="absolute left-0 top-[calc(100%+16px)] z-10 w-full">
               <MobileNav />
             </div>
@@ -54,9 +58,9 @@ const Header: FC = () => {
           </button>
         </div>
       </div>
-      {openNav && (
+      {openMobileNav && (
         <div
-          onClick={() => toggleNavState(false)}
+          onClick={() => toggleMobileNav(false)}
           className="absolute inset-0 top-full h-[calc(100vh-100%)] bg-black/50 md:hidden"
         />
       )}
