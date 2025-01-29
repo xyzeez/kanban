@@ -60,8 +60,8 @@ const BoardList: FC = () => {
   const { data: boards } = useBoards();
 
   return (
-    <menu className="pr-3 font-sans">
-      <li className="mb-5 pl-6">
+    <menu className="relative overflow-y-auto pr-3 font-sans">
+      <li className="fade-in-bg sticky top-0 pb-6 pl-6">
         <h2 className="text-xs font-bold uppercase tracking-[2.4px] text-grey-500">
           All Boards ({boards?.length || 0})
         </h2>
@@ -100,7 +100,7 @@ export const MobileNav: FC = () => {
   const { logout } = useAuth();
 
   return (
-    <div className="modal-shadow flex w-full max-w-[264px] flex-col gap-4 rounded-lg bg-white py-4 font-sans transition-colors dark:bg-grey-800">
+    <div className="modal- flex max-h-[calc(100vh-102px)] w-full max-w-[264px] flex-col gap-4 rounded-lg bg-white py-4 font-sans transition-colors dark:bg-grey-800">
       <BoardList />
       <div className="pl-4 pr-3">
         <ThemeToggle />
@@ -122,12 +122,13 @@ export const SideBarNav: FC = () => {
   const { logout } = useAuth();
 
   return (
-    <div className="relative">
+    // TODO: Fix overflow-x-hidden on relative positioning for toggleSidebar button
+    <div className="overflow-y-hidden md:max-h-[calc(100vh-97px)] xl:max-h-[calc(100vh-97px)]">
       <div
-        className={`flex h-full flex-col gap-6 overflow-hidden whitespace-nowrap border-r border-grey-100 bg-white pb-8 pt-4 font-sans transition-all dark:border-grey-700 dark:bg-grey-800 ${openSideBar ? "w-[260px] max-w-[260px] opacity-100 xl:w-[300px] xl:max-w-[300px]" : "max-w-0 border-none opacity-0"}`}
+        className={`grid h-full grid-rows-[1fr_auto] flex-col gap-6 overflow-hidden whitespace-nowrap border-r border-grey-100 bg-white pb-8 pt-4 font-sans transition-all dark:border-grey-700 dark:bg-grey-800 ${openSideBar ? "w-[260px] max-w-[260px] opacity-100 xl:w-[300px] xl:max-w-[300px]" : "max-w-0 border-none opacity-0"}`}
       >
         <BoardList />
-        <div className="mt-auto flex flex-col gap-[30px] px-3 xl:gap-6 xl:px-6">
+        <div className="flex flex-col gap-[30px] px-3 xl:gap-6 xl:px-6">
           <ThemeToggle />
           <div className="flex flex-col gap-4 pl-3 xl:pl-2">
             <button

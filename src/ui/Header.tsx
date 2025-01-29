@@ -95,7 +95,7 @@ const Header: FC = () => {
       {openMobileNav && (
         <div
           onClick={() => toggleMobileNav(false)}
-          className="absolute inset-0 top-full h-[calc(100vh-100%)] bg-black/50 md:hidden"
+          className="absolute inset-0 top-full h-[calc(100vh-69px)] bg-black/50 md:hidden"
         />
       )}
     </header>
