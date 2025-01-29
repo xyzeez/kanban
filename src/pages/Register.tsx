@@ -1,5 +1,5 @@
 import { FC, useState } from "react";
-import { Link, Navigate } from "react-router";
+import { Link, Navigate, useNavigate } from "react-router";
 import { SubmitHandler, useForm } from "react-hook-form";
 
 // Hooks
@@ -17,6 +17,7 @@ interface Inputs {
 }
 
 const Register: FC = () => {
+  const navigate = useNavigate();
   const { signup, isAuthenticated } = useAuth();
   const [showPassword, setShowPasswords] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
@@ -40,6 +41,7 @@ const Register: FC = () => {
       const { email, password, passwordConfirm } = data;
       await signup(email, password, passwordConfirm);
       reset();
+      void navigate("/");
     } catch (error) {
       console.log(error);
     }
@@ -108,7 +110,11 @@ const Register: FC = () => {
             </div>
           </div>
         </div>
-        <button type="submit" className="btn btn-primary btn-large">
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="btn btn-primary btn-large"
+        >
           {isSubmitting ? <SpinnerIcon /> : <span>Register</span>}
         </button>
         <p className="inline-flex flex-wrap justify-center gap-1 text-sm">
