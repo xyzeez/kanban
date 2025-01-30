@@ -9,23 +9,17 @@ import { useBoards } from "../../hooks/useBoards";
 // Components
 import { CrossIcon, PlusIcon, SpinnerIcon } from "../../components/Icons";
 
-// Utils
-import { fromSlug } from "../../utils";
-
 // Types
-interface BoardFormProps {
-  toEdit?: boolean;
-}
+import { BoardFormInputs, BoardFormProps } from "../../types/forms";
+import { Board } from "../../types/board";
 
-interface Inputs {
-  name: string;
-  columns: { title: string }[];
-}
+// Utils
+import { slugToString } from "../../utils";
 
 const BoardForm: FC<BoardFormProps> = ({ toEdit }) => {
-  const { board } = useParams<{ board: string }>();
-  const { activeBoard, createBoard, updateBoard, isLoadingBoard } = useBoards(
-    fromSlug(board ?? ""),
+  const { boardId } = useParams<{ boardId: string }>();
+  const { board, createBoard, updateBoard, isLoading } = useBoards(
+    slugToString(boardId ?? ""),
   );
   const {
     register,
@@ -33,10 +27,10 @@ const BoardForm: FC<BoardFormProps> = ({ toEdit }) => {
     control,
     reset,
     formState: { isSubmitting },
-  } = useForm<Inputs>({
+  } = useForm<BoardFormInputs>({
     defaultValues: {
-      name: activeBoard?.name || "",
-      columns: activeBoard?.columns || [{ title: "" }],
+      name: board?.name || "",
+      columns: board?.columns || [{ title: "" }],
     },
   });
 
@@ -49,26 +43,35 @@ const BoardForm: FC<BoardFormProps> = ({ toEdit }) => {
   });
 
   useEffect(() => {
-    if (toEdit && activeBoard) {
+    if (toEdit && board) {
       reset({
-        name: activeBoard.name,
-        columns: activeBoard.columns,
+        name: board.name,
+        columns: board.columns,
       });
     }
-  }, [toEdit, activeBoard, reset]);
+  }, [toEdit, board, reset]);
 
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+  const boardCreateHandler = async (data: BoardFormInputs) => {
+    if (!data.name) return;
+
+    const newBoard = await createBoard(data);
+    if (newBoard) void navigate(`boards/${newBoard.slug}`);
+  };
+
+  const boardUpdateHandler = async (board: Board, data: BoardFormInputs) => {
+    if (!board.id) return;
+
+    const newBoard = await updateBoard({
+      id: board.id,
+      data: data,
+    });
+    if (newBoard) void navigate(`boards/${newBoard.slug}`);
+  };
+
+  const onSubmit: SubmitHandler<BoardFormInputs> = async (data) => {
     try {
-      if (!toEdit) {
-        const board = await createBoard(data);
-        void navigate(`/${board.slug}`);
-      } else if (activeBoard) {
-        const board = await updateBoard({
-          boardId: activeBoard.id,
-          updateData: data,
-        });
-        void navigate(`/${board.slug}`);
-      }
+      if (!toEdit) await boardCreateHandler(data);
+      else if (board) await boardUpdateHandler(board, data);
     } catch (error) {
       console.log(error);
     } finally {
@@ -77,7 +80,7 @@ const BoardForm: FC<BoardFormProps> = ({ toEdit }) => {
     }
   };
 
-  if (isLoadingBoard) return <SpinnerIcon />;
+  if (isLoading) return <SpinnerIcon />;
 
   return (
     <form
@@ -140,7 +143,7 @@ const BoardForm: FC<BoardFormProps> = ({ toEdit }) => {
       </div>
       <button
         type="submit"
-        disabled={isLoadingBoard}
+        disabled={isLoading}
         className="btn btn-primary btn-small text-sm font-bold"
       >
         {isSubmitting ? (

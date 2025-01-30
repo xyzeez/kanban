@@ -3,7 +3,7 @@ ring2.register();
 dotPulse.register();
 
 // Types
-type Icon = { className: string };
+import { Icon } from "../types/components";
 
 export const ChevronDownIcon = ({ className }: Icon) => {
   return (

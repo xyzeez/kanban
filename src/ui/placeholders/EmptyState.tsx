@@ -1,7 +1,7 @@
+import { FC } from "react";
+
 // Types
-interface EmptyStateProps {
-  type: "board" | "column";
-}
+import { EmptyStateProps } from "../../types/placeholders";
 
 // Content
 const content = {
@@ -15,7 +15,7 @@ const content = {
   },
 };
 
-const EmptyState = ({ type }: EmptyStateProps) => {
+const EmptyState: FC<EmptyStateProps> = ({ type }) => {
   return (
     <div className="flex h-full flex-col items-center justify-center p-4">
       <p className="text-gray-400 mb-4">{content[type].message}</p>

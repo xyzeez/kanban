@@ -1,25 +1,10 @@
-import { createContext, useState, ReactNode, useEffect } from "react";
+import { createContext, useState, useEffect } from "react";
 
 // Utils
 import { getTheme } from "../utils";
 
 // Types
-type Theme = "light" | "dark";
-
-interface AppContextType {
-  theme: Theme;
-  toggleTheme: () => void;
-  openSideBar: boolean;
-  toggleSidebar: (state: boolean) => void;
-  openMobileNav: boolean;
-  toggleMobileNav: (state?: boolean) => void;
-  openBoardOptions: boolean;
-  toggleBoardOptions: (state?: boolean) => void;
-}
-
-interface AppProviderProps {
-  children: ReactNode;
-}
+import { AppContextType, AppProviderProps, Theme } from "../types/contexts";
 
 // Initialize theme
 document.documentElement.classList.add(getTheme());

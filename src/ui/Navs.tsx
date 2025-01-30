@@ -22,10 +22,7 @@ import {
 import BoardForm from "./forms/BoardForm.tsx";
 
 // Types
-interface BoardItemProps {
-  title: string;
-  to: string;
-}
+import { BoardItemProps } from "../types/navs.ts";
 
 const BoardItem: FC<BoardItemProps> = ({ title, to }) => (
   <NavLink
@@ -57,7 +54,7 @@ const CreateBoardButton: FC = () => {
   );
 };
 const BoardList: FC = () => {
-  const { data: boards } = useBoards();
+  const { boards } = useBoards();
 
   return (
     <menu className="relative overflow-y-auto pr-3 font-sans">

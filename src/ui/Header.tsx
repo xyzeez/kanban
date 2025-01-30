@@ -14,6 +14,9 @@ import { MobileNav } from "./Navs";
 import BoardForm from "./forms/BoardForm";
 import DeleteBoard from "./modals/DeleteBoard";
 
+// Utils
+import { slugToString } from "../utils";
+
 const Header: FC = () => {
   const {
     openSideBar,
@@ -40,12 +43,16 @@ const Header: FC = () => {
       </div>
       <div className="relative flex w-full flex-row items-center justify-between border-b border-grey-100 py-4 pl-4 pr-4 transition-colors dark:border-grey-700 md:pl-6 md:pr-6 xl:pb-7 xl:pt-5">
         <div className="font-sans text-lg font-bold text-black transition-colors dark:text-white md:text-xl xl:text-2xl">
-          <h1 className="hidden capitalize md:block">{currentPath}</h1>
+          <h1 className="hidden capitalize md:block">
+            {currentPath && slugToString(currentPath)}
+          </h1>
           <button
             onClick={() => toggleMobileNav()}
             className="flex flex-row items-center gap-2 md:hidden"
           >
-            {currentPath && <span className="capitalize">{currentPath}</span>}
+            {currentPath && (
+              <span className="capitalize">{slugToString(currentPath)}</span>
+            )}
             <ChevronDownIcon className="h-2 w-3 text-purple" />
           </button>
 

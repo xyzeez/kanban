@@ -37,7 +37,7 @@ const router = createBrowserRouter([
             element: <EmptyState type="board" />,
           },
           {
-            path: "/:board",
+            path: "boards/:boardId/:boardName",
             element: <Board />,
           },
         ],

@@ -6,7 +6,7 @@ export const getTheme = () => {
     : "light";
 };
 
-export const fromSlug = (slug: string): string => {
+export const slugToString = (slug: string): string => {
   const decoded = decodeURIComponent(slug);
-  return decoded.replace(/-/g, " ");
+  return decoded.replace(/_/g, " ");
 };

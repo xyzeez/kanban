@@ -15,11 +15,7 @@ import {
 } from "../components/Icons";
 
 // Types
-interface Inputs {
-  email: string;
-  password: string;
-  remember: boolean;
-}
+import { LoginFormInputs } from "../types/forms";
 
 const Login: FC = () => {
   const { login, isAuthenticated } = useAuth();
@@ -29,16 +25,17 @@ const Login: FC = () => {
     handleSubmit,
     reset,
     formState: { isSubmitting },
-  } = useForm<Inputs>();
+  } = useForm<LoginFormInputs>();
 
   const togglePassword = () => {
     return setShowPasswords((prev) => !prev);
   };
 
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+  const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
     try {
+      // TODO: Add remember me functionality
       const { email, password, remember } = data;
-      await login(email, password, remember);
+      await login({ email, password });
       reset();
     } catch (error) {
       console.log(error);

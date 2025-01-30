@@ -16,7 +16,7 @@ const AppLayout: FC = () => {
   const { setModalElement } = useModal();
   const { toggleMobileNav } = useApp();
   const { isAuthenticated, isLoading } = useAuth();
-  const { data: boards } = useBoards();
+  const { boards } = useBoards();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -27,7 +27,7 @@ const AppLayout: FC = () => {
 
     // Set active board if on root path and boards exist
     if (location.pathname === "/" && boards?.length) {
-      void navigate(`/${boards[0].slug}`);
+      void navigate(`/boards/${boards[0].slug}`);
     }
   }, [location.pathname, boards, navigate]);
 

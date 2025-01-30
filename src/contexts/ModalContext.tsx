@@ -1,17 +1,19 @@
-import { createContext, ReactNode, useState } from "react";
+import { createContext, useState } from "react";
 
-type ModalElement = ReactNode | null;
+// Components
+import ModalWrapper from "../components/ModalWrapper";
 
-interface ModalContextType {
-  setModalElement: (element: ReactNode) => void;
-}
+// Types
+import {
+  ModalContextType,
+  ModalElement,
+  ModalProviderProps,
+} from "../types/contexts";
 
-interface ModalProviderProps {
-  children: ReactNode;
-}
-
+// Context
 const ModalContext = createContext<ModalContextType | undefined>(undefined);
 
+// Provider
 const ModalProvider = ({ children }: ModalProviderProps) => {
   const [modalElement, setModalElement] = useState<ModalElement>(null);
 
@@ -19,17 +21,10 @@ const ModalProvider = ({ children }: ModalProviderProps) => {
     <ModalContext.Provider value={{ setModalElement }}>
       {children}
       {modalElement && (
-        <div
-          onClick={() => setModalElement(null)}
-          className="absolute inset-0 grid bg-black/50 p-4"
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="m-auto w-full max-w-[480px] rounded-md bg-white p-6 transition-colors dark:bg-grey-800 md:p-8"
-          >
-            {modalElement}
-          </div>
-        </div>
+        <ModalWrapper
+          modalElement={modalElement}
+          clickHandler={() => setModalElement(null)}
+        />
       )}
     </ModalContext.Provider>
   );

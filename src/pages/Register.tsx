@@ -10,15 +10,11 @@ import Logo from "../components/Logo";
 import { HideIcon, ShowIcon, SpinnerIcon } from "../components/Icons";
 
 // Types
-interface Inputs {
-  email: string;
-  password: string;
-  passwordConfirm: string;
-}
+import { RegisterFormInputs } from "../types/forms";
 
 const Register: FC = () => {
   const navigate = useNavigate();
-  const { signup, isAuthenticated } = useAuth();
+  const { register: registerUser, isAuthenticated } = useAuth();
   const [showPassword, setShowPasswords] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
   const {
@@ -26,7 +22,7 @@ const Register: FC = () => {
     handleSubmit,
     reset,
     formState: { isSubmitting },
-  } = useForm<Inputs>();
+  } = useForm<RegisterFormInputs>();
 
   const togglePassword = () => {
     return setShowPasswords((prev) => !prev);
@@ -36,14 +32,14 @@ const Register: FC = () => {
     return setShowPasswordConfirm((prev) => !prev);
   };
 
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+  const onSubmit: SubmitHandler<RegisterFormInputs> = async (data) => {
     try {
       const { email, password, passwordConfirm } = data;
-      await signup(email, password, passwordConfirm);
+      await registerUser({ email, password, passwordConfirm });
       reset();
       void navigate("/");
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 

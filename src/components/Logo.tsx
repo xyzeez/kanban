@@ -6,12 +6,8 @@ import LogoDark from "../assets/logo-dark.svg";
 // Hooks
 import { useApp } from "../hooks/useApp";
 
-// Contexts
-
 // Types
-type LogoProps = {
-  full?: boolean;
-};
+import { LogoProps } from "../types/components";
 
 const Logo = ({ full = false }: LogoProps) => {
   const { theme } = useApp();

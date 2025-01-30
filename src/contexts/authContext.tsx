@@ -1,172 +1,70 @@
-import { createContext, ReactNode, useEffect, useState } from "react";
-import axios, { AxiosError } from "axios";
+import { createContext, useCallback, useEffect, useState } from "react";
 
-// Configs
-import { API } from "../config";
+// Services
+import { authService } from "../services/authService";
 
 // Types
-type User = {
-  id: string;
-  email: string;
-} | null;
-
-type AuthContextType = {
-  user: User;
-  signup: (
-    email: string,
-    password: string,
-    passwordConfirm: string,
-  ) => Promise<void>;
-  login: (email: string, password: string, remember: boolean) => Promise<void>;
-  logout: () => Promise<void>;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-};
-
-interface AuthProviderProps {
-  children: ReactNode;
-}
-
-type CheckAuthResponse = {
-  user: {
-    id: string;
-    email: string;
-  };
-};
-
-type LoginResponse = {
-  token: string;
-  user: {
-    id: string;
-    email: string;
-  };
-};
-
-type ErrorResponse = {
-  message: string;
-  status?: number;
-};
-
-// Axios
-const axiosInstance = axios.create({
-  baseURL: API,
-  withCredentials: true,
-});
+import {
+  AuthContextType,
+  AuthProviderProps,
+  LoginCredentials,
+  RegisterData,
+  User,
+} from "../types/contexts";
 
 // Context
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(
+  undefined,
+);
 
-const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<User>(null);
+// Provider
+export const AuthProvider = ({ children }: AuthProviderProps) => {
+  const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const { data } =
-          await axiosInstance.get<CheckAuthResponse>("/users/me");
-        setUser({
-          id: data.user.id,
-          email: data.user.email,
-        });
-        setIsAuthenticated(true);
-      } catch (error) {
-        console.error("Auth check failed:", error);
-        setUser(null);
-        setIsAuthenticated(false);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    void checkAuth();
+  const checkAuth = useCallback(async () => {
+    try {
+      const user = await authService.getCurrentUser();
+      setUser(user);
+    } catch (error: unknown) {
+      console.error(error);
+      setUser(null);
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
-  const signup = async (
-    email: string,
-    password: string,
-    passwordConfirm: string,
-  ) => {
-    try {
-      const { data } = await axiosInstance.post<LoginResponse>(
-        "/auth/register",
-        {
-          email,
-          password,
-          passwordConfirm,
-        },
-      );
+  useEffect(() => {
+    void checkAuth();
+  }, [checkAuth]);
 
-      return setUser({
-        id: data.user.id,
-        email: data.user.email,
-      });
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
-        const { response } = error as AxiosError<ErrorResponse>;
-        const errorMessage =
-          response?.data?.message || "An error occurred during registration";
-        throw new Error(errorMessage);
-      }
-    }
+  const register = async (data: RegisterData) => {
+    const { user } = await authService.register(data);
+    setUser(user);
   };
 
-  const login = async (email: string, password: string, remember: boolean) => {
-    try {
-      const { data } = await axiosInstance.post<LoginResponse>("/auth/login", {
-        email,
-        password,
-        remember,
-      });
-
-      setUser({
-        id: data.user.id,
-        email: data.user.email,
-      });
-      setIsAuthenticated(true);
-      return;
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        const { response } = error as AxiosError<ErrorResponse>;
-
-        if (response?.status === 401) {
-          throw new Error("Invalid email or password");
-        }
-
-        const errorMessage =
-          response?.data?.message || "An error occurred during login";
-        throw new Error(errorMessage);
-      }
-
-      throw new Error("An unexpected error occurred");
-    }
+  const login = async (credentials: LoginCredentials) => {
+    const { user } = await authService.login(credentials);
+    setUser(user);
   };
 
   const logout = async () => {
-    try {
-      await axiosInstance.get("/auth/logout");
-      setUser(null);
-      setIsAuthenticated(false);
-    } catch (error) {
-      console.log(error);
-      throw new Error("Failed to logout");
-    }
+    await authService.logout();
+    setUser(null);
   };
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        signup,
-        login,
-        logout,
-        isAuthenticated,
+        isAuthenticated: !!user,
         isLoading,
+        login,
+        register,
+        logout,
       }}
     >
       {children}
     </AuthContext.Provider>
   );
 };
-
-export { AuthContext, AuthProvider, axiosInstance };
