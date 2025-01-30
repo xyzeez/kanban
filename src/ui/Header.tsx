@@ -34,6 +34,8 @@ const Header: FC = () => {
       ? ""
       : location.pathname.split("/").pop()?.replace(/-/g, " ") || "";
 
+  const currentBoardName = slugToString(currentPath);
+
   return (
     <header className="relative grid grid-cols-[auto_1fr] bg-white transition-colors dark:bg-grey-800">
       <div
@@ -43,15 +45,15 @@ const Header: FC = () => {
       </div>
       <div className="relative flex w-full flex-row items-center justify-between border-b border-grey-100 py-4 pl-4 pr-4 transition-colors dark:border-grey-700 md:pl-6 md:pr-6 xl:pb-7 xl:pt-5">
         <div className="font-sans text-lg font-bold text-black transition-colors dark:text-white md:text-xl xl:text-2xl">
-          <h1 className="hidden capitalize md:block">
-            {currentPath && slugToString(currentPath)}
-          </h1>
+          {currentBoardName && (
+            <h1 className="hidden capitalize md:block">{currentBoardName}</h1>
+          )}
           <button
             onClick={() => toggleMobileNav()}
             className="flex flex-row items-center gap-2 md:hidden"
           >
-            {currentPath && (
-              <span className="capitalize">{slugToString(currentPath)}</span>
+            {currentBoardName && (
+              <span className="capitalize">{currentBoardName}</span>
             )}
             <ChevronDownIcon className="h-2 w-3 text-purple" />
           </button>
@@ -63,14 +65,23 @@ const Header: FC = () => {
           )}
         </div>
         <div className="flex flex-row items-center gap-4 md:gap-6">
-          <button className="icon-btn btn-primary btn-large md:hidden">
+          <button
+            disabled={!currentBoardName}
+            className="icon-btn btn-primary btn-large md:hidden"
+          >
             <PlusIcon className="size-3" />
           </button>
-          <button className="btn btn-primary btn-large hidden md:flex">
+          <button
+            disabled={!currentBoardName}
+            className="btn btn-primary btn-large hidden md:flex"
+          >
             <PlusIcon className="size-3" />
             Add New Task
           </button>
-          <button onClick={() => toggleBoardOptions()}>
+          <button
+            disabled={!currentBoardName}
+            onClick={() => toggleBoardOptions()}
+          >
             <EllipsisIcon className="h-5 w-[5px] text-grey-500 transition-colors dark:text-grey-200" />
           </button>
           {openBoardOptions && (
