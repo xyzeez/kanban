@@ -7,13 +7,14 @@ import { boardService } from "../services/boardService";
 import { useAuth } from "./useAuth";
 
 // Types
-import { CreateBoardDto, UpdateBoardDto } from "../types/board";
+import { Column, CreateBoardDto, UpdateBoardDto } from "../types/board";
 
 export const useBoards = (boardId?: string) => {
   const { isAuthenticated } = useAuth();
   const queryClient = useQueryClient();
   const boardsQueryKey = ["boards"];
   const boardQueryKey = ["board", boardId];
+  const columnsQueryKey = ["columns", boardId];
 
   const boardsQuery = useQuery({
     queryKey: boardsQueryKey,
@@ -24,6 +25,12 @@ export const useBoards = (boardId?: string) => {
   const boardQuery = useQuery({
     queryKey: boardQueryKey,
     queryFn: () => (boardId ? boardService.getBoard(boardId) : null),
+    enabled: isAuthenticated && !!boardId,
+  });
+
+  const columnsQuery = useQuery({
+    queryKey: columnsQueryKey,
+    queryFn: () => (boardId ? boardService.getColumns(boardId) : null),
     enabled: isAuthenticated && !!boardId,
   });
 
@@ -47,6 +54,19 @@ export const useBoards = (boardId?: string) => {
     mutationFn: (id: string) => boardService.deleteBoard(id),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: boardsQueryKey });
+    },
+  });
+
+  const addColumnsMutation = useMutation({
+    mutationFn: ({
+      id,
+      columns,
+    }: {
+      id: string;
+      columns: Pick<Column, "title">[];
+    }) => boardService.addColumns(id, columns),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: columnsQueryKey });
     },
   });
 
@@ -80,13 +100,16 @@ export const useBoards = (boardId?: string) => {
     // Queries
     boards: boardsQuery.data ?? [],
     board: boardQuery.data,
-    isLoading: boardsQuery.isLoading || boardQuery.isLoading,
-    isError: boardsQuery.isError || boardQuery.isError,
+    columns: columnsQuery.data ?? [],
+    isLoading:
+      boardsQuery.isLoading || boardQuery.isLoading || columnsQuery.isLoading,
+    isError: boardsQuery.isError || boardQuery.isError || columnsQuery.isError,
 
     // Mutations
     createBoard: createBoardMutation.mutateAsync,
     updateBoard: updateBoardMutation.mutateAsync,
     deleteBoard: deleteBoardMutation.mutateAsync,
+    addColumns: addColumnsMutation.mutateAsync,
     fetchBoards,
     addBoard,
     editBoard,

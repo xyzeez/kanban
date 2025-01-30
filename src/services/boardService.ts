@@ -2,7 +2,7 @@
 import { apiService } from "./axios";
 
 // Types
-import { Board, CreateBoardDto, UpdateBoardDto } from "../types/board";
+import { Board, Column, CreateBoardDto, UpdateBoardDto } from "../types/board";
 
 export const boardService = {
   getBoards: async (): Promise<Board[]> => {
@@ -56,5 +56,32 @@ export const boardService = {
 
   deleteBoard: async (id: string): Promise<void> => {
     await apiService.delete(`/boards/${id}`);
+  },
+
+  addColumns: async (
+    boardId: string,
+    columns: Pick<Column, "title">[],
+  ): Promise<Board | null> => {
+    const response = await apiService.post<{ data: { board: Board } }>(
+      `/boards/${boardId}/columns`,
+      { columns },
+    );
+
+    if (!response.data || !response.data.data) {
+      console.error("Failed to add columns");
+      return null;
+    }
+    return response.data.data.board;
+  },
+
+  getColumns: async (id: string): Promise<Column[]> => {
+    const response = await apiService.get<{ data: { columns: Column[] } }>(
+      `/boards/${id}/columns`,
+    );
+    if (!response.data || !response.data.data) {
+      console.error("Failed to fetch columns");
+      return [];
+    }
+    return response.data.data.columns;
   },
 };

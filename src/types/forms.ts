@@ -1,3 +1,5 @@
+import { Column } from "./board";
+
 export interface RegisterFormInputs {
   email: string;
   password: string;
@@ -12,9 +14,10 @@ export interface LoginFormInputs {
 
 export interface BoardFormProps {
   toEdit?: boolean;
+  toAddColumn?: boolean;
 }
 
 export interface BoardFormInputs {
   name: string;
-  columns: { title: string }[];
+  columns: Pick<Column, "title">[];
 }

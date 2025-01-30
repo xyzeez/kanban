@@ -45,7 +45,7 @@ const AppLayout: FC = () => {
       <div className="relative hidden bg-white transition-all dark:bg-grey-800 md:col-start-1 md:col-end-2 md:row-start-2 md:row-end-3 md:grid">
         <SideBarNav />
       </div>
-      <main className="col-start-1 col-end-2 row-start-2 row-end-3 overflow-y-auto bg-grey-100 transition-colors dark:bg-grey-900 md:col-start-2 md:col-end-3 md:max-h-[calc(100vh-97px)] xl:max-h-[calc(100vh-97px)]">
+      <main className="col-start-1 col-end-2 row-start-2 row-end-3 grid bg-grey-100 transition-colors dark:bg-grey-900 md:col-start-2 md:col-end-3">
         <Outlet />
       </main>
     </div>

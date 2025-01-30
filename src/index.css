@@ -44,4 +44,8 @@
   .fade-in-bg {
     @apply bg-gradient-to-b from-white from-60% to-transparent dark:from-grey-800;
   }
+
+  .add-column-bg {
+    @apply bg-gradient-to-b from-grey-200 from-50% to-grey-100/50 to-100% dark:from-grey-800 dark:to-grey-900/50;
+  }
 }
