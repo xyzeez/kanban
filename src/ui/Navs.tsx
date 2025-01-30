@@ -65,7 +65,7 @@ const BoardList: FC = () => {
       </li>
       {boards?.map((board) => (
         <li key={board.id}>
-          <BoardItem title={board.name} to={board.slug} />
+          <BoardItem title={board.name} to={`/boards/${board.slug}`} />
         </li>
       ))}
       <li className="w-full max-w-[276px] px-6 py-4 xl:px-8">
