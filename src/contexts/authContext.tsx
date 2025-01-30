@@ -26,8 +26,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     try {
       const user = await authService.getCurrentUser();
       setUser(user);
-    } catch (error: unknown) {
-      console.error(error);
+    } catch {
       setUser(null);
     } finally {
       setIsLoading(false);

@@ -3,10 +3,14 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 // Services
 import { boardService } from "../services/boardService";
 
+// Hooks
+import { useAuth } from "./useAuth";
+
 // Types
 import { CreateBoardDto, UpdateBoardDto } from "../types/board";
 
 export const useBoards = (boardId?: string) => {
+  const { isAuthenticated } = useAuth();
   const queryClient = useQueryClient();
   const boardsQueryKey = ["boards"];
   const boardQueryKey = ["board", boardId];
@@ -14,12 +18,13 @@ export const useBoards = (boardId?: string) => {
   const boardsQuery = useQuery({
     queryKey: boardsQueryKey,
     queryFn: boardService.getBoards,
+    enabled: isAuthenticated,
   });
 
   const boardQuery = useQuery({
     queryKey: boardQueryKey,
     queryFn: () => (boardId ? boardService.getBoard(boardId) : null),
-    enabled: !!boardId,
+    enabled: isAuthenticated && !!boardId,
   });
 
   const createBoardMutation = useMutation({
