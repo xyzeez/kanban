@@ -40,7 +40,7 @@ const Header: FC = () => {
   return (
     <header className="relative grid grid-cols-[auto_1fr] bg-white transition-colors dark:bg-grey-800">
       <div
-        className={`flex items-center border-b border-grey-100 py-4 pl-4 transition-all dark:border-grey-700 md:border-r md:pl-6 md:pr-4 xl:pr-8 ${openSideBar ? "border-b-white dark:border-b-grey-800 md:w-[260px] md:max-w-[260px] xl:w-[300px] xl:max-w-[300px]" : "w-auto md:w-[210px] md:max-w-[210px]"}`}
+        className={`flex items-center border-b border-grey-100 py-4 pl-4 transition-all dark:border-grey-700 md:border-r md:pl-6 md:pr-4 xl:pr-8 ${openSideBar ? "md:w-[260px] md:max-w-[260px] md:border-b-white md:dark:border-b-grey-800 xl:w-[300px] xl:max-w-[300px]" : "w-auto md:w-[210px] md:max-w-[210px]"}`}
       >
         <Logo />
       </div>
