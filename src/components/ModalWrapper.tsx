@@ -10,7 +10,7 @@ const ModalWrapper: FC<ModalWrapperProps> = ({
   return (
     <div
       onClick={clickHandler}
-      className="absolute inset-0 grid bg-black/50 p-4"
+      className="absolute inset-0 grid overflow-y-auto overflow-x-hidden bg-black/50 p-4"
     >
       <div
         onClick={(e) => e.stopPropagation()}

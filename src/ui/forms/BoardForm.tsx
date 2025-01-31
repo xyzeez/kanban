@@ -13,14 +13,8 @@ import { CrossIcon, PlusIcon, SpinnerIcon } from "../../components/Icons";
 import { BoardFormInputs, BoardFormProps } from "../../types/forms";
 import { Board } from "../../types/board";
 
-// Utils
-import { slugToString } from "../../utils";
-
-const BoardForm: FC<BoardFormProps> = ({ toEdit, toAddColumn }) => {
-  const { boardId } = useParams<{ boardId: string }>();
-  const { board, createBoard, updateBoard, addColumns, isLoading } = useBoards(
-    slugToString(boardId ?? ""),
-  );
+const BoardForm: FC = () => {
+  const { createBoard } = useBoards("");
   const {
     register,
     handleSubmit,
