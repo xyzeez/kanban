@@ -105,7 +105,11 @@ const Login: FC = () => {
             </Link>
           </div>
         </div>
-        <button type="submit" className="btn btn-primary btn-large">
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="btn btn-primary btn-large"
+        >
           {isSubmitting ? <SpinnerIcon /> : <span>Sign In</span>}
         </button>
         <p className="inline-flex flex-wrap justify-center gap-1 text-sm">
