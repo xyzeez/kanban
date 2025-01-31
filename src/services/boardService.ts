@@ -5,82 +5,70 @@ import { apiService } from "./axios";
 import { Board, Column, CreateBoardDto, UpdateBoardDto } from "../types/board";
 
 export const boardService = {
-  getBoards: async (): Promise<Board[]> => {
+  getBoards: async () => {
     const response = await apiService.get<{ data: { boards: Board[] } }>(
       "/boards",
     );
     if (!response.data || !response.data.data) {
-      console.error("Failed to fetch boards");
-      return [];
+      throw new Error("Failed to fetch boards");
     }
     return response.data.data.boards;
   },
 
-  getBoard: async (id: string): Promise<Board | null> => {
+  getBoard: async (id: string) => {
     const response = await apiService.get<{ data: { board: Board } }>(
       `/boards/${id}`,
     );
     if (!response.data || !response.data.data) {
-      console.error("Failed to fetch board");
-      return null;
+      throw new Error("Failed to fetch board");
     }
     return response.data.data.board;
   },
 
-  createBoard: async (data: CreateBoardDto): Promise<Board | null> => {
+  createBoard: async (data: CreateBoardDto) => {
     const response = await apiService.post<{ data: { board: Board } }>(
       "/boards",
       data,
     );
     if (!response.data || !response.data.data) {
-      console.error("Failed to create board");
-      return null;
+      throw new Error("Failed to create board");
     }
     return response.data.data.board;
   },
 
-  updateBoard: async (
-    id: string,
-    data: UpdateBoardDto,
-  ): Promise<Board | null> => {
+  updateBoard: async (id: string, data: UpdateBoardDto) => {
     const response = await apiService.patch<{ data: { board: Board } }>(
       `/boards/${id}`,
       data,
     );
     if (!response.data || !response.data.data) {
-      console.error("Failed to update board");
-      return null;
+      throw new Error("Failed to update board");
     }
     return response.data.data.board;
   },
 
-  deleteBoard: async (id: string): Promise<void> => {
+  deleteBoard: async (id: string) => {
     await apiService.delete(`/boards/${id}`);
   },
 
-  addColumns: async (
-    boardId: string,
-    columns: Pick<Column, "title">[],
-  ): Promise<Board | null> => {
+  addColumns: async (boardId: string, columns: Pick<Column, "title">[]) => {
     const response = await apiService.post<{ data: { board: Board } }>(
       `/boards/${boardId}/columns`,
       { columns },
     );
 
     if (!response.data || !response.data.data) {
-      console.error("Failed to add columns");
-      return null;
+      throw new Error("Failed to add columns");
     }
     return response.data.data.board;
   },
 
-  getColumns: async (id: string): Promise<Column[]> => {
+  getColumns: async (id: string) => {
     const response = await apiService.get<{ data: { columns: Column[] } }>(
       `/boards/${id}/columns`,
     );
     if (!response.data || !response.data.data) {
-      console.error("Failed to fetch columns");
-      return [];
+      throw new Error("Failed to fetch columns");
     }
     return response.data.data.columns;
   },

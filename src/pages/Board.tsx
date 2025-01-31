@@ -1,15 +1,19 @@
-import { FC } from "react";
-import { useParams } from "react-router";
+import { FC, useEffect } from "react";
+import { useNavigate, useParams } from "react-router";
 
 // Hooks
 import { useBoards } from "../hooks/useBoards";
 import { useModal } from "../hooks/useModal";
+import { useTasks } from "../hooks/useTasks";
 
 // Components
 import { PlusIcon } from "../components/Icons";
 
 // UIs
-import BoardForm from "../ui/forms/BoardForm";
+import { AddColumnForm } from "../ui/forms/BoardForms";
+
+// Types
+import { Column } from "../types/board";
 
 const AddColumnButton: FC<{ clickHandler: () => void }> = ({
   clickHandler,
@@ -25,31 +29,68 @@ const AddColumnButton: FC<{ clickHandler: () => void }> = ({
   </button>
 );
 
-const Board: FC = () => {
-  const { boardId } = useParams<{ boardId: string }>();
-  const { columns } = useBoards(boardId);
-  const { setModalElement } = useModal();
+const ColumnItem: FC<{ boardId: string; column: Column }> = ({
+  boardId,
+  column,
+}) => {
+  const { tasks, isLoading } = useTasks(boardId, column.id);
 
   return (
-    <ul className="flex flex-row gap-6 overflow-auto px-4 py-6">
-      {columns.map((column) => (
-        <li
-          key={column.id}
-          className="flex shrink-0 grow-0 basis-[280px] flex-col gap-6"
-        >
-          <h3 className="flex flex-row items-center gap-3 font-sans text-xs font-bold uppercase tracking-[2.4px] text-grey-500">
-            <span className="block size-4 rounded-full bg-red" />
-            <span>{column.title} (0)</span>
-          </h3>
-          <ul className="h-full border"></ul>
-        </li>
+    <li className="no-scrollbar flex shrink-0 grow-0 basis-[280px] flex-col overflow-y-auto">
+      <h3 className="column-header-bg sticky top-0 flex flex-row items-center gap-3 pb-6 font-sans text-xs font-bold uppercase tracking-[2.4px] text-grey-500">
+        <span className="block size-4 rounded-full bg-red" />
+        {!isLoading && (
+          <span>
+            {column.title} ({tasks.length})
+          </span>
+        )}
+      </h3>
+      <ul className="flex h-full flex-col gap-5">
+        {tasks.map((task) => (
+          <li key={task.id}>
+            <button className="flex w-full flex-col gap-2 rounded-lg bg-white px-4 py-6 font-sans shadow-md shadow-[#364E7E1A] dark:bg-grey-800">
+              <h4 className="text-base font-bold text-[#000112] dark:text-white">
+                {task.title}
+              </h4>
+              <p className="text-xs font-bold text-grey-500">
+                {task.doneSubtaskCount} of {task.subtasks.length} subtasks
+              </p>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </li>
+  );
+};
+
+const Board: FC = () => {
+  const navigate = useNavigate();
+  const { boardId, boardName } = useParams<{
+    boardId: string;
+    boardName: string;
+  }>();
+  const { board } = useBoards(boardId);
+  const { setModalElement } = useModal();
+
+  useEffect(() => {
+    if (board && board?.name) {
+      if (board?.name !== boardName) {
+        void navigate("/", { replace: true });
+      }
+    }
+  }, [board, boardId, boardName, navigate]);
+
+  return (
+    <ul className="no-scrollbar flex flex-row items-stretch justify-stretch gap-6 overflow-x-auto overflow-y-hidden px-4 py-6">
+      {board?.columns.map((column) => (
+        <ColumnItem key={column.id} boardId={board.id} column={column} />
       ))}
-      <li className="flex shrink-0 grow-0 basis-[280px] flex-col gap-6">
+      <li className="flex h-full shrink-0 grow-0 basis-[280px] flex-col gap-6">
         <h3 className="invisible flex flex-row items-center gap-3 font-sans text-xs font-bold uppercase tracking-[2.4px] text-grey-500">
           Add a new column
         </h3>
         <AddColumnButton
-          clickHandler={() => setModalElement(<BoardForm toAddColumn={true} />)}
+          clickHandler={() => setModalElement(<AddColumnForm />)}
         />
       </li>
     </ul>

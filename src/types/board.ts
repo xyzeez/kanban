@@ -13,7 +13,6 @@ export interface Column {
   id: string;
   title: string;
   boardId: string;
-  order?: number;
 }
 
 export interface CreateBoardDto {

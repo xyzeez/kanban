@@ -19,7 +19,7 @@ import {
 } from "../components/Icons";
 
 // UIs
-import BoardForm from "./forms/BoardForm.tsx";
+import { CreateBoardForm } from "./forms/BoardForms.tsx";
 
 // Types
 import { BoardItemProps } from "../types/navs.ts";
@@ -44,7 +44,7 @@ const CreateBoardButton: FC = () => {
     <button
       onClick={() => {
         toggleMobileNav(false);
-        setModalElement(<BoardForm />);
+        setModalElement(<CreateBoardForm />);
       }}
       className="text-btn font-bold text-purple"
     >
@@ -58,7 +58,7 @@ const BoardList: FC = () => {
 
   return (
     <menu className="relative overflow-y-auto pr-3 font-sans">
-      <li className="fade-in-bg sticky top-0 pb-6 pl-6">
+      <li className="nav-header-bg sticky top-0 pb-6 pl-6">
         <h2 className="text-xs font-bold uppercase tracking-[2.4px] text-grey-500">
           All Boards ({boards?.length || 0})
         </h2>
