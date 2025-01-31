@@ -41,11 +41,27 @@
     @apply shadow-lg shadow-[hsla(220,40%,35%,0)];
   }
 
-  .fade-in-bg {
+  .nav-header-bg {
     @apply bg-gradient-to-b from-white from-60% to-transparent dark:from-grey-800;
+  }
+
+  .column-header-bg {
+    @apply bg-gradient-to-b from-grey-100 from-50% to-transparent to-100% dark:from-grey-900 dark:to-transparent;
   }
 
   .add-column-bg {
     @apply bg-gradient-to-b from-grey-200 from-50% to-grey-100/50 to-100% dark:from-grey-800 dark:to-grey-900/50;
+  }
+
+  .show-sr-only {
+    @apply absolute m-0 h-auto overflow-visible whitespace-normal p-4 [clip:auto];
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
   }
 }
