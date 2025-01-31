@@ -21,3 +21,11 @@ export interface BoardFormInputs {
   name: string;
   columns: Pick<Column, "title">[];
 }
+
+export interface TaskFormInputs {
+  boardId: string;
+  title: string;
+  description: string;
+  subtasks: { title: string }[];
+  columnId: string;
+}
