@@ -28,7 +28,7 @@ const BoardItem: FC<BoardItemProps> = ({ title, to }) => (
   <NavLink
     to={to}
     className={({ isActive }) =>
-      `text-btn w-full max-w-[276px] rounded-r-full px-6 py-4 font-bold capitalize xl:px-8 ${isActive ? "bg-purple text-white" : "text-grey-500"} `
+      `text-btn w-full max-w-[276px] rounded-r-full px-6 py-4 font-bold capitalize transition-colors xl:px-8 ${isActive ? "bg-purple text-white" : "text-grey-500 hover:bg-purple-light/10 hover:text-purple"} `
     }
   >
     <BoardIcon className="size-4" />
@@ -53,11 +53,12 @@ const CreateBoardButton: FC = () => {
     </button>
   );
 };
+
 const BoardList: FC = () => {
   const { boards } = useBoards();
 
   return (
-    <menu className="relative overflow-y-auto pr-3 font-sans">
+    <menu className="no-scrollbar relative overflow-y-auto overflow-x-hidden pr-3 font-sans">
       <li className="nav-header-bg sticky top-0 pb-6 pl-6">
         <h2 className="text-xs font-bold uppercase tracking-[2.4px] text-grey-500">
           All Boards ({boards?.length || 0})
@@ -93,68 +94,76 @@ const ThemeToggle: FC = () => {
   );
 };
 
-export const MobileNav: FC = () => {
+const LogoutButton: FC = () => {
   const { logout } = useAuth();
 
   return (
+    <button
+      onClick={logout}
+      className="flex w-fit flex-row items-center gap-[10px] font-sans text-base font-bold text-red"
+      aria-label="HideIcon sidebar"
+    >
+      <LogoutIcon className="size-5" />
+      <span>Logout</span>
+    </button>
+  );
+};
+
+const ToggleSidebarButton: FC = () => {
+  const { openSideBar, toggleSidebar } = useApp();
+
+  return (
+    <button
+      onClick={() => toggleSidebar(!openSideBar)}
+      className={`text-btn fixed left-0 flex h-12 rounded-r-full px-6 font-sans text-base font-bold capitalize transition-all hover:bg-purple hover:text-white xl:px-8 ${openSideBar ? "w-[248px] max-w-[248px] bg-transparent text-grey-500" : "w-14 max-w-14 bg-purple pl-[18px] pr-[22px] text-white xl:pl-[18px] xl:pr-[22px]"}`}
+      aria-label={openSideBar ? "Hide Sidebar" : "Show Sidebar"}
+    >
+      <span className="relative grid h-4 w-5">
+        <HideIcon
+          className={`${openSideBar ? "opacity-100" : "opacity-0"} absolute h-4 w-[18px] transition-opacity`}
+        />
+        <ShowIcon
+          className={`${openSideBar ? "opacity-0" : "opacity-100"} absolute h-[12px] w-5 transition-opacity`}
+        />
+      </span>
+      <span className={`${openSideBar ? "block" : "hidden"}`}>
+        Hide Sidebar
+      </span>
+    </button>
+  );
+};
+
+export const MobileNav: FC = () => {
+  return (
     <div className="modal- flex max-h-[calc(100vh-102px)] w-full max-w-[264px] flex-col gap-4 rounded-lg bg-white py-4 font-sans transition-colors dark:bg-grey-800">
       <BoardList />
-      <div className="pl-4 pr-3">
+      <div className="flex flex-col gap-4 pl-4 pr-3">
         <ThemeToggle />
-        <button
-          onClick={logout}
-          className="mt-4 flex flex-row items-center gap-[10px] text-base font-bold text-grey-500"
-          aria-label="HideIcon sidebar"
-        >
-          <LogoutIcon className="size-5" />
-          <span>Logout</span>
-        </button>
+        <LogoutButton />
       </div>
     </div>
   );
 };
 
 export const SideBarNav: FC = () => {
-  const { openSideBar, toggleSidebar } = useApp();
-  const { logout } = useAuth();
+  const { openSideBar } = useApp();
 
   return (
-    // TODO: Fix overflow-x-hidden on relative positioning for toggleSidebar button
-    <div className="overflow-y-hidden md:max-h-[calc(100vh-97px)] xl:max-h-[calc(100vh-97px)]">
+    <div className="relative grid">
       <div
-        className={`grid h-full grid-rows-[1fr_auto] flex-col gap-6 overflow-hidden whitespace-nowrap border-r border-grey-100 bg-white pb-8 pt-4 font-sans transition-all dark:border-grey-700 dark:bg-grey-800 ${openSideBar ? "w-[260px] max-w-[260px] opacity-100 xl:w-[300px] xl:max-w-[300px]" : "max-w-0 border-none opacity-0"}`}
+        className={`grid max-h-[calc(100vh-81px)] grid-rows-[1fr_auto] gap-6 overflow-hidden whitespace-nowrap border-r border-grey-100 bg-white py-4 transition-all dark:border-grey-700 dark:bg-grey-800 xl:max-h-[calc(100vh-97px)] ${openSideBar ? "w-[260px] max-w-[260px] xl:w-[300px] xl:max-w-[300px]" : "w-0 max-w-0 border-none"}`}
       >
         <BoardList />
-        <div className="flex flex-col gap-[30px] px-3 xl:gap-6 xl:px-6">
+        <div className="flex flex-col gap-4 px-3 xl:gap-2 xl:px-6">
           <ThemeToggle />
-          <div className="flex flex-col gap-4 pl-3 xl:pl-2">
-            <button
-              onClick={() => toggleSidebar(false)}
-              className="flex flex-row items-center gap-[10px] text-base font-bold text-grey-500"
-              aria-label="HideIcon sidebar"
-            >
-              <HideIcon className="h-4 w-[18px]" />
-              <span>Hide Sidebar</span>
-            </button>
-            <button
-              onClick={logout}
-              className="flex flex-row items-center gap-[10px] text-base font-bold text-grey-500"
-              aria-label="HideIcon sidebar"
-            >
-              <LogoutIcon className="size-5" />
-              <span>Logout</span>
-            </button>
+          <div className="flex h-[80px] pl-3 xl:pl-2">
+            <ToggleSidebarButton />
+            <div className="mt-auto">
+              <LogoutButton />
+            </div>
           </div>
         </div>
       </div>
-      {!openSideBar && (
-        <button
-          onClick={() => toggleSidebar(true)}
-          className="absolute bottom-8 left-full w-14 rounded-r-full bg-purple p-5 text-white"
-        >
-          <ShowIcon className="h-[10px] w-4" />
-        </button>
-      )}
     </div>
   );
 };

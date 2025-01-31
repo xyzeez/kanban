@@ -29,7 +29,7 @@ const AppLayout: FC = () => {
     if (location.pathname === "/" && boards?.length) {
       void navigate(`/boards/${boards[0].slug}`);
     }
-  }, [location.pathname, boards, navigate]);
+  }, [location.pathname, boards, navigate, setModalElement, toggleMobileNav]);
 
   if (isLoading) return <LoadingScreen />;
 
@@ -41,8 +41,7 @@ const AppLayout: FC = () => {
       <div className="col-start-1 col-end-2 row-start-1 row-end-2 md:col-end-3">
         <Header />
       </div>
-      {/* TODO: Remove relative positioning for toggleSidebar button when fixed */}
-      <div className="relative hidden bg-white transition-all dark:bg-grey-800 md:col-start-1 md:col-end-2 md:row-start-2 md:row-end-3 md:grid">
+      <div className="hidden bg-white transition-all dark:bg-grey-800 md:col-start-1 md:col-end-2 md:row-start-2 md:row-end-3 md:grid">
         <SideBarNav />
       </div>
       <main className="col-start-1 col-end-2 row-start-2 row-end-3 grid overflow-hidden bg-grey-100 transition-colors dark:bg-grey-900 md:col-start-2 md:col-end-3">
