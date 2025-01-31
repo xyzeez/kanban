@@ -11,11 +11,12 @@ import { ChevronDownIcon, EllipsisIcon, PlusIcon } from "../components/Icons";
 
 // UIs
 import { MobileNav } from "./Navs";
-import BoardForm from "./forms/BoardForm";
+import { EditBoardForm } from "./forms/BoardForms";
 import DeleteBoard from "./modals/DeleteBoard";
 
 // Utils
 import { slugToString } from "../utils";
+import { CreateTaskForm } from "./forms/TaskForms";
 
 const Header: FC = () => {
   const {
@@ -67,12 +68,14 @@ const Header: FC = () => {
         <div className="flex flex-row items-center gap-4 md:gap-6">
           <button
             disabled={!currentBoardName}
+            onClick={() => setModalElement(<CreateTaskForm />)}
             className="icon-btn btn-primary btn-large md:hidden"
           >
             <PlusIcon className="size-3" />
           </button>
           <button
             disabled={!currentBoardName}
+            onClick={() => setModalElement(<CreateTaskForm />)}
             className="btn btn-primary btn-large hidden md:flex"
           >
             <PlusIcon className="size-3" />
@@ -81,6 +84,7 @@ const Header: FC = () => {
           <button
             disabled={!currentBoardName}
             onClick={() => toggleBoardOptions()}
+            className="disabled:opacity-25"
           >
             <EllipsisIcon className="h-5 w-[5px] text-grey-500 transition-colors dark:text-grey-200" />
           </button>
@@ -89,7 +93,7 @@ const Header: FC = () => {
               <div className="flex w-full max-w-48 flex-col gap-4 rounded-lg bg-white p-4 shadow-lg transition-colors dark:bg-grey-800">
                 <button
                   onClick={() => {
-                    setModalElement(<BoardForm toEdit={true} />);
+                    setModalElement(<EditBoardForm />);
                     toggleBoardOptions(false);
                   }}
                   className="text-btn text-grey-500"
