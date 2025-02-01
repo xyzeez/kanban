@@ -12,9 +12,6 @@ import { useBoards } from "../../hooks/useBoards";
 // Types
 import { BoardFormInputs } from "../../types/forms";
 
-// Utils
-import { slugToString } from "../../utils";
-
 const CreateBoardForm: FC = () => {
   const { createBoard } = useBoards("");
   const {
@@ -124,9 +121,7 @@ const CreateBoardForm: FC = () => {
 
 const EditBoardForm: FC = () => {
   const { boardId } = useParams<{ boardId: string }>();
-  const { board, updateBoard, isLoading } = useBoards(
-    slugToString(boardId ?? ""),
-  );
+  const { board, updateBoard, isLoading } = useBoards(boardId);
 
   const {
     register,
@@ -251,9 +246,7 @@ const EditBoardForm: FC = () => {
 
 const AddColumnForm: FC = () => {
   const { boardId } = useParams<{ boardId: string }>();
-  const { board, addColumns, isLoading } = useBoards(
-    slugToString(boardId ?? ""),
-  );
+  const { board, addColumns, isLoading } = useBoards(boardId);
 
   const {
     register,

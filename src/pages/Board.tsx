@@ -15,6 +15,9 @@ import { AddColumnForm } from "../ui/forms/BoardForms";
 // Types
 import { Column } from "../types/board";
 
+// Utils
+import { stringToSlug } from "../utils";
+
 const AddColumnButton: FC<{ clickHandler: () => void }> = ({
   clickHandler,
 }) => (
@@ -69,16 +72,21 @@ const Board: FC = () => {
     boardId: string;
     boardName: string;
   }>();
-  const { board } = useBoards(boardId);
+  const { board, isLoading } = useBoards(boardId);
   const { setModalElement } = useModal();
 
   useEffect(() => {
-    if (board && board?.name) {
-      if (board?.name !== boardName) {
-        void navigate("/", { replace: true });
-      }
+    if (isLoading) return;
+
+    if (!board) {
+      void navigate("/", { replace: true });
+      return;
     }
-  }, [board, boardId, boardName, navigate]);
+
+    if (stringToSlug(board.name) !== boardName) {
+      void navigate(`/boards/${board.slug}`, { replace: true });
+    }
+  }, [board, boardName, boardId, isLoading, navigate]);
 
   return (
     <ul className="no-scrollbar flex flex-row items-stretch justify-stretch gap-6 overflow-x-auto overflow-y-hidden px-4 py-6">

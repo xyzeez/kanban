@@ -15,15 +15,12 @@ import { useModal } from "../../hooks/useModal";
 import { useBoards } from "../../hooks/useBoards";
 import { useTasks } from "../../hooks/useTasks";
 
-// Utils
-import { slugToString } from "../../utils";
-
 // Types
 import { TaskFormInputs } from "../../types/forms";
 
 const CreateTaskForm: FC = () => {
   const { boardId } = useParams<{ boardId: string }>();
-  const { board } = useBoards(slugToString(boardId ?? ""));
+  const { board } = useBoards(boardId);
   const { createTask } = useTasks(board?.id ?? "");
   const { setModalElement } = useModal();
 
