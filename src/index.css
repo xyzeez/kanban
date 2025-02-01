@@ -24,15 +24,15 @@
   }
 
   .btn-primary {
-    @apply bg-purple text-white hover:bg-purple-light;
+    @apply bg-purple text-white enabled:hover:bg-purple-light;
   }
 
   .btn-sec {
-    @apply bg-purple/10 text-purple transition-colors hover:bg-purple/25 dark:bg-white dark:hover:bg-white;
+    @apply bg-purple/10 text-purple transition-colors enabled:hover:bg-purple/25 dark:bg-white dark:enabled:hover:bg-white;
   }
 
   .btn-warn {
-    @apply bg-red text-white hover:bg-red-light;
+    @apply bg-red text-white enabled:hover:bg-red-light;
   }
 }
 
