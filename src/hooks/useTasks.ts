@@ -5,7 +5,7 @@ import { useAuth } from "./useAuth";
 import { taskService } from "../services/taskService";
 
 // Types
-import { CreateTaskDto } from "../types/task";
+import { CreateTaskDto, UpdateTaskDto } from "../types/task";
 
 export const useTasks = (boardId: string, columnId?: string) => {
   const { isAuthenticated } = useAuth();
@@ -27,13 +27,43 @@ export const useTasks = (boardId: string, columnId?: string) => {
     },
   });
 
+  const updateTaskMutation = useMutation({
+    mutationFn: (data: UpdateTaskDto) => taskService.updateTask(data),
+    onSuccess: (_, variables) => {
+      void queryClient.invalidateQueries({
+        queryKey: ["tasks", variables.boardId, variables.columnId],
+      });
+
+      if (variables.columnId !== columnId) {
+        void queryClient.invalidateQueries({
+          queryKey: ["tasks", variables.boardId, columnId],
+        });
+      }
+    },
+  });
+
+  const deleteTaskMutation = useMutation({
+    mutationFn: (id: string) => taskService.deleteTask(id),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: ["tasks", boardId, columnId],
+      });
+    },
+  });
+
   return {
     //   Queries
     tasks: tasksQuery.data ?? [],
-    isLoading: tasksQuery.isLoading,
+    isLoading:
+      tasksQuery.isLoading ||
+      createTaskMutation.isPending ||
+      updateTaskMutation.isPending ||
+      deleteTaskMutation.isPending,
     isError: tasksQuery.isError,
 
     // Mutations
     createTask: createTaskMutation.mutateAsync,
+    updateTask: updateTaskMutation.mutateAsync,
+    deleteTask: deleteTaskMutation.mutateAsync,
   };
 };

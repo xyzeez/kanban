@@ -18,9 +18,9 @@ export interface BoardFormInputs {
 }
 
 export interface TaskFormInputs {
-  boardId: string;
   title: string;
   description: string;
   subtasks: { title: string }[];
   columnId: string;
+  boardId: string;
 }

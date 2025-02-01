@@ -10,9 +10,20 @@ export type Task = {
   description: string;
   subtasks: Subtask[];
   doneSubtaskCount: number;
+  columnId: string;
+  boardId: string;
 };
 
 export interface CreateTaskDto {
+  title: string;
+  description: string;
+  subtasks: { title: string }[];
+  columnId: string;
+  boardId: string;
+}
+
+export interface UpdateTaskDto {
+  id: string;
   title: string;
   description: string;
   subtasks: { title: string }[];

@@ -11,6 +11,7 @@ import { PlusIcon } from "../components/Icons";
 
 // UIs
 import { AddColumnForm } from "../ui/forms/BoardForms";
+import ViewTask from "../ui/modals/ViewTask";
 
 // Types
 import { Column } from "../types/board";
@@ -32,11 +33,12 @@ const AddColumnButton: FC<{ clickHandler: () => void }> = ({
   </button>
 );
 
-const ColumnItem: FC<{ boardId: string; column: Column }> = ({
-  boardId,
-  column,
-}) => {
+const ColumnItem: FC<{
+  boardId: string;
+  column: Column;
+}> = ({ boardId, column }) => {
   const { tasks, isLoading } = useTasks(boardId, column.id);
+  const { openModal } = useApp();
 
   return (
     <li className="no-scrollbar flex shrink-0 grow-0 basis-[280px] flex-col overflow-y-auto">
@@ -51,7 +53,12 @@ const ColumnItem: FC<{ boardId: string; column: Column }> = ({
       <ul className="flex h-full flex-col gap-5">
         {tasks.map((task) => (
           <li key={task.id}>
-            <button className="flex w-full flex-col gap-2 rounded-lg bg-white px-4 py-6 font-sans shadow-md shadow-[#364E7E1A] dark:bg-grey-800">
+            <button
+              onClick={() => {
+                openModal(<ViewTask taskData={task} />);
+              }}
+              className="flex w-full flex-col gap-2 rounded-lg bg-white px-4 py-6 font-sans shadow-md shadow-[#364E7E1A] dark:bg-grey-800"
+            >
               <h4 className="text-base font-bold text-[#000112] dark:text-white">
                 {task.title}
               </h4>
