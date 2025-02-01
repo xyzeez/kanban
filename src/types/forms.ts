@@ -12,14 +12,9 @@ export interface LoginFormInputs {
   remember: boolean;
 }
 
-export interface BoardFormProps {
-  toEdit?: boolean;
-  toAddColumn?: boolean;
-}
-
 export interface BoardFormInputs {
   name: string;
-  columns: Pick<Column, "title">[];
+  columns: Column[];
 }
 
 export interface TaskFormInputs {

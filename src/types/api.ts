@@ -1,25 +1,29 @@
 import { AxiosRequestConfig } from "axios";
 
-interface ApiResponse<T = unknown> {
+// Types
+export interface ApiResponse<T = unknown> {
   status: string;
-  data: T | null;
+  data: T;
   message?: string;
 }
 
 export interface ApiService {
-  get: <T>(url: string, config?: AxiosRequestConfig) => Promise<ApiResponse<T>>;
+  get: <T>(
+    path?: string,
+    config?: AxiosRequestConfig,
+  ) => Promise<ApiResponse<T>>;
   post: <T, D = unknown>(
-    url: string,
+    path?: string,
     data?: D,
     config?: AxiosRequestConfig,
   ) => Promise<ApiResponse<T>>;
   patch: <T, D = unknown>(
-    url: string,
+    path?: string,
     data?: D,
     config?: AxiosRequestConfig,
   ) => Promise<ApiResponse<T>>;
   delete: <T>(
-    url: string,
+    path?: string,
     config?: AxiosRequestConfig,
   ) => Promise<ApiResponse<T>>;
 }

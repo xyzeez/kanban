@@ -15,99 +15,27 @@ export const useBoards = (boardId?: string) => {
   const boardsQueryKey = ["boards", user?.id];
   const boardQueryKey = ["board", boardId];
 
-  const getBoards = async () => {
-    try {
-      const boards = await boardService.getBoards();
-      return boards;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  };
-
-  const getBoard = async ({ boardId }: { boardId: string }) => {
-    try {
-      const board = await boardService.getBoard(boardId);
-      return board;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  };
-
-  const createBoard = async (data: CreateBoardDto) => {
-    try {
-      const board = await boardService.createBoard(data);
-      return board;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  };
-
-  const updateBoard = async ({
-    id,
-    data,
-  }: {
-    id: string;
-    data: UpdateBoardDto;
-  }) => {
-    try {
-      const board = await boardService.updateBoard(id, data);
-      return board;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  };
-
-  const deleteBoard = async (id: string) => {
-    try {
-      await boardService.deleteBoard(id);
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  };
-
-  const addColumns = async ({
-    id,
-    columns,
-  }: {
-    id: string;
-    columns: Pick<Column, "title">[];
-  }) => {
-    try {
-      const board = await boardService.addColumns(id, columns);
-      return board;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  };
-
   const boardsQuery = useQuery({
     queryKey: boardsQueryKey,
-    queryFn: () => (user ? getBoards() : []),
+    queryFn: () => (user ? boardService.getBoards() : []),
     enabled: isAuthenticated,
   });
 
   const boardQuery = useQuery({
     queryKey: boardQueryKey,
-    queryFn: () => (boardId ? getBoard({ boardId }) : null),
+    queryFn: () => (boardId ? boardService.getBoard(boardId) : null),
     enabled: isAuthenticated && !!boardId,
   });
 
   const createBoardMutation = useMutation({
-    mutationFn: (data: CreateBoardDto) => createBoard(data),
+    mutationFn: (data: CreateBoardDto) => boardService.createBoard(data),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: boardsQueryKey });
     },
   });
 
   const updateBoardMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: UpdateBoardDto }) =>
-      updateBoard({ id, data }),
+    mutationFn: (data: UpdateBoardDto) => boardService.updateBoard(data),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: boardsQueryKey });
       void queryClient.invalidateQueries({ queryKey: boardQueryKey });
@@ -115,7 +43,7 @@ export const useBoards = (boardId?: string) => {
   });
 
   const deleteBoardMutation = useMutation({
-    mutationFn: (id: string) => deleteBoard(id),
+    mutationFn: (id: string) => boardService.deleteBoard(id),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: boardsQueryKey });
     },
@@ -128,7 +56,7 @@ export const useBoards = (boardId?: string) => {
     }: {
       id: string;
       columns: Pick<Column, "title">[];
-    }) => addColumns({ id, columns }),
+    }) => boardService.addColumns({ id, columns }),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: boardQueryKey });
     },
@@ -140,10 +68,6 @@ export const useBoards = (boardId?: string) => {
     board: boardQuery.data,
     isLoading: boardsQuery.isLoading || boardQuery.isLoading,
     isError: boardsQuery.isError || boardQuery.isError,
-    // columns: columnsQuery.data ?? [],
-    // isLoading:
-    //   boardsQuery.isLoading || boardQuery.isLoading || columnsQuery.isLoading,
-    // isError: boardsQuery.isError || boardQuery.isError || columnsQuery.isError,
 
     // Mutations
     createBoard: createBoardMutation.mutateAsync,

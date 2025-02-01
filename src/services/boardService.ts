@@ -1,75 +1,71 @@
 // Services
-import { apiService } from "./axios";
+import { apiService } from "./apiService";
 
 // Types
-import { Board, Column, CreateBoardDto, UpdateBoardDto } from "../types/board";
+import {
+  BoardsApiResponse,
+  CreateBoardDto,
+  UpdateBoardDto,
+} from "../types/board";
+
+// API Service
+export const boardsAPI = apiService("boards");
 
 export const boardService = {
   getBoards: async () => {
-    const response = await apiService.get<{ data: { boards: Board[] } }>(
-      "/boards",
-    );
-    if (!response.data || !response.data.data) {
-      throw new Error("Failed to fetch boards");
+    const response = await boardsAPI.get<BoardsApiResponse>();
+    if (response.status !== "success") {
+      throw new Error(response.message);
     }
-    return response.data.data.boards;
+    return response.data.boards;
   },
 
   getBoard: async (id: string) => {
-    const response = await apiService.get<{ data: { board: Board } }>(
-      `/boards/${id}`,
-    );
-    if (!response.data || !response.data.data) {
-      throw new Error("Failed to fetch board");
+    const response = await boardsAPI.get<BoardsApiResponse>(`/${id}`);
+    if (response.status !== "success") {
+      throw new Error(response.message);
     }
-    return response.data.data.board;
+    return response.data.board;
   },
 
   createBoard: async (data: CreateBoardDto) => {
-    const response = await apiService.post<{ data: { board: Board } }>(
-      "/boards",
-      data,
-    );
-    if (!response.data || !response.data.data) {
-      throw new Error("Failed to create board");
+    const response = await boardsAPI.post<BoardsApiResponse>("/", data);
+    if (response.status !== "success") {
+      throw new Error(response.message);
     }
-    return response.data.data.board;
+    return response.data.board;
   },
 
-  updateBoard: async (id: string, data: UpdateBoardDto) => {
-    const response = await apiService.patch<{ data: { board: Board } }>(
-      `/boards/${id}`,
-      data,
-    );
-    if (!response.data || !response.data.data) {
-      throw new Error("Failed to update board");
+  updateBoard: async (data: UpdateBoardDto) => {
+    const { id, ...rest } = data;
+    const response = await boardsAPI.patch<BoardsApiResponse>(`/${id}`, rest);
+    if (response.status !== "success") {
+      throw new Error(response.message);
     }
-    return response.data.data.board;
+    return response.data.board;
   },
 
   deleteBoard: async (id: string) => {
-    await apiService.delete(`/boards/${id}`);
+    await boardsAPI.delete(`/${id}`);
   },
 
-  addColumns: async (boardId: string, columns: Pick<Column, "title">[]) => {
-    const response = await apiService.post<{ data: { board: Board } }>(
-      `/boards/${boardId}/columns`,
-      { columns },
+  addColumns: async (data: UpdateBoardDto) => {
+    const { id, ...rest } = data;
+    const response = await boardsAPI.post<BoardsApiResponse>(
+      `/${id}/columns`,
+      rest,
     );
-
-    if (!response.data || !response.data.data) {
-      throw new Error("Failed to add columns");
+    if (response.status !== "success") {
+      throw new Error(response.message);
     }
-    return response.data.data.board;
+    return response.data.board;
   },
 
   getColumns: async (id: string) => {
-    const response = await apiService.get<{ data: { columns: Column[] } }>(
-      `/boards/${id}/columns`,
-    );
-    if (!response.data || !response.data.data) {
-      throw new Error("Failed to fetch columns");
+    const response = await boardsAPI.get<BoardsApiResponse>(`/${id}/columns`);
+    if (response.status !== "success") {
+      throw new Error(response.message);
     }
-    return response.data.data.columns;
+    return response.data.columns;
   },
 };

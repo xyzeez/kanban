@@ -1,26 +1,31 @@
+export interface Column {
+  id?: string;
+  title: string;
+  boardId?: string;
+}
+
 export interface Board {
   id: string;
   name: string;
-  description?: string;
-  slug: string;
-  ownerId: string;
   columns: Column[];
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface Column {
-  id: string;
-  title: string;
-  boardId: string;
+  unassignedColumn: Column;
+  ownerId: string;
+  slug: string;
 }
 
 export interface CreateBoardDto {
   name: string;
-  description?: string;
+  columns: Column[];
 }
 
 export interface UpdateBoardDto {
+  id: string;
   name?: string;
-  description?: string;
+  columns?: Column[];
+}
+
+export interface BoardsApiResponse {
+  board?: Board;
+  boards?: Board[];
+  columns?: Column[];
 }

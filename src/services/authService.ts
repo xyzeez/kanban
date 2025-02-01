@@ -1,5 +1,5 @@
 // Services
-import { apiService } from "./axios";
+import { apiService } from "./apiService";
 
 // Types
 import {
@@ -9,32 +9,29 @@ import {
   User,
 } from "../types/contexts";
 
+// API Service
+export const authAPI = apiService("auth");
+
 export const authService = {
   register: async (data: RegisterData): Promise<AuthResponse> => {
-    const response = await apiService.post<AuthResponse>(
-      "/auth/register",
-      data,
-    );
-    if (!response.data) throw new Error("Registration failed");
+    const response = await authAPI.post<AuthResponse>("/register", data);
+    if (response.status !== "success") throw new Error(response.message);
     return response.data;
   },
 
   login: async (credentials: LoginCredentials): Promise<AuthResponse> => {
-    const response = await apiService.post<AuthResponse>(
-      "/auth/login",
-      credentials,
-    );
-    if (!response.data) throw new Error("Login failed");
+    const response = await authAPI.post<AuthResponse>("/login", credentials);
+    if (response.status !== "success") throw new Error(response.message);
     return response.data;
   },
 
   logout: async (): Promise<void> => {
-    await apiService.post("/auth/logout");
+    await authAPI.post("/logout");
   },
 
   getCurrentUser: async (): Promise<User> => {
-    const response = await apiService.get<{ user: User }>("/auth/me");
-    if (!response.data?.user) throw new Error("Failed to get user");
+    const response = await authAPI.get<{ user: User }>("/me");
+    if (response.status !== "success") throw new Error(response.message);
     return response.data.user;
   },
 };

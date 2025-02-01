@@ -19,3 +19,8 @@ export interface CreateTaskDto {
   columnId: string;
   boardId: string;
 }
+
+export interface TasksApiResponse {
+  task?: Task;
+  tasks?: Task[];
+}

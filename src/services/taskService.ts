@@ -1,35 +1,35 @@
 // Services
-import { apiService } from "./axios";
+import { apiService } from "./apiService";
 
 // Types
-import { CreateTaskDto, Task } from "../types/task";
+import { CreateTaskDto, TasksApiResponse } from "../types/task";
+
+// API Service
+export const tasksAPI = apiService("tasks");
 
 export const taskService = {
-  getTasks: async (columnId: string): Promise<Task[]> => {
-    const response = await apiService.get<{ data: { tasks: Task[] } }>(
-      `/tasks?columnId=${columnId}`,
+  getTasks: async (columnId: string) => {
+    const response = await tasksAPI.get<TasksApiResponse>(
+      `/?columnId=${columnId}`,
     );
-
-    if (!response.data || !response.data.data) {
-      throw new Error("Failed to fetch tasks");
+    if (response.status !== "success") {
+      throw new Error(response.message);
     }
-
-    return response.data.data.tasks;
+    return response.data.tasks;
   },
 
-  createTask: async (task: CreateTaskDto): Promise<Task | null> => {
+  createTask: async (task: CreateTaskDto) => {
     const columnId = task.columnId;
     const boardId = task.boardId;
-
-    const response = await apiService.post<{ data: { task: Task } }>(
-      `/tasks?columnId=${columnId}&boardId=${boardId}`,
+    const response = await tasksAPI.post<TasksApiResponse>(
+      `/?columnId=${columnId}&boardId=${boardId}`,
       task,
     );
 
-    if (!response.data || !response.data.data) {
-      throw new Error("Failed to create task");
+    if (response.status !== "success") {
+      throw new Error(response.message);
     }
 
-    return response.data.data.task;
+    return response.data.task;
   },
 };
