@@ -2,14 +2,14 @@ import { FC } from "react";
 import { useNavigate, useParams } from "react-router";
 
 // Hooks
-import { useModal } from "../../hooks/useModal";
 import { useBoards } from "../../hooks/useBoards";
 
 // Components
 import { SpinnerIcon } from "../../components/Icons";
+import { useApp } from "../../hooks/useApp";
 
 const DeleteBoard: FC = () => {
-  const { setModalElement } = useModal();
+  const { closeModal } = useApp();
   const { boardId } = useParams<{ boardId: string }>();
   const { board, isLoading, deleteBoard } = useBoards(boardId);
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ const DeleteBoard: FC = () => {
   const handleDelete = async () => {
     if (board?.id) {
       await deleteBoard(board.id);
-      setModalElement(null);
+      closeModal();
       void navigate("/");
     }
   };
@@ -41,7 +41,7 @@ const DeleteBoard: FC = () => {
         </button>
         <button
           className="btn btn-sec btn-small w-full text-sm"
-          onClick={() => setModalElement(null)}
+          onClick={() => closeModal()}
         >
           Cancel
         </button>

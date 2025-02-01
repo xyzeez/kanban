@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router";
 
 // Hooks
 import { useBoards } from "../hooks/useBoards";
-import { useModal } from "../hooks/useModal";
+import { useApp } from "../hooks/useApp";
 import { useTasks } from "../hooks/useTasks";
 
 // Components
@@ -73,7 +73,7 @@ const Board: FC = () => {
     boardName: string;
   }>();
   const { board, isLoading } = useBoards(boardId);
-  const { setModalElement } = useModal();
+  const { openModal } = useApp();
 
   useEffect(() => {
     if (isLoading) return;
@@ -97,9 +97,7 @@ const Board: FC = () => {
         <h3 className="invisible flex flex-row items-center gap-3 font-sans text-xs font-bold uppercase tracking-[2.4px] text-grey-500">
           Add a new column
         </h3>
-        <AddColumnButton
-          clickHandler={() => setModalElement(<AddColumnForm />)}
-        />
+        <AddColumnButton clickHandler={() => openModal(<AddColumnForm />)} />
       </li>
     </ul>
   );

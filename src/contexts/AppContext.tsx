@@ -1,15 +1,23 @@
 import { createContext, useState, useEffect } from "react";
 
-// Utils
-import { getTheme } from "../utils";
+// Components
+import ModalWrapper from "../components/ModalWrapper";
 
 // Types
-import { AppContextType, AppProviderProps, Theme } from "../types/contexts";
+import {
+  AppContextType,
+  AppProviderProps,
+  ModalType,
+  Theme,
+} from "../types/contexts";
+
+// Utils
+import { getTheme } from "../utils";
 
 // Initialize theme
 document.documentElement.classList.add(getTheme());
 
-// Contexts
+// Contexts definition
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 const AppProvider = ({ children }: AppProviderProps) => {
@@ -17,6 +25,7 @@ const AppProvider = ({ children }: AppProviderProps) => {
   const [openSideBar, setOpenSideBar] = useState(true);
   const [openMobileNav, setOpenMobileNav] = useState(false);
   const [openBoardOptions, setOpenBoardOptions] = useState(false);
+  const [modalElement, setModalElement] = useState<ModalType | null>(null);
 
   const toggleTheme = () => {
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
@@ -32,6 +41,14 @@ const AppProvider = ({ children }: AppProviderProps) => {
 
   const toggleBoardOptions = (state?: boolean) => {
     setOpenBoardOptions((prev) => state ?? !prev);
+  };
+
+  const openModal = (element: ModalType) => {
+    setModalElement(element);
+  };
+
+  const closeModal = () => {
+    setModalElement(null);
   };
 
   useEffect(() => {
@@ -52,9 +69,15 @@ const AppProvider = ({ children }: AppProviderProps) => {
         toggleMobileNav,
         openBoardOptions,
         toggleBoardOptions,
+        openModal,
+        closeModal,
+        modalElement,
       }}
     >
       {children}
+      {modalElement && (
+        <ModalWrapper modalElement={modalElement} clickHandler={closeModal} />
+      )}
     </AppContext.Provider>
   );
 };

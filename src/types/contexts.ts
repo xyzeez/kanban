@@ -2,9 +2,13 @@ import { ReactNode } from "react";
 
 export type Theme = "light" | "dark";
 
+export type ModalType = ReactNode;
 export interface AppContextType {
   theme: Theme;
   toggleTheme: () => void;
+  modalElement: ModalType;
+  openModal: (type: ModalType) => void;
+  closeModal: () => void;
   openSideBar: boolean;
   toggleSidebar: (state: boolean) => void;
   openMobileNav: boolean;
@@ -52,7 +56,7 @@ export interface RegisterData extends LoginCredentials {
 export type ModalElement = ReactNode | null;
 
 export interface ModalContextType {
-  setModalElement: (element: ReactNode) => void;
+  setModalElement: () => void;
 }
 
 export interface ModalProviderProps {

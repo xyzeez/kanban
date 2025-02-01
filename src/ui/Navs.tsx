@@ -2,7 +2,6 @@ import { FC } from "react";
 import { NavLink } from "react-router";
 
 // Hooks
-import { useModal } from "../hooks/useModal.ts";
 import { useApp } from "../hooks/useApp.ts";
 import { useAuth } from "../hooks/useAuth.ts";
 import { useBoards } from "../hooks/useBoards.ts";
@@ -28,7 +27,7 @@ const BoardItem: FC<BoardItemProps> = ({ title, to }) => (
   <NavLink
     to={to}
     className={({ isActive }) =>
-      `text-btn w-full max-w-[276px] rounded-r-full px-6 py-4 font-bold capitalize transition-colors xl:px-8 ${isActive ? "bg-purple text-white" : "text-grey-500 hover:bg-purple-light/10 hover:text-purple"} `
+      `text-btn w-full max-w-[276px] rounded-r-full px-6 py-4 font-bold capitalize transition-colors xl:px-8 ${isActive ? "bg-purple text-white" : "text-grey-500 enabled:hover:bg-purple-light/10 enabled:hover:text-purple"} `
     }
   >
     <BoardIcon className="size-4" />
@@ -37,14 +36,14 @@ const BoardItem: FC<BoardItemProps> = ({ title, to }) => (
 );
 
 const CreateBoardButton: FC = () => {
-  const { setModalElement } = useModal();
+  const { openModal } = useApp();
   const { toggleMobileNav } = useApp();
 
   return (
     <button
       onClick={() => {
         toggleMobileNav(false);
-        setModalElement(<CreateBoardForm />);
+        openModal(<CreateBoardForm />);
       }}
       className="text-btn font-bold text-purple"
     >
@@ -115,7 +114,7 @@ const ToggleSidebarButton: FC = () => {
   return (
     <button
       onClick={() => toggleSidebar(!openSideBar)}
-      className={`text-btn fixed left-0 flex h-12 rounded-r-full px-6 font-sans text-base font-bold capitalize transition-all hover:bg-purple hover:text-white xl:px-8 ${openSideBar ? "w-[248px] max-w-[248px] bg-transparent text-grey-500" : "w-14 max-w-14 bg-purple pl-[18px] pr-[22px] text-white xl:pl-[18px] xl:pr-[22px]"}`}
+      className={`text-btn fixed left-0 flex h-12 rounded-r-full px-6 font-sans text-base font-bold capitalize transition-all enabled:hover:bg-purple enabled:hover:text-white xl:px-8 ${openSideBar ? "w-[248px] max-w-[248px] bg-transparent text-grey-500" : "w-14 max-w-14 bg-purple pl-[18px] pr-[22px] text-white xl:pl-[18px] xl:pr-[22px]"}`}
       aria-label={openSideBar ? "Hide Sidebar" : "Show Sidebar"}
     >
       <span className="relative grid h-4 w-5">

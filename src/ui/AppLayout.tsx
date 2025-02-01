@@ -3,8 +3,6 @@ import { Navigate, Outlet, useLocation, useNavigate } from "react-router";
 
 // Hooks
 import { useBoards } from "../hooks/useBoards";
-import { useModal } from "../hooks/useModal";
-import { useApp } from "../hooks/useApp";
 import { useAuth } from "../hooks/useAuth";
 
 // UIs
@@ -13,23 +11,17 @@ import { SideBarNav } from "./Navs";
 import LoadingScreen from "./placeholders/LoadingScreen";
 
 const AppLayout: FC = () => {
-  const { setModalElement } = useModal();
-  const { toggleMobileNav } = useApp();
   const { isAuthenticated, isLoading } = useAuth();
   const { boards } = useBoards();
   const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Close any open modals on route change
-    setModalElement(null);
-    toggleMobileNav(false);
-
     // Set active board if on root path and boards exist
     if (location.pathname === "/" && boards?.length) {
       void navigate(`/boards/${boards[0].slug}`);
     }
-  }, [location.pathname, boards, navigate, setModalElement, toggleMobileNav]);
+  }, [boards, location.pathname, navigate]);
 
   if (isLoading) return <LoadingScreen />;
 
