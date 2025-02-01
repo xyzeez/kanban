@@ -39,6 +39,7 @@ const Register: FC = () => {
       reset();
       void navigate("/");
     } catch (error) {
+      console.error("Registration failed");
       console.error(error);
     }
   };

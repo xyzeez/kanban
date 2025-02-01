@@ -1,9 +1,9 @@
 import { FC } from "react";
-import { useLocation } from "react-router";
+import { useParams } from "react-router";
 
 // Hooks
 import { useApp } from "../hooks/useApp";
-import { useModal } from "../hooks/useModal";
+import { useBoards } from "../hooks/useBoards";
 
 // Components
 import Logo from "../components/Logo";
@@ -13,29 +13,21 @@ import { ChevronDownIcon, EllipsisIcon, PlusIcon } from "../components/Icons";
 import { MobileNav } from "./Navs";
 import { EditBoardForm } from "./forms/BoardForms";
 import DeleteBoard from "./modals/DeleteBoard";
-
-// Utils
-import { slugToString } from "../utils";
 import { CreateTaskForm } from "./forms/TaskForms";
 
 const Header: FC = () => {
+  const { boardId } = useParams<{
+    boardId: string;
+  }>();
   const {
     openSideBar,
     openMobileNav,
     toggleMobileNav,
     openBoardOptions,
     toggleBoardOptions,
+    openModal,
   } = useApp();
-  const { setModalElement } = useModal();
-
-  const location = useLocation();
-
-  const currentPath =
-    location.pathname === "/"
-      ? ""
-      : location.pathname.split("/").pop()?.replace(/-/g, " ") || "";
-
-  const currentBoardName = slugToString(currentPath);
+  const { board, isLoading } = useBoards(boardId);
 
   return (
     <header className="relative grid grid-cols-[auto_1fr] bg-white transition-colors dark:bg-grey-800">
@@ -46,16 +38,14 @@ const Header: FC = () => {
       </div>
       <div className="relative flex w-full flex-row items-center justify-between border-b border-grey-100 py-4 pl-4 pr-4 transition-colors dark:border-grey-700 md:pl-6 md:pr-6 xl:pb-7 xl:pt-5">
         <div className="font-sans text-lg font-bold text-black transition-colors dark:text-white md:text-xl xl:text-2xl">
-          {currentBoardName && (
-            <h1 className="hidden capitalize md:block">{currentBoardName}</h1>
+          {board?.name && (
+            <h1 className="hidden capitalize md:block">{board.name}</h1>
           )}
           <button
             onClick={() => toggleMobileNav()}
             className="flex flex-row items-center gap-2 md:hidden"
           >
-            {currentBoardName && (
-              <span className="capitalize">{currentBoardName}</span>
-            )}
+            {board?.name && <span className="capitalize">{board.name}</span>}
             <ChevronDownIcon className="h-2 w-3 text-purple" />
           </button>
 
@@ -67,22 +57,30 @@ const Header: FC = () => {
         </div>
         <div className="flex flex-row items-center gap-4 md:gap-6">
           <button
-            disabled={!currentBoardName}
-            onClick={() => setModalElement(<CreateTaskForm />)}
+            disabled={isLoading || !board || !board.columns.length}
+            onClick={() => {
+              if (board) {
+                openModal(<CreateTaskForm boardData={board} />);
+              }
+            }}
             className="icon-btn btn-primary btn-large md:hidden"
           >
             <PlusIcon className="size-3" />
           </button>
           <button
-            disabled={!currentBoardName}
-            onClick={() => setModalElement(<CreateTaskForm />)}
+            disabled={isLoading || !board || !board.columns.length}
+            onClick={() => {
+              if (board) {
+                openModal(<CreateTaskForm boardData={board} />);
+              }
+            }}
             className="btn btn-primary btn-large hidden md:flex"
           >
             <PlusIcon className="size-3" />
             Add New Task
           </button>
           <button
-            disabled={!currentBoardName}
+            disabled={isLoading || !board}
             onClick={() => toggleBoardOptions()}
             className="disabled:opacity-25"
           >
@@ -92,18 +90,24 @@ const Header: FC = () => {
             <div className="absolute right-1 top-[calc(100%+16px)] z-10 flex w-[calc(100%-32px)] justify-end md:right-3 md:w-[calc(100%-48px)]">
               <div className="flex w-full max-w-48 flex-col gap-4 rounded-lg bg-white p-4 shadow-lg transition-colors dark:bg-grey-800">
                 <button
+                  disabled={isLoading || !board}
                   onClick={() => {
-                    setModalElement(<EditBoardForm />);
-                    toggleBoardOptions(false);
+                    if (board) {
+                      toggleBoardOptions(false);
+                      openModal(<EditBoardForm boardData={board} />);
+                    }
                   }}
                   className="text-btn text-grey-500"
                 >
                   Edit Board
                 </button>
                 <button
+                  disabled={isLoading || !board}
                   onClick={() => {
-                    setModalElement(<DeleteBoard />);
-                    toggleBoardOptions(false);
+                    if (board) {
+                      toggleBoardOptions(false);
+                      openModal(<DeleteBoard boardData={board} />);
+                    }
                   }}
                   className="text-btn text-red"
                 >

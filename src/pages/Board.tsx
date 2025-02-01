@@ -86,7 +86,7 @@ const Board: FC = () => {
     if (stringToSlug(board.name) !== boardName) {
       void navigate(`/boards/${board.slug}`, { replace: true });
     }
-  }, [board, boardName, boardId, isLoading, navigate]);
+  }, [board, boardName, isLoading, navigate]);
 
   return (
     <ul className="no-scrollbar flex flex-row items-stretch justify-stretch gap-6 overflow-x-auto overflow-y-hidden px-4 py-6">
@@ -97,7 +97,13 @@ const Board: FC = () => {
         <h3 className="invisible flex flex-row items-center gap-3 font-sans text-xs font-bold uppercase tracking-[2.4px] text-grey-500">
           Add a new column
         </h3>
-        <AddColumnButton clickHandler={() => openModal(<AddColumnForm />)} />
+        <AddColumnButton
+          clickHandler={() => {
+            if (board) {
+              openModal(<AddColumnForm boardData={board} />);
+            }
+          }}
+        />
       </li>
     </ul>
   );

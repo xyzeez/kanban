@@ -1,5 +1,4 @@
 import { FC } from "react";
-import { useParams } from "react-router";
 import { useForm, useFieldArray, SubmitHandler } from "react-hook-form";
 
 // Components
@@ -11,19 +10,17 @@ import {
 } from "../../components/Icons";
 
 // Hooks
-import { useModal } from "../../hooks/useModal";
-import { useBoards } from "../../hooks/useBoards";
+import { useApp } from "../../hooks/useApp";
 import { useTasks } from "../../hooks/useTasks";
 
 // Types
 import { TaskFormInputs } from "../../types/forms";
+import { Board } from "../../types/board";
 
-const CreateTaskForm: FC = () => {
-  const { boardId } = useParams<{ boardId: string }>();
-  const { board } = useBoards(boardId);
-  const { createTask } = useTasks(board?.id ?? "");
-  const { setModalElement } = useModal();
-
+const CreateTaskForm: FC<{ boardData: Board }> = ({ boardData }) => {
+  const { id, columns } = boardData;
+  const { closeModal } = useApp();
+  const { createTask } = useTasks(id);
   const {
     register,
     handleSubmit,
@@ -36,7 +33,7 @@ const CreateTaskForm: FC = () => {
       title: "",
       description: "",
       subtasks: [{ title: "" }],
-      columnId: board?.columns[0]?.id || "",
+      columnId: columns[0]?.id || "",
     },
   });
 
@@ -46,19 +43,16 @@ const CreateTaskForm: FC = () => {
   });
 
   const selectedColumnTitle =
-    board?.columns.find((column) => column.id === watch("columnId"))?.title ||
-    "";
+    columns.find((column) => column.id === watch("columnId"))?.title || "";
 
   const onSubmit: SubmitHandler<TaskFormInputs> = async (data) => {
     try {
-      if (board?.id) {
-        await createTask({ ...data, boardId: board.id });
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
+      await createTask({ ...data, boardId: id });
       reset();
-      setModalElement(null);
+      closeModal();
+    } catch (error) {
+      console.error("Creating task failed");
+      console.error(error);
     }
   };
 
@@ -146,7 +140,7 @@ const CreateTaskForm: FC = () => {
             </div>
           </summary>
           <fieldset className="absolute top-[calc(100%+8px)] flex w-full flex-col gap-2 rounded-lg border border-grey-500/25 bg-white p-4 shadow-sm dark:border-grey-900 dark:bg-grey-900">
-            {board?.columns.map((column) => (
+            {columns.map((column) => (
               <label
                 key={column.id}
                 htmlFor={column.id}

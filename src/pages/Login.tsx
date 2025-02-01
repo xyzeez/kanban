@@ -38,6 +38,7 @@ const Login: FC = () => {
       await login({ email, password });
       reset();
     } catch (error) {
+      console.error("Login failed");
       console.error(error);
     }
   };
