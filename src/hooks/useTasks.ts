@@ -53,12 +53,8 @@ export const useTasks = (boardId: string, columnId?: string) => {
 
   return {
     //   Queries
-    tasks: tasksQuery.data ?? [],
-    isLoading:
-      tasksQuery.isLoading ||
-      createTaskMutation.isPending ||
-      updateTaskMutation.isPending ||
-      deleteTaskMutation.isPending,
+    tasks: tasksQuery.data,
+    isLoading: tasksQuery.isLoading,
     isError: tasksQuery.isError,
 
     // Mutations

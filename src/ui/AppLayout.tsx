@@ -18,12 +18,13 @@ const AppLayout: FC = () => {
 
   useEffect(() => {
     // Set active board if on root path and boards exist
-    if (location.pathname === "/" && boards?.length) {
+    if (boards?.length && location.pathname === "/") {
       void navigate(`/boards/${boards[0].slug}`);
     }
   }, [boards, location.pathname, navigate]);
 
-  if (isLoading) return <LoadingScreen />;
+  if (isLoading || !boards)
+    return <LoadingScreen type={isAuthenticated ? "App" : "Auth"} />;
 
   if (!isAuthenticated)
     return <Navigate to="/login" state={{ from: location }} replace />;

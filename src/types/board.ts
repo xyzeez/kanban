@@ -13,6 +13,11 @@ export interface Board {
   slug: string;
 }
 
+export interface AddColumnsButtonProps {
+  clickHandler: () => void;
+  disabled: boolean;
+}
+
 export interface CreateBoardDto {
   name: string;
   columns: Column[];

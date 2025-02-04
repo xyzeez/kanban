@@ -10,3 +10,7 @@ export interface ModalWrapperProps {
   modalElement: ReactNode;
   clickHandler: () => void;
 }
+
+export interface SkeletonProps {
+  className?: string;
+}

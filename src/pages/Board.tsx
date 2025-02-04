@@ -11,20 +11,24 @@ import { PlusIcon } from "../components/Icons";
 
 // UIs
 import { AddColumnForm } from "../ui/forms/BoardForms";
+import EmptyState from "../ui/placeholders/EmptyState";
+import BoardSkeleton from "../ui/placeholders/BoardSkeleton";
 import ViewTask from "../ui/modals/ViewTask";
 
 // Types
-import { Column } from "../types/board";
+import { Column, AddColumnsButtonProps } from "../types/board";
 
 // Utils
-import { stringToSlug } from "../utils";
+import { cn, stringToSlug } from "../utils";
 
-const AddColumnButton: FC<{ clickHandler: () => void }> = ({
+const AddColumnButton: FC<AddColumnsButtonProps> = ({
   clickHandler,
+  disabled,
 }) => (
   <button
+    disabled={disabled}
     onClick={clickHandler}
-    className="add-column-bg flex h-full items-center justify-center rounded-md"
+    className="add-column-bg flex h-full items-center justify-center rounded-md disabled:cursor-not-allowed"
   >
     <span className="text-btn text-lg font-bold text-grey-500 md:text-xl xl:text-2xl">
       <PlusIcon className="size-4" />
@@ -50,7 +54,13 @@ const ColumnItem: FC<{
           </span>
         )}
       </h3>
-      <ul className="flex h-full flex-col gap-5">
+      <ul
+        className={cn(
+          "flex h-full flex-col gap-5",
+          !tasks.length &&
+            "rounded-md border-2 border-dashed border-grey-500/25",
+        )}
+      >
         {tasks.map((task) => (
           <li key={task.id}>
             <button
@@ -95,9 +105,22 @@ const Board: FC = () => {
     }
   }, [board, boardName, isLoading, navigate]);
 
+  if (isLoading) {
+    return <BoardSkeleton />;
+  }
+
+  if (board?.columns.length === 0) {
+    return (
+      <EmptyState
+        type="column"
+        actionHandler={() => openModal(<AddColumnForm boardData={board} />)}
+      />
+    );
+  }
+
   return (
     <ul className="no-scrollbar flex flex-row items-stretch justify-stretch gap-6 overflow-x-auto overflow-y-hidden px-4 py-6">
-      {board?.columns.map((column) => (
+      {board?.columns.map((column: Column) => (
         <ColumnItem key={column.id} boardId={board.id} column={column} />
       ))}
       <li className="flex h-full shrink-0 grow-0 basis-[280px] flex-col gap-6">
@@ -105,6 +128,7 @@ const Board: FC = () => {
           Add a new column
         </h3>
         <AddColumnButton
+          disabled={isLoading}
           clickHandler={() => {
             if (board) {
               openModal(<AddColumnForm boardData={board} />);

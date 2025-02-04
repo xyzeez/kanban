@@ -63,6 +63,7 @@ const BoardList: FC = () => {
           All Boards ({boards?.length || 0})
         </h2>
       </li>
+
       {boards?.map((board) => (
         <li key={board.id}>
           <BoardItem title={board.name} to={`/boards/${board.slug}`} />

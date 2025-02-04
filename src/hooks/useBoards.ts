@@ -64,7 +64,7 @@ export const useBoards = (boardId?: string) => {
 
   return {
     // Queries
-    boards: boardsQuery.data ?? [],
+    boards: boardsQuery.data,
     board: boardQuery.data,
     isLoading: boardsQuery.isLoading || boardQuery.isLoading,
     isError: boardsQuery.isError || boardQuery.isError,
