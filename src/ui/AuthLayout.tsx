@@ -10,7 +10,7 @@ import LoadingScreen from "./placeholders/LoadingScreen";
 const AuthLayout: FC = () => {
   const { isAuthenticated, isLoading } = useAuth();
 
-  if (isLoading) return <LoadingScreen />;
+  if (isLoading) return <LoadingScreen type="Auth" />;
 
   if (isAuthenticated) return <Navigate to="/" />;
 

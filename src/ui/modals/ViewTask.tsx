@@ -32,7 +32,7 @@ const ViewTask: FC<{ taskData: Task }> = ({ taskData }) => {
           {title}
         </h2>
         <button onClick={() => setOpenTaskOptions(!openTaskOptions)}>
-          <EllipsisIcon className="h-5 w-[5px] text-grey-500" />
+          <EllipsisIcon className="h-6 w-[6px] text-grey-500" />
         </button>
         {openTaskOptions && (
           <div className="absolute -right-4 top-[calc(100%+16px)] z-10 flex w-[calc(100%-32px)] justify-end md:-right-1/4 md:w-[calc(100%-48px)]">
@@ -76,7 +76,7 @@ const ViewTask: FC<{ taskData: Task }> = ({ taskData }) => {
                   aria-label={subtask.title}
                 />
                 <span className="grid size-4 place-content-center rounded-sm border border-grey-500 bg-white transition-colors group-has-[:checked]:border-transparent group-has-[:checked]:bg-purple dark:border-white">
-                  <CheckIcon className="ml-[2px] mt-[2px] h-[10px] w-3 text-transparent transition-colors group-has-[:checked]:text-white" />
+                  <CheckIcon className="size-3 text-transparent transition-colors group-has-[:checked]:text-white" />
                 </span>
                 <span>{subtask.title}</span>
               </label>

@@ -79,8 +79,8 @@ const Login: FC = () => {
               />
               <span className="absolute inset-y-0 right-5 flex items-center justify-center">
                 <button type="button" onClick={togglePassword}>
-                  {showPassword && <ShowIcon className="h-3 w-5" />}
-                  {!showPassword && <HideIcon className="h-4 w-5" />}
+                  {showPassword && <ShowIcon />}
+                  {!showPassword && <HideIcon />}
                 </button>
               </span>
             </div>
@@ -97,7 +97,7 @@ const Login: FC = () => {
                 {...register("remember")}
               />
               <span className="grid size-4 place-content-center rounded-sm border border-grey-500 transition-colors group-has-[:checked]:border-transparent group-has-[:checked]:bg-purple">
-                <CheckIcon className="ml-[2px] mt-[2px] h-[10px] w-3 text-transparent transition-colors group-has-[:checked]:text-white" />
+                <CheckIcon className="size-3 text-transparent transition-colors group-has-[:checked]:text-white" />
               </span>
               <span>Remember me</span>
             </label>

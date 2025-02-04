@@ -30,7 +30,7 @@ const EmptyState: FC<EmptyStateProps> = ({ type, actionHandler }) => {
           onClick={actionHandler}
           className="btn btn-primary enabled:hover:bg-purple-600 btn-large"
         >
-          <PlusIcon className="h-5 w-5" />
+          <PlusIcon />
           {content[type].action}
         </button>
       )}

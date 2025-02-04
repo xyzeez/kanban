@@ -11,23 +11,21 @@ import { SideBarNav } from "./Navs";
 import LoadingScreen from "./placeholders/LoadingScreen";
 
 const AppLayout: FC = () => {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated } = useAuth();
   const { boards } = useBoards();
   const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Set active board if on root path and boards exist
     if (boards?.length && location.pathname === "/") {
       void navigate(`/boards/${boards[0].slug}`);
     }
   }, [boards, location.pathname, navigate]);
 
-  if (isLoading || !boards)
-    return <LoadingScreen type={isAuthenticated ? "App" : "Auth"} />;
-
   if (!isAuthenticated)
     return <Navigate to="/login" state={{ from: location }} replace />;
+
+  if (!boards) return <LoadingScreen type="App" />;
 
   return (
     <div className="grid h-screen min-h-[440px] grid-cols-1 grid-rows-[auto_1fr] md:grid-cols-[auto_1fr]">

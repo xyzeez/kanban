@@ -1,6 +1,10 @@
 import { ReactNode } from "react";
 
-export type Icon = { className: string };
+export interface Icon {
+  className?: string;
+  viewBox?: string;
+  children?: ReactNode;
+}
 
 export type LogoProps = {
   full?: boolean;

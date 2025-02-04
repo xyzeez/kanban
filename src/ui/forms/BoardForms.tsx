@@ -94,7 +94,7 @@ const CreateBoardForm: FC = () => {
                 className="text-grey-500"
                 aria-label="Remove Column"
               >
-                <CrossIcon className="size-4" />
+                <CrossIcon />
               </button>
             </div>
           ))}
@@ -104,7 +104,7 @@ const CreateBoardForm: FC = () => {
             onClick={() => append({ title: "" })}
             className="btn btn-sec btn-small text-sm font-bold"
           >
-            <PlusIcon className="size-3" />
+            <PlusIcon />
             Add New Column
           </button>
         </div>
@@ -204,7 +204,7 @@ const EditBoardForm: FC<{ boardData: Board }> = ({ boardData }) => {
                 className="text-grey-500"
                 aria-label="Remove Column"
               >
-                <CrossIcon className="size-4" />
+                <CrossIcon />
               </button>
             </div>
           ))}
@@ -214,7 +214,7 @@ const EditBoardForm: FC<{ boardData: Board }> = ({ boardData }) => {
             onClick={() => append({ title: "" })}
             className="btn btn-sec btn-small text-sm font-bold"
           >
-            <PlusIcon className="size-3" />
+            <PlusIcon />
             Add New Column
           </button>
         </div>
@@ -328,7 +328,7 @@ const AddColumnForm: FC<{ boardData: Board }> = ({ boardData }) => {
                 className="text-grey-500"
                 aria-label="Remove Column"
               >
-                <CrossIcon className="size-4" />
+                <CrossIcon />
               </button>
             </div>
           ))}
@@ -338,7 +338,7 @@ const AddColumnForm: FC<{ boardData: Board }> = ({ boardData }) => {
             onClick={() => append({ title: "" })}
             className="btn btn-sec btn-small text-sm font-bold"
           >
-            <PlusIcon className="size-3" />
+            <PlusIcon />
             Add New Column
           </button>
         </div>

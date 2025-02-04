@@ -46,7 +46,7 @@ const Header: FC = () => {
             className="flex flex-row items-center gap-2 md:hidden"
           >
             {board?.name && <span className="capitalize">{board.name}</span>}
-            <ChevronDownIcon className="h-2 w-3 text-purple" />
+            <ChevronDownIcon className="text-purple" />
           </button>
 
           {openMobileNav && (
@@ -65,7 +65,7 @@ const Header: FC = () => {
             }}
             className="icon-btn btn-primary btn-large md:hidden"
           >
-            <PlusIcon className="size-3" />
+            <PlusIcon />
           </button>
           <button
             disabled={isLoading || !board || !board.columns.length}
@@ -76,7 +76,7 @@ const Header: FC = () => {
             }}
             className="btn btn-primary btn-large hidden md:flex"
           >
-            <PlusIcon className="size-3" />
+            <PlusIcon />
             Add New Task
           </button>
           <button
@@ -84,7 +84,7 @@ const Header: FC = () => {
             onClick={() => toggleBoardOptions()}
             className="disabled:opacity-25"
           >
-            <EllipsisIcon className="h-5 w-[5px] text-grey-500 transition-colors dark:text-grey-200" />
+            <EllipsisIcon className="h-6 w-[6px] text-grey-500 transition-colors dark:text-grey-200" />
           </button>
           {openBoardOptions && (
             <div className="absolute right-1 top-[calc(100%+16px)] z-10 flex w-[calc(100%-32px)] justify-end md:right-3 md:w-[calc(100%-48px)]">

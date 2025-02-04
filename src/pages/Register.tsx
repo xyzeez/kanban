@@ -80,8 +80,8 @@ const Register: FC = () => {
               />
               <span className="absolute inset-y-0 right-5 flex items-center justify-center">
                 <button type="button" onClick={togglePassword}>
-                  {showPassword && <ShowIcon className="h-3 w-5" />}
-                  {!showPassword && <HideIcon className="h-4 w-5" />}
+                  {showPassword && <ShowIcon />}
+                  {!showPassword && <HideIcon />}
                 </button>
               </span>
             </div>
@@ -100,8 +100,8 @@ const Register: FC = () => {
               />
               <span className="absolute inset-y-0 right-5 flex items-center justify-center">
                 <button type="button" onClick={togglePasswordConfirm}>
-                  {showPasswordConfirm && <ShowIcon className="h-3 w-5" />}
-                  {!showPasswordConfirm && <HideIcon className="h-4 w-5" />}
+                  {showPasswordConfirm && <ShowIcon />}
+                  {!showPasswordConfirm && <HideIcon />}
                 </button>
               </span>
             </div>

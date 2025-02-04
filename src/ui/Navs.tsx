@@ -30,7 +30,7 @@ const BoardItem: FC<BoardItemProps> = ({ title, to }) => (
       `text-btn w-full max-w-[276px] rounded-r-full px-6 py-4 font-bold capitalize transition-colors xl:px-8 ${isActive ? "bg-purple text-white" : "text-grey-500 enabled:hover:bg-purple-light/10 enabled:hover:text-purple"} `
     }
   >
-    <BoardIcon className="size-4" />
+    <BoardIcon />
     <span>{title}</span>
   </NavLink>
 );
@@ -47,7 +47,7 @@ const CreateBoardButton: FC = () => {
       }}
       className="text-btn font-bold text-purple"
     >
-      <PlusIcon className="size-4" />
+      <PlusIcon />
       Create New Board
     </button>
   );
@@ -81,7 +81,7 @@ const ThemeToggle: FC = () => {
 
   return (
     <div className="flex w-full flex-row items-center justify-center gap-6 rounded-md bg-grey-100 py-[14px] text-grey-500 transition-colors dark:bg-grey-900">
-      <LightThemeIcon className="size-4" />
+      <LightThemeIcon />
       <button
         onClick={toggleTheme}
         className={`relative h-5 w-10 rounded-full bg-purple after:absolute after:top-[3px] after:size-[14px] after:rounded-full after:bg-white after:transition-all after:duration-200 ${
@@ -89,7 +89,7 @@ const ThemeToggle: FC = () => {
         }`}
         aria-label={`Switch to ${theme === "light" ? "dark" : "light"} theme`}
       />
-      <DarkThemeIcon className="size-4" />
+      <DarkThemeIcon />
     </div>
   );
 };
@@ -115,18 +115,18 @@ const ToggleSidebarButton: FC = () => {
   return (
     <button
       onClick={() => toggleSidebar(!openSideBar)}
-      className={`text-btn fixed left-0 flex h-12 rounded-r-full px-6 font-sans text-base font-bold capitalize transition-all enabled:hover:bg-purple enabled:hover:text-white xl:px-8 ${openSideBar ? "w-[248px] max-w-[248px] bg-transparent text-grey-500" : "w-14 max-w-14 bg-purple pl-[18px] pr-[22px] text-white xl:pl-[18px] xl:pr-[22px]"}`}
+      className={`fixed left-0 grid h-12 grid-cols-[24px_auto] items-center gap-3 rounded-r-full px-6 font-sans text-base font-bold capitalize transition-all enabled:hover:bg-purple enabled:hover:text-white xl:px-8 ${openSideBar ? "w-[248px] max-w-[248px] bg-transparent text-grey-500 xl:w-[275px] xl:max-w-[275px]" : "w-14 max-w-14 bg-purple pl-[18px] pr-[22px] text-white xl:w-14 xl:max-w-14 xl:pl-[18px] xl:pr-[22px]"}`}
       aria-label={openSideBar ? "Hide Sidebar" : "Show Sidebar"}
     >
-      <span className="relative grid h-4 w-5">
-        <HideIcon
-          className={`${openSideBar ? "opacity-100" : "opacity-0"} absolute h-4 w-[18px] transition-opacity`}
-        />
-        <ShowIcon
-          className={`${openSideBar ? "opacity-0" : "opacity-100"} absolute h-[12px] w-5 transition-opacity`}
-        />
-      </span>
-      <span className={`${openSideBar ? "block" : "hidden"}`}>
+      <HideIcon
+        className={`col-start-1 col-end-2 row-start-1 row-end-2 size-5 transition-all ${openSideBar ? "opacity-100" : "opacity-0"}`}
+      />
+      <ShowIcon
+        className={`col-start-1 col-end-2 row-start-1 row-end-2 size-5 transition-all ${openSideBar ? "opacity-0" : "opacity-100"}`}
+      />
+      <span
+        className={`${openSideBar ? "w-[9ch]" : "w-[0]"} overflow-hidden whitespace-nowrap`}
+      >
         Hide Sidebar
       </span>
     </button>

@@ -114,7 +114,7 @@ const CreateTaskForm: FC<{ boardData: Board }> = ({ boardData }) => {
                 className="text-grey-500"
                 aria-label="Remove Subtask"
               >
-                <CrossIcon className="size-4" />
+                <CrossIcon />
               </button>
             </div>
           ))}
@@ -123,7 +123,7 @@ const CreateTaskForm: FC<{ boardData: Board }> = ({ boardData }) => {
             onClick={() => append({ title: "" })}
             className="btn btn-sec btn-small text-sm font-bold"
           >
-            <PlusIcon className="size-3" />
+            <PlusIcon />
             Add New Subtask
           </button>
         </div>
@@ -271,7 +271,7 @@ const EditTaskForm: FC<{ taskData: Task }> = ({ taskData }) => {
                 className="text-grey-500"
                 aria-label="Remove Subtask"
               >
-                <CrossIcon className="size-4" />
+                <CrossIcon />
               </button>
             </div>
           ))}
@@ -280,7 +280,7 @@ const EditTaskForm: FC<{ taskData: Task }> = ({ taskData }) => {
             onClick={() => append({ title: "" })}
             className="btn btn-sec btn-small text-sm font-bold"
           >
-            <PlusIcon className="size-3" />
+            <PlusIcon />
             Add New Subtask
           </button>
         </div>

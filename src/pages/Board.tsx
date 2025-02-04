@@ -31,7 +31,7 @@ const AddColumnButton: FC<AddColumnsButtonProps> = ({
     className="add-column-bg flex h-full items-center justify-center rounded-md disabled:cursor-not-allowed"
   >
     <span className="text-btn text-lg font-bold text-grey-500 md:text-xl xl:text-2xl">
-      <PlusIcon className="size-4" />
+      <PlusIcon />
       <span>New Column</span>
     </span>
   </button>
@@ -50,18 +50,18 @@ const ColumnItem: FC<{
         <span className="block size-4 rounded-full bg-red" />
         {!isLoading && (
           <span>
-            {column.title} ({tasks.length})
+            {column.title} ({tasks?.length})
           </span>
         )}
       </h3>
       <ul
         className={cn(
           "flex h-full flex-col gap-5",
-          !tasks.length &&
+          !tasks?.length &&
             "rounded-md border-2 border-dashed border-grey-500/25",
         )}
       >
-        {tasks.map((task) => (
+        {tasks?.map((task) => (
           <li key={task.id}>
             <button
               onClick={() => {
