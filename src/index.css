@@ -60,8 +60,45 @@
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
+
   .no-scrollbar {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge /
+    scrollbar-width: none; / Firefox */
+  }
+
+  .scrollbar::-webkit-scrollbar {
+    @apply h-[6px] w-[6px] transition-colors;
+  }
+
+  .scrollbar::-webkit-scrollbar-track {
+    @apply bg-grey-100 transition-colors dark:bg-grey-900;
+    border-radius: 2px;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-purple transition-colors dark:bg-purple-light;
+    border-radius: 2px;
+  }
+
+  .hover-scrollbar {
+    @apply no-scrollbar;
+  }
+
+  .hover-scrollbar:hover {
+    @apply scrollbar block;
+  }
+
+  .hover-scrollbar:hover::-webkit-scrollbar {
+    @apply scrollbar block;
+  }
+
+  @supports not selector(::-webkit-scrollbar) {
+    .scrollbar {
+      scrollbar-color: theme("colors.purple.DEFAULT") theme("colors.grey.100");
+      scrollbar-width: thin;
+    }
+    .dark .scrollbar {
+      scrollbar-color: theme("colors.purple.light") theme("colors.grey.900");
+    }
   }
 }

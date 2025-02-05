@@ -57,13 +57,12 @@ const BoardList: FC = () => {
   const { boards } = useBoards();
 
   return (
-    <menu className="no-scrollbar relative overflow-y-auto overflow-x-hidden pr-3 font-sans">
-      <li className="nav-header-bg sticky top-0 pb-6 pl-6">
+    <menu className="hover-scrollbar relative overflow-y-auto overflow-x-hidden pr-3 font-sans">
+      <li className="nav-header-bg sticky top-0 py-4 pl-6">
         <h2 className="text-xs font-bold uppercase tracking-[2.4px] text-grey-500">
           All Boards ({boards?.length || 0})
         </h2>
       </li>
-
       {boards?.map((board) => (
         <li key={board.id}>
           <BoardItem title={board.name} to={`/boards/${board.slug}`} />
@@ -135,7 +134,7 @@ const ToggleSidebarButton: FC = () => {
 
 export const MobileNav: FC = () => {
   return (
-    <div className="modal- flex max-h-[calc(100vh-102px)] w-full max-w-[264px] flex-col gap-4 rounded-lg bg-white py-4 font-sans transition-colors dark:bg-grey-800">
+    <div className="flex max-h-[calc(100vh-102px)] w-full max-w-[264px] flex-col gap-4 rounded-lg bg-white pb-4 font-sans transition-colors dark:bg-grey-800">
       <BoardList />
       <div className="flex flex-col gap-4 pl-4 pr-3">
         <ThemeToggle />
@@ -151,7 +150,7 @@ export const SideBarNav: FC = () => {
   return (
     <div className="relative grid">
       <div
-        className={`grid max-h-[calc(100vh-81px)] grid-rows-[1fr_auto] gap-6 overflow-hidden whitespace-nowrap border-r border-grey-100 bg-white py-4 transition-all dark:border-grey-700 dark:bg-grey-800 xl:max-h-[calc(100vh-97px)] ${openSideBar ? "w-[260px] max-w-[260px] xl:w-[300px] xl:max-w-[300px]" : "w-0 max-w-0 border-none"}`}
+        className={`grid max-h-[calc(100vh-81px)] grid-rows-[1fr_auto] gap-6 overflow-hidden whitespace-nowrap border-r border-grey-100 bg-white pb-4 transition-all dark:border-grey-700 dark:bg-grey-800 xl:max-h-[calc(100vh-97px)] ${openSideBar ? "w-[260px] max-w-[260px] xl:w-[300px] xl:max-w-[300px]" : "w-0 max-w-0 border-none"}`}
       >
         <BoardList />
         <div className="flex flex-col gap-4 px-3 xl:gap-2 xl:px-6">
