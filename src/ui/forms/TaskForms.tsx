@@ -20,6 +20,7 @@ import FormSkeleton from "../placeholders/FormSkeleton";
 
 // Types
 import { TaskFormInputs } from "../../types/forms";
+import { cn } from "../../utils";
 
 const CreateTaskForm: FC = () => {
   const { boardId } = useParams<{
@@ -34,7 +35,7 @@ const CreateTaskForm: FC = () => {
     control,
     reset,
     watch,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = useForm<TaskFormInputs>({
     defaultValues: {
       title: "",
@@ -94,9 +95,25 @@ const CreateTaskForm: FC = () => {
           type="text"
           id="title"
           placeholder="e.g Take coffee break"
-          className="rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 text-sm font-medium text-black outline-none ring-purple transition-colors placeholder:text-black/25 focus:ring-1 dark:bg-transparent dark:text-white dark:placeholder:text-white/25"
-          {...register("title", { required: true })}
+          className={cn(
+            "rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 text-sm font-medium text-black outline-none ring-purple transition-colors placeholder:text-black/25 focus:ring-1 dark:bg-transparent dark:text-white dark:placeholder:text-white/25",
+            errors.title && "ring-1 ring-red",
+          )}
+          {...register("title", {
+            required: "Task title is required",
+            minLength: {
+              value: 2,
+              message: "Task title must be at least 2 characters long",
+            },
+            maxLength: {
+              value: 150,
+              message: "Task title cannot exceed 150 characters",
+            },
+          })}
         />
+        {errors.title && (
+          <span className="text-xs text-red">{errors.title.message}</span>
+        )}
       </div>
       <div className="flex flex-col gap-2">
         <label
@@ -108,9 +125,20 @@ const CreateTaskForm: FC = () => {
         <textarea
           id="description"
           placeholder="e.g It's always good to take a break. This 15 minute break will recharge the batteries a little."
-          className="min-h-[112px] rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 text-sm font-medium text-black outline-none ring-purple transition-colors placeholder:text-black/25 focus:ring-1 dark:bg-transparent dark:text-white dark:placeholder:text-white/25"
-          {...register("description")}
+          className={cn(
+            "min-h-[112px] rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 text-sm font-medium text-black outline-none ring-purple transition-colors placeholder:text-black/25 focus:ring-1 dark:bg-transparent dark:text-white dark:placeholder:text-white/25",
+            errors.description && "ring-1 ring-red",
+          )}
+          {...register("description", {
+            maxLength: {
+              value: 500,
+              message: "Task description cannot exceed 500 characters",
+            },
+          })}
         />
+        {errors.description && (
+          <span className="text-xs text-red">{errors.description.message}</span>
+        )}
       </div>
       <div className="flex flex-col gap-2">
         <label className="text-xs font-bold text-grey-500 transition-colors dark:text-white">
@@ -119,12 +147,33 @@ const CreateTaskForm: FC = () => {
         <div className="flex flex-col gap-3">
           {fields.map((field, index) => (
             <div key={field.id} className="flex flex-row items-center gap-4">
-              <input
-                type="text"
-                placeholder="e.g Make coffee"
-                className="w-full rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 text-sm font-medium text-black outline-none ring-purple transition-colors placeholder:text-black/25 focus:ring-1 dark:bg-transparent dark:text-white dark:placeholder:text-white/25"
-                {...register(`subtasks.${index}.title`, { required: true })}
-              />
+              <div className="w-full">
+                <input
+                  type="text"
+                  placeholder="e.g Make coffee"
+                  className={cn(
+                    "w-full rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 text-sm font-medium text-black outline-none ring-purple transition-colors placeholder:text-black/25 focus:ring-1 dark:bg-transparent dark:text-white dark:placeholder:text-white/25",
+                    errors.subtasks?.[index]?.title && "ring-1 ring-red",
+                  )}
+                  {...register(`subtasks.${index}.title`, {
+                    required: "Subtask title is required",
+                    minLength: {
+                      value: 2,
+                      message:
+                        "Subtask title must be at least 2 characters long",
+                    },
+                    maxLength: {
+                      value: 100,
+                      message: "Subtask title cannot exceed 100 characters",
+                    },
+                  })}
+                />
+                {errors.subtasks?.[index]?.title && (
+                  <span className="text-xs text-red">
+                    {errors.subtasks[index]?.title?.message}
+                  </span>
+                )}
+              </div>
               <button
                 type="button"
                 onClick={() => remove(index)}
@@ -150,11 +199,16 @@ const CreateTaskForm: FC = () => {
           Status
         </p>
         <details className="relative">
-          <summary className="relative cursor-pointer list-none rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 ring-purple group-focus:border-transparent dark:bg-transparent">
+          <summary
+            className={cn(
+              "relative cursor-pointer list-none rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 ring-purple group-focus:border-transparent dark:bg-transparent",
+              errors.columnId && "ring-1 ring-red",
+            )}
+          >
             <span className="text-sm font-medium capitalize text-black dark:text-white">
               {selectedColumnTitle}
             </span>
-            <div className="pointer-events-none absolute right-4 top-[calc(50%+3px)] size-3 -translate-y-1/2">
+            <div className="pointer-events-none absolute right-4 top-[calc(50%+3px)] size-4 -translate-y-1/2">
               <ChevronDownIcon className="text-purple" />
             </div>
           </summary>
@@ -171,17 +225,28 @@ const CreateTaskForm: FC = () => {
                   value={column.id}
                   checked={watch("columnId") === column.id}
                   className="sr-only"
-                  {...register("columnId", { required: true })}
+                  {...register("columnId", {
+                    required: "Please select a status",
+                  })}
                 />
                 {column.title}
               </label>
             ))}
           </fieldset>
         </details>
+        {errors.columnId && (
+          <span className="text-xs text-red">{errors.columnId.message}</span>
+        )}
       </div>
       <button
         type="submit"
-        disabled={isSubmitting}
+        disabled={
+          !!errors.title ||
+          !!errors.description ||
+          !!errors.subtasks ||
+          !!errors.columnId ||
+          isSubmitting
+        }
         className="btn btn-primary btn-small text-sm font-bold"
       >
         {isSubmitting ? <SpinnerIcon /> : <span>Create Task</span>}
@@ -210,7 +275,7 @@ const EditTaskForm: FC<{
     control,
     reset,
     watch,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = useForm<TaskFormInputs>({
     defaultValues: {
       title: task?.title || "",
@@ -278,9 +343,25 @@ const EditTaskForm: FC<{
           type="text"
           id="title"
           placeholder="e.g Take coffee break"
-          className="rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 text-sm font-medium text-black outline-none ring-purple transition-colors placeholder:text-black/25 focus:ring-1 dark:bg-transparent dark:text-white dark:placeholder:text-white/25"
-          {...register("title", { required: true })}
+          className={cn(
+            "rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 text-sm font-medium text-black outline-none ring-purple transition-colors placeholder:text-black/25 focus:ring-1 dark:bg-transparent dark:text-white dark:placeholder:text-white/25",
+            errors.title && "ring-1 ring-red",
+          )}
+          {...register("title", {
+            required: "Task title is required",
+            minLength: {
+              value: 2,
+              message: "Task title must be at least 2 characters long",
+            },
+            maxLength: {
+              value: 150,
+              message: "Task title cannot exceed 150 characters",
+            },
+          })}
         />
+        {errors.title && (
+          <span className="text-xs text-red">{errors.title.message}</span>
+        )}
       </div>
       <div className="flex flex-col gap-2">
         <label
@@ -292,9 +373,20 @@ const EditTaskForm: FC<{
         <textarea
           id="description"
           placeholder="e.g It's always good to take a break. This 15 minute break will recharge the batteries a little."
-          className="min-h-[112px] rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 text-sm font-medium text-black outline-none ring-purple transition-colors placeholder:text-black/25 focus:ring-1 dark:bg-transparent dark:text-white dark:placeholder:text-white/25"
-          {...register("description")}
+          className={cn(
+            "min-h-[112px] rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 text-sm font-medium text-black outline-none ring-purple transition-colors placeholder:text-black/25 focus:ring-1 dark:bg-transparent dark:text-white dark:placeholder:text-white/25",
+            errors.description && "ring-1 ring-red",
+          )}
+          {...register("description", {
+            maxLength: {
+              value: 500,
+              message: "Task description cannot exceed 500 characters",
+            },
+          })}
         />
+        {errors.description && (
+          <span className="text-xs text-red">{errors.description.message}</span>
+        )}
       </div>
       <div className="flex flex-col gap-2">
         <label className="text-xs font-bold text-grey-500 transition-colors dark:text-white">
@@ -303,12 +395,33 @@ const EditTaskForm: FC<{
         <div className="flex flex-col gap-3">
           {fields.map((field, index) => (
             <div key={field.id} className="flex flex-row items-center gap-4">
-              <input
-                type="text"
-                placeholder="e.g Make coffee"
-                className="w-full rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 text-sm font-medium text-black outline-none ring-purple transition-colors placeholder:text-black/25 focus:ring-1 dark:bg-transparent dark:text-white dark:placeholder:text-white/25"
-                {...register(`subtasks.${index}.title`, { required: true })}
-              />
+              <div className="w-full">
+                <input
+                  type="text"
+                  placeholder="e.g Make coffee"
+                  className={cn(
+                    "w-full rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 text-sm font-medium text-black outline-none ring-purple transition-colors placeholder:text-black/25 focus:ring-1 dark:bg-transparent dark:text-white dark:placeholder:text-white/25",
+                    errors.subtasks?.[index]?.title && "ring-1 ring-red",
+                  )}
+                  {...register(`subtasks.${index}.title`, {
+                    required: "Subtask title is required",
+                    minLength: {
+                      value: 2,
+                      message:
+                        "Subtask title must be at least 2 characters long",
+                    },
+                    maxLength: {
+                      value: 100,
+                      message: "Subtask title cannot exceed 100 characters",
+                    },
+                  })}
+                />
+                {errors.subtasks?.[index]?.title && (
+                  <span className="text-xs text-red">
+                    {errors.subtasks[index]?.title?.message}
+                  </span>
+                )}
+              </div>
               <button
                 type="button"
                 onClick={() => remove(index)}
@@ -334,7 +447,12 @@ const EditTaskForm: FC<{
           Status
         </p>
         <details className="relative">
-          <summary className="relative cursor-pointer list-none rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 ring-purple group-focus:border-transparent dark:bg-transparent">
+          <summary
+            className={cn(
+              "relative cursor-pointer list-none rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 ring-purple group-focus:border-transparent dark:bg-transparent",
+              errors.columnId && "ring-1 ring-red",
+            )}
+          >
             <span className="text-sm font-medium capitalize text-black dark:text-white">
               {selectedColumnTitle}
             </span>
@@ -355,17 +473,28 @@ const EditTaskForm: FC<{
                   value={column.id}
                   checked={watch("columnId") === column.id}
                   className="sr-only"
-                  {...register("columnId", { required: true })}
+                  {...register("columnId", {
+                    required: "Please select a status",
+                  })}
                 />
                 {column.title}
               </label>
             ))}
           </fieldset>
         </details>
+        {errors.columnId && (
+          <span className="text-xs text-red">{errors.columnId.message}</span>
+        )}
       </div>
       <button
         type="submit"
-        disabled={isSubmitting}
+        disabled={
+          !!errors.title ||
+          !!errors.description ||
+          !!errors.subtasks ||
+          !!errors.columnId ||
+          isSubmitting
+        }
         className="btn btn-primary btn-small text-sm font-bold"
       >
         {isSubmitting ? <SpinnerIcon /> : <span>Save Changes</span>}

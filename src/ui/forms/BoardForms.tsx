@@ -12,6 +12,7 @@ import FormSkeleton from "../placeholders/FormSkeleton";
 
 // Types
 import { BoardFormInputs } from "../../types/forms";
+import { cn } from "../../utils";
 
 const CreateBoardForm: FC = () => {
   const navigate = useNavigate();
@@ -22,7 +23,8 @@ const CreateBoardForm: FC = () => {
     handleSubmit,
     control,
     reset,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
+    getValues,
   } = useForm<BoardFormInputs>({
     defaultValues: {
       name: "",
@@ -34,6 +36,15 @@ const CreateBoardForm: FC = () => {
     control,
     name: "columns",
   });
+
+  const validateColumnUniqueness = (value: string, index: number) => {
+    const columns = getValues("columns");
+    const duplicateCount = columns.filter(
+      (col, idx) =>
+        idx !== index && col.title.toLowerCase() === value.toLowerCase(),
+    ).length;
+    return duplicateCount === 0 || "Column names must be unique";
+  };
 
   const onSubmit: SubmitHandler<BoardFormInputs> = async (data) => {
     try {
@@ -67,9 +78,25 @@ const CreateBoardForm: FC = () => {
           type="text"
           id="name"
           placeholder="e.g Web Design"
-          className="rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 text-sm font-medium text-black outline-none ring-purple transition-colors placeholder:text-black/25 focus:ring-1 disabled:text-opacity-25 dark:bg-transparent dark:text-white dark:placeholder:text-white/25"
-          {...register("name", { required: true })}
+          className={cn(
+            "rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 text-sm font-medium text-black outline-none ring-purple transition-colors placeholder:text-black/25 focus:ring-1 disabled:text-opacity-25 dark:bg-transparent dark:text-white dark:placeholder:text-white/25",
+            errors.name && "ring-1 ring-red",
+          )}
+          {...register("name", {
+            required: "Board name is required",
+            minLength: {
+              value: 3,
+              message: "Board name must be at least 3 characters long",
+            },
+            maxLength: {
+              value: 50,
+              message: "Board name cannot exceed 50 characters",
+            },
+          })}
         />
+        {errors.name && (
+          <span className="text-xs text-red">{errors.name.message}</span>
+        )}
       </div>
 
       <div className="flex flex-col gap-2">
@@ -82,12 +109,34 @@ const CreateBoardForm: FC = () => {
         <div className="flex flex-col gap-3">
           {fields.map((field, index) => (
             <div key={field.id} className="flex flex-row items-center gap-4">
-              <input
-                type="text"
-                placeholder="e.g Todo"
-                className="w-full rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 text-sm font-medium text-black outline-none ring-purple transition-colors placeholder:text-black/25 focus:ring-1 dark:bg-transparent dark:text-white dark:placeholder:text-white/25"
-                {...register(`columns.${index}.title`, { required: true })}
-              />
+              <div className="w-full">
+                <input
+                  type="text"
+                  placeholder="e.g Todo"
+                  className={cn(
+                    "w-full rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 text-sm font-medium text-black outline-none ring-purple transition-colors placeholder:text-black/25 focus:ring-1 dark:bg-transparent dark:text-white dark:placeholder:text-white/25",
+                    errors.columns?.[index]?.title && "ring-1 ring-red",
+                  )}
+                  {...register(`columns.${index}.title`, {
+                    required: "Column title is required",
+                    minLength: {
+                      value: 3,
+                      message:
+                        "Column title must be at least 3 characters long",
+                    },
+                    maxLength: {
+                      value: 50,
+                      message: "Column title cannot exceed 50 characters",
+                    },
+                    validate: (value) => validateColumnUniqueness(value, index),
+                  })}
+                />
+                {errors.columns?.[index]?.title && (
+                  <span className="text-xs text-red">
+                    {errors.columns[index]?.title?.message}
+                  </span>
+                )}
+              </div>
               <button
                 type="button"
                 onClick={() => remove(index)}
@@ -112,7 +161,7 @@ const CreateBoardForm: FC = () => {
 
       <button
         type="submit"
-        disabled={isSubmitting}
+        disabled={!!errors.name || !!errors.columns || isSubmitting}
         className="btn btn-primary btn-small text-sm font-bold"
       >
         {isSubmitting ? <SpinnerIcon /> : <span>Create New Board</span>}
@@ -132,7 +181,8 @@ const EditBoardForm: FC = () => {
     handleSubmit,
     control,
     reset,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
+    getValues,
   } = useForm<BoardFormInputs>({
     defaultValues: {
       name: board?.name || "",
@@ -144,6 +194,15 @@ const EditBoardForm: FC = () => {
     control,
     name: "columns",
   });
+
+  const validateColumnUniqueness = (value: string, index: number) => {
+    const columns = getValues("columns");
+    const duplicateCount = columns.filter(
+      (col, idx) =>
+        idx !== index && col.title.toLowerCase() === value.toLowerCase(),
+    ).length;
+    return duplicateCount === 0 || "Column names must be unique";
+  };
 
   const onSubmit: SubmitHandler<BoardFormInputs> = async (data) => {
     try {
@@ -182,9 +241,25 @@ const EditBoardForm: FC = () => {
           type="text"
           id="name"
           placeholder="e.g Web Design"
-          className="rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 text-sm font-medium text-black outline-none ring-purple transition-colors placeholder:text-black/25 focus:ring-1 disabled:text-opacity-25 dark:bg-transparent dark:text-white dark:placeholder:text-white/25"
-          {...register("name", { required: true })}
+          className={cn(
+            "rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 text-sm font-medium text-black outline-none ring-purple transition-colors placeholder:text-black/25 focus:ring-1 disabled:text-opacity-25 dark:bg-transparent dark:text-white dark:placeholder:text-white/25",
+            errors.name && "ring-1 ring-red",
+          )}
+          {...register("name", {
+            required: "Board name is required",
+            minLength: {
+              value: 3,
+              message: "Board name must be at least 3 characters long",
+            },
+            maxLength: {
+              value: 50,
+              message: "Board name cannot exceed 50 characters",
+            },
+          })}
         />
+        {errors.name && (
+          <span className="text-xs text-red">{errors.name.message}</span>
+        )}
       </div>
 
       <div className="flex flex-col gap-2">
@@ -197,12 +272,34 @@ const EditBoardForm: FC = () => {
         <div className="flex flex-col gap-3">
           {fields.map((field, index) => (
             <div key={field.id} className="flex flex-row items-center gap-4">
-              <input
-                type="text"
-                placeholder="e.g Todo"
-                className="w-full rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 text-sm font-medium text-black outline-none ring-purple transition-colors placeholder:text-black/25 focus:ring-1 dark:bg-transparent dark:text-white dark:placeholder:text-white/25"
-                {...register(`columns.${index}.title`, { required: true })}
-              />
+              <div className="w-full">
+                <input
+                  type="text"
+                  placeholder="e.g Todo"
+                  className={cn(
+                    "w-full rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 text-sm font-medium text-black outline-none ring-purple transition-colors placeholder:text-black/25 focus:ring-1 dark:bg-transparent dark:text-white dark:placeholder:text-white/25",
+                    errors.columns?.[index]?.title && "ring-1 ring-red",
+                  )}
+                  {...register(`columns.${index}.title`, {
+                    required: "Column title is required",
+                    minLength: {
+                      value: 3,
+                      message:
+                        "Column title must be at least 3 characters long",
+                    },
+                    maxLength: {
+                      value: 50,
+                      message: "Column title cannot exceed 50 characters",
+                    },
+                    validate: (value) => validateColumnUniqueness(value, index),
+                  })}
+                />
+                {errors.columns?.[index]?.title && (
+                  <span className="text-xs text-red">
+                    {errors.columns[index]?.title?.message}
+                  </span>
+                )}
+              </div>
               <button
                 type="button"
                 onClick={() => remove(index)}
@@ -227,7 +324,7 @@ const EditBoardForm: FC = () => {
 
       <button
         type="submit"
-        disabled={isLoading}
+        disabled={!!errors.name || !!errors.columns || isSubmitting}
         className="btn btn-primary btn-small text-sm font-bold"
       >
         {isSubmitting ? <SpinnerIcon /> : <span>Save Changes</span>}
@@ -247,7 +344,8 @@ const AddColumnForm: FC = () => {
     handleSubmit,
     control,
     reset,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
+    getValues,
   } = useForm<BoardFormInputs>({
     defaultValues: {
       name: "",
@@ -259,6 +357,27 @@ const AddColumnForm: FC = () => {
     control,
     name: "columns",
   });
+
+  const validateColumnUniqueness = (value: string, index: number) => {
+    const columns = getValues("columns");
+    const existingColumns = board?.columns || [];
+
+    // Check for duplicates in new columns
+    const newColumnDuplicates = columns.filter(
+      (col, idx) =>
+        idx !== index && col.title.toLowerCase() === value.toLowerCase(),
+    ).length;
+
+    // Check for duplicates in existing columns
+    const existingColumnDuplicates = existingColumns.filter(
+      (col) => col.title.toLowerCase() === value.toLowerCase(),
+    ).length;
+
+    return (
+      (newColumnDuplicates === 0 && existingColumnDuplicates === 0) ||
+      "Column names must be unique"
+    );
+  };
 
   const onSubmit: SubmitHandler<BoardFormInputs> = async (data) => {
     try {
@@ -294,7 +413,10 @@ const AddColumnForm: FC = () => {
           type="text"
           id="name"
           value={board?.name}
-          className="rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 text-sm font-medium text-black outline-none disabled:text-opacity-25 dark:bg-transparent dark:text-white dark:placeholder:text-white/25 dark:disabled:text-opacity-25"
+          className={cn(
+            "rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 text-sm font-medium text-black outline-none disabled:text-opacity-25 dark:bg-transparent dark:text-white dark:placeholder:text-white/25 dark:disabled:text-opacity-25",
+            errors.name && "ring-1 ring-red",
+          )}
           disabled
         />
       </div>
@@ -323,13 +445,35 @@ const AddColumnForm: FC = () => {
 
           {fields.map((field, index) => (
             <div key={field.id} className="flex flex-row items-center gap-4">
-              <input
-                type="text"
-                placeholder="e.g Todo"
-                className="w-full rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 text-sm font-medium text-black outline-none ring-purple transition-colors placeholder:text-black/25 focus:ring-1 dark:bg-transparent dark:text-white dark:placeholder:text-white/25"
-                {...register(`columns.${index}.title`, { required: true })}
-                autoFocus={index === 0}
-              />
+              <div className="w-full">
+                <input
+                  type="text"
+                  placeholder="e.g Todo"
+                  className={cn(
+                    "w-full rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 text-sm font-medium text-black outline-none ring-purple transition-colors placeholder:text-black/25 focus:ring-1 dark:bg-transparent dark:text-white dark:placeholder:text-white/25",
+                    errors.columns?.[index]?.title && "ring-1 ring-red",
+                  )}
+                  {...register(`columns.${index}.title`, {
+                    required: "Column title is required",
+                    minLength: {
+                      value: 3,
+                      message:
+                        "Column title must be at least 3 characters long",
+                    },
+                    maxLength: {
+                      value: 50,
+                      message: "Column title cannot exceed 50 characters",
+                    },
+                    validate: (value) => validateColumnUniqueness(value, index),
+                  })}
+                  autoFocus={index === 0}
+                />
+                {errors.columns?.[index]?.title && (
+                  <span className="text-xs text-red">
+                    {errors.columns[index]?.title?.message}
+                  </span>
+                )}
+              </div>
               <button
                 type="button"
                 onClick={() => remove(index)}
@@ -354,7 +498,11 @@ const AddColumnForm: FC = () => {
 
       <button
         type="submit"
-        disabled={isLoading}
+        disabled={
+          !!errors.name ||
+          Object.keys(errors.columns || {}).length > 0 ||
+          isSubmitting
+        }
         className="btn btn-primary btn-small text-sm font-bold"
       >
         {isSubmitting ? <SpinnerIcon /> : <span>Add Columns</span>}
