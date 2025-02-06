@@ -1,28 +1,47 @@
 import { FC, useState } from "react";
 
-// Types
-import { Task } from "../../types/task";
+// Hooks
+import { useBoards } from "../../hooks/useBoards";
+import { useApp } from "../../hooks/useApp";
+import { useTasks } from "../../hooks/useTasks";
+
+// Components
 import {
   CheckIcon,
   ChevronDownIcon,
   EllipsisIcon,
 } from "../../components/Icons";
-import { useBoards } from "../../hooks/useBoards";
-import { useApp } from "../../hooks/useApp";
+
+// UIs
 import { EditTaskForm } from "../forms/TaskForms";
 import DeleteTask from "./DeleteTask";
+import ViewTaskSkeleton from "../placeholders/ViewTaskSkeleton";
 
-const ViewTask: FC<{ taskData: Task }> = ({ taskData }) => {
+const ViewTask: FC<{ taskId: string; columnId: string; boardId: string }> = ({
+  taskId,
+  columnId,
+  boardId,
+}) => {
   const [openTaskOptions, setOpenTaskOptions] = useState(false);
-  const { title, description, subtasks, doneSubtaskCount, columnId, boardId } =
-    taskData;
   const { board } = useBoards(boardId);
+  const { task, isLoading } = useTasks(boardId, columnId, taskId);
   const { openModal } = useApp();
 
   const columns = board?.columns || [];
 
+  if (!task || isLoading) {
+    return <ViewTaskSkeleton />;
+  }
+
+  const {
+    title,
+    description,
+    subtasks,
+    doneSubtaskCount,
+    columnId: taskColumnId,
+  } = task;
   const selectedColumnTitle = columns.find(
-    (column) => column.id === columnId,
+    (column) => column.id === taskColumnId,
   )?.title;
 
   return (
@@ -38,13 +57,21 @@ const ViewTask: FC<{ taskData: Task }> = ({ taskData }) => {
           <div className="absolute -right-4 top-[calc(100%+16px)] z-10 flex w-[calc(100%-32px)] justify-end md:-right-1/4 md:w-[calc(100%-48px)]">
             <div className="flex w-full max-w-48 flex-col gap-4 rounded-lg border-grey-500/25 bg-white p-4 shadow-lg transition-colors dark:border-grey-900 dark:bg-grey-900">
               <button
-                onClick={() => openModal(<EditTaskForm taskData={taskData} />)}
+                onClick={() =>
+                  openModal(
+                    <EditTaskForm
+                      taskId={taskId}
+                      boardId={boardId}
+                      columnId={columnId}
+                    />,
+                  )
+                }
                 className="text-btn text-grey-500"
               >
                 Edit Task
               </button>
               <button
-                onClick={() => openModal(<DeleteTask taskData={taskData} />)}
+                onClick={() => openModal(<DeleteTask taskData={task} />)}
                 className="text-btn text-red"
               >
                 Delete Task
@@ -99,18 +126,18 @@ const ViewTask: FC<{ taskData: Task }> = ({ taskData }) => {
             <fieldset className="absolute top-[calc(100%+8px)] flex w-full flex-col gap-2 rounded-lg border border-grey-500/25 bg-white p-4 shadow-sm dark:border-grey-900 dark:bg-grey-900">
               {columns.map((column) => (
                 <label
-                  key={column.id}
-                  htmlFor={column.id}
+                  key={columnId}
+                  htmlFor={columnId}
                   className="w-fit cursor-pointer font-sans text-sm font-medium capitalize text-grey-500 has-[:checked]:text-purple"
                 >
                   <input
                     type="radio"
-                    id={column.id}
-                    value={column.id}
+                    id={columnId}
+                    value={columnId}
                     name={columnId}
                     // TODO: Add column switch functionality
                     // onChange={() => setSelectedColumnId(column?.id)}
-                    // checked={columnId === column.id}
+                    // checked={columnId === columnId}
                     className="sr-only"
                   />
                   {column.title}

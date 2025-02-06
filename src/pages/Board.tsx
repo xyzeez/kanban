@@ -38,10 +38,12 @@ const AddColumnButton: FC<AddColumnsButtonProps> = ({
 );
 
 const ColumnItem: FC<{
-  boardId: string;
   column: Column;
-}> = ({ boardId, column }) => {
-  const { tasks, isLoading } = useTasks(boardId, column.id);
+}> = ({ column }) => {
+  const { boardId } = useParams<{
+    boardId: string;
+  }>();
+  const { tasks, isLoading } = useTasks(boardId ?? "", column.id);
   const { openModal } = useApp();
 
   return (
@@ -70,7 +72,15 @@ const ColumnItem: FC<{
           <li key={task.id} className={cn(tasks?.length && "pb-5")}>
             <button
               onClick={() => {
-                openModal(<ViewTask taskData={task} />);
+                if (boardId && column.id) {
+                  openModal(
+                    <ViewTask
+                      taskId={task.id}
+                      columnId={column.id}
+                      boardId={boardId}
+                    />,
+                  );
+                }
               }}
               className="flex w-full flex-col gap-2 rounded-lg bg-white px-4 py-6 font-sans shadow-md shadow-[#364E7E1A] transition-colors dark:bg-grey-800"
             >
@@ -118,7 +128,7 @@ const Board: FC = () => {
     return (
       <EmptyState
         type="column"
-        actionHandler={() => openModal(<AddColumnForm boardData={board} />)}
+        actionHandler={() => openModal(<AddColumnForm />)}
       />
     );
   }
@@ -126,7 +136,7 @@ const Board: FC = () => {
   return (
     <ul className="scrollbar flex flex-row items-stretch justify-stretch gap-6 overflow-auto px-4 pb-6">
       {board?.columns.map((column: Column) => (
-        <ColumnItem key={column.id} boardId={board.id} column={column} />
+        <ColumnItem key={column.id} column={column} />
       ))}
       <li className="sticky top-0 flex h-full shrink-0 grow-0 basis-[280px] flex-col gap-6 pt-6">
         <h3 className="invisible flex flex-row items-center gap-3 font-sans text-xs font-bold uppercase tracking-[2.4px] text-grey-500">
@@ -136,7 +146,7 @@ const Board: FC = () => {
           disabled={isLoading}
           clickHandler={() => {
             if (board) {
-              openModal(<AddColumnForm boardData={board} />);
+              openModal(<AddColumnForm />);
             }
           }}
         />

@@ -19,6 +19,7 @@ const Header: FC = () => {
   const { boardId } = useParams<{
     boardId: string;
   }>();
+  const { board, isLoading } = useBoards(boardId);
   const {
     openSideBar,
     openMobileNav,
@@ -27,7 +28,6 @@ const Header: FC = () => {
     toggleBoardOptions,
     openModal,
   } = useApp();
-  const { board, isLoading } = useBoards(boardId);
 
   return (
     <header className="relative grid grid-cols-[auto_1fr] bg-white transition-colors dark:bg-grey-800">
@@ -60,7 +60,7 @@ const Header: FC = () => {
             disabled={isLoading || !board || !board.columns.length}
             onClick={() => {
               if (board) {
-                openModal(<CreateTaskForm boardData={board} />);
+                openModal(<CreateTaskForm />);
               }
             }}
             className="icon-btn btn-primary btn-large md:hidden"
@@ -71,7 +71,7 @@ const Header: FC = () => {
             disabled={isLoading || !board || !board.columns.length}
             onClick={() => {
               if (board) {
-                openModal(<CreateTaskForm boardData={board} />);
+                openModal(<CreateTaskForm />);
               }
             }}
             className="btn btn-primary btn-large hidden md:flex"
@@ -94,7 +94,7 @@ const Header: FC = () => {
                   onClick={() => {
                     if (board) {
                       toggleBoardOptions(false);
-                      openModal(<EditBoardForm boardData={board} />);
+                      openModal(<EditBoardForm />);
                     }
                   }}
                   className="text-btn text-grey-500"

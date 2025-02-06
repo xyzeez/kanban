@@ -7,15 +7,26 @@ import { taskService } from "../services/taskService";
 // Types
 import { CreateTaskDto, UpdateTaskDto } from "../types/task";
 
-export const useTasks = (boardId: string, columnId?: string) => {
+export const useTasks = (
+  boardId: string,
+  columnId?: string,
+  taskId?: string,
+) => {
   const { isAuthenticated } = useAuth();
   const queryClient = useQueryClient();
   const tasksQueryKey = ["tasks", boardId, columnId];
+  const taskQueryKey = ["task", taskId];
 
   const tasksQuery = useQuery({
     queryKey: tasksQueryKey,
     queryFn: () => (columnId ? taskService.getTasks(columnId) : []),
     enabled: isAuthenticated && !!boardId && !!columnId,
+  });
+
+  const taskQuery = useQuery({
+    queryKey: taskQueryKey,
+    queryFn: () => taskService.getTask(taskId!),
+    enabled: isAuthenticated && !!taskId,
   });
 
   const createTaskMutation = useMutation({
@@ -39,6 +50,13 @@ export const useTasks = (boardId: string, columnId?: string) => {
           queryKey: ["tasks", variables.boardId, columnId],
         });
       }
+
+      // Invalidate single task query if it exists
+      if (taskId) {
+        void queryClient.invalidateQueries({
+          queryKey: ["task", taskId],
+        });
+      }
     },
   });
 
@@ -52,10 +70,11 @@ export const useTasks = (boardId: string, columnId?: string) => {
   });
 
   return {
-    //   Queries
+    // Queries
     tasks: tasksQuery.data,
-    isLoading: tasksQuery.isLoading,
-    isError: tasksQuery.isError,
+    task: taskQuery.data,
+    isLoading: tasksQuery.isLoading || (!!taskId && taskQuery.isLoading),
+    isError: tasksQuery.isError || (!!taskId && taskQuery.isError),
 
     // Mutations
     createTask: createTaskMutation.mutateAsync,

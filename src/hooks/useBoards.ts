@@ -7,7 +7,7 @@ import { boardService } from "../services/boardService";
 import { useAuth } from "./useAuth";
 
 // Types
-import { Column, CreateBoardDto, UpdateBoardDto } from "../types/board";
+import { Column, Board } from "../types/board";
 
 export const useBoards = (boardId?: string) => {
   const { isAuthenticated, user } = useAuth();
@@ -28,14 +28,14 @@ export const useBoards = (boardId?: string) => {
   });
 
   const createBoardMutation = useMutation({
-    mutationFn: (data: CreateBoardDto) => boardService.createBoard(data),
+    mutationFn: (data: Board) => boardService.createBoard(data),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: boardsQueryKey });
     },
   });
 
   const updateBoardMutation = useMutation({
-    mutationFn: (data: UpdateBoardDto) => boardService.updateBoard(data),
+    mutationFn: (data: Board) => boardService.updateBoard(data),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: boardsQueryKey });
       void queryClient.invalidateQueries({ queryKey: boardQueryKey });
@@ -50,13 +50,8 @@ export const useBoards = (boardId?: string) => {
   });
 
   const addColumnsMutation = useMutation({
-    mutationFn: ({
-      id,
-      columns,
-    }: {
-      id: string;
-      columns: Pick<Column, "title">[];
-    }) => boardService.addColumns({ id, columns }),
+    mutationFn: ({ id, columns }: { id: string; columns: Column[] }) =>
+      boardService.addColumns({ id, columns }),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: boardQueryKey });
     },

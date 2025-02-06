@@ -26,7 +26,7 @@ const ColumnSkeleton: FC<ColumnSkeletonProps> = ({
   <li
     key={columnIndex}
     className={cn(
-      "no-scrollbar flex shrink-0 grow-0 basis-[280px] flex-col overflow-y-auto",
+      "no-scrollbar flex shrink-0 grow-0 basis-[280px] flex-col",
       columnIndex && columnIndex >= 2 && "hidden sm:block",
     )}
   >
@@ -46,7 +46,7 @@ const ColumnSkeleton: FC<ColumnSkeletonProps> = ({
 
 const BoardSkeleton: FC<BoardSkeletonProps> = ({ columnCount = 5 }) => {
   return (
-    <ul className="no-scrollbar flex flex-row items-stretch justify-stretch gap-6 overflow-x-auto overflow-y-hidden px-4 py-6">
+    <ul className="no-scrollbar flex flex-row items-stretch justify-stretch gap-6 overflow-hidden px-4 py-6">
       {Array.from({ length: columnCount }, (_, index) => (
         <ColumnSkeleton key={index} columnIndex={index} />
       ))}

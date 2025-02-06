@@ -1,5 +1,11 @@
 import { FC } from "react";
+import { useParams } from "react-router";
 import { useForm, useFieldArray, SubmitHandler } from "react-hook-form";
+
+// Hooks
+import { useApp } from "../../hooks/useApp";
+import { useTasks } from "../../hooks/useTasks";
+import { useBoards } from "../../hooks/useBoards";
 
 // Components
 import {
@@ -9,20 +15,19 @@ import {
   ChevronDownIcon,
 } from "../../components/Icons";
 
-// Hooks
-import { useApp } from "../../hooks/useApp";
-import { useTasks } from "../../hooks/useTasks";
-import { useBoards } from "../../hooks/useBoards";
+// UIs
+import FormSkeleton from "../placeholders/FormSkeleton";
 
 // Types
 import { TaskFormInputs } from "../../types/forms";
-import { Board } from "../../types/board";
-import { Task } from "../../types/task";
 
-const CreateTaskForm: FC<{ boardData: Board }> = ({ boardData }) => {
-  const { id, columns } = boardData;
+const CreateTaskForm: FC = () => {
+  const { boardId } = useParams<{
+    boardId: string;
+  }>();
+  const { board, isLoading } = useBoards(boardId);
   const { closeModal } = useApp();
-  const { createTask } = useTasks(id);
+  const { createTask } = useTasks(boardId ?? "");
   const {
     register,
     handleSubmit,
@@ -35,7 +40,7 @@ const CreateTaskForm: FC<{ boardData: Board }> = ({ boardData }) => {
       title: "",
       description: "",
       subtasks: [{ title: "" }],
-      columnId: columns[0]?.id || "",
+      columnId: board?.columns[0]?.id || "",
     },
   });
 
@@ -45,11 +50,23 @@ const CreateTaskForm: FC<{ boardData: Board }> = ({ boardData }) => {
   });
 
   const selectedColumnTitle =
-    columns.find((column) => column.id === watch("columnId"))?.title || "";
+    board?.columns.find((column) => column.id === watch("columnId"))?.title ||
+    "";
+
+  if (!board || isLoading) {
+    return (
+      <FormSkeleton
+        type="task"
+        subtaskCount={1}
+        showDescription={true}
+        showStatus={true}
+      />
+    );
+  }
 
   const onSubmit: SubmitHandler<TaskFormInputs> = async (data) => {
     try {
-      await createTask({ ...data, boardId: id });
+      if (boardId) await createTask({ ...data, boardId });
       reset();
       closeModal();
     } catch (error) {
@@ -142,7 +159,7 @@ const CreateTaskForm: FC<{ boardData: Board }> = ({ boardData }) => {
             </div>
           </summary>
           <fieldset className="absolute top-[calc(100%+8px)] flex w-full flex-col gap-2 rounded-lg border border-grey-500/25 bg-white p-4 shadow-sm dark:border-grey-900 dark:bg-grey-900">
-            {columns.map((column) => (
+            {board.columns.map((column) => (
               <label
                 key={column.id}
                 htmlFor={column.id}
@@ -173,12 +190,20 @@ const CreateTaskForm: FC<{ boardData: Board }> = ({ boardData }) => {
   );
 };
 
-const EditTaskForm: FC<{ taskData: Task }> = ({ taskData }) => {
-  const { id, title, description, subtasks, columnId, boardId } = taskData;
-  const { updateTask } = useTasks(boardId, columnId);
-  const { board } = useBoards(boardId);
+const EditTaskForm: FC<{
+  taskId: string;
+  boardId: string;
+  columnId: string;
+}> = ({ taskId, boardId, columnId }) => {
+  const {
+    task,
+    updateTask,
+    isLoading: isTaskLoading,
+  } = useTasks(boardId, columnId, taskId);
+  const { board, isLoading: isBoardLoading } = useBoards(boardId);
   const { closeModal } = useApp();
   const columns = board?.columns || [];
+
   const {
     register,
     handleSubmit,
@@ -188,10 +213,10 @@ const EditTaskForm: FC<{ taskData: Task }> = ({ taskData }) => {
     formState: { isSubmitting },
   } = useForm<TaskFormInputs>({
     defaultValues: {
-      title: title || "",
-      description: description || "",
-      subtasks: subtasks || [{ title: "" }],
-      columnId: columnId || "",
+      title: task?.title || "",
+      description: task?.description || "",
+      subtasks: task?.subtasks || [{ title: "" }],
+      columnId: task?.columnId || "",
     },
   });
 
@@ -205,8 +230,16 @@ const EditTaskForm: FC<{ taskData: Task }> = ({ taskData }) => {
 
   const onSubmit: SubmitHandler<TaskFormInputs> = async (data) => {
     try {
+      if (!task) return;
       const { title, description, subtasks, columnId } = data;
-      await updateTask({ id, title, description, boardId, subtasks, columnId });
+      await updateTask({
+        id: task.id,
+        title,
+        description,
+        boardId,
+        subtasks,
+        columnId,
+      });
       reset();
       closeModal();
     } catch (error) {
@@ -214,6 +247,17 @@ const EditTaskForm: FC<{ taskData: Task }> = ({ taskData }) => {
       console.error(error);
     }
   };
+
+  if (!board || !task || isTaskLoading || isBoardLoading) {
+    return (
+      <FormSkeleton
+        type="task"
+        subtaskCount={task?.subtasks?.length || 1}
+        showDescription={true}
+        showStatus={true}
+      />
+    );
+  }
 
   return (
     <form

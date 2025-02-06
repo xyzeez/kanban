@@ -18,6 +18,14 @@ export const taskService = {
     return response.data.tasks;
   },
 
+  getTask: async (id: string) => {
+    const response = await tasksAPI.get<TasksApiResponse>(`/${id}`);
+    if (response.status !== "success") {
+      throw new Error(response.message);
+    }
+    return response.data.task;
+  },
+
   createTask: async (task: CreateTaskDto) => {
     const columnId = task.columnId;
     const boardId = task.boardId;

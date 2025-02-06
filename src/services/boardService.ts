@@ -2,11 +2,7 @@
 import { apiService } from "./apiService";
 
 // Types
-import {
-  BoardsApiResponse,
-  CreateBoardDto,
-  UpdateBoardDto,
-} from "../types/board";
+import { Board, BoardsApiResponse, Column } from "../types/board";
 
 // API Service
 export const boardsAPI = apiService("boards");
@@ -28,7 +24,7 @@ export const boardService = {
     return response.data.board;
   },
 
-  createBoard: async (data: CreateBoardDto) => {
+  createBoard: async (data: Board) => {
     const response = await boardsAPI.post<BoardsApiResponse>("/", data);
     if (response.status !== "success") {
       throw new Error(response.message);
@@ -36,7 +32,7 @@ export const boardService = {
     return response.data.board;
   },
 
-  updateBoard: async (data: UpdateBoardDto) => {
+  updateBoard: async (data: Board) => {
     const { id, ...rest } = data;
     const response = await boardsAPI.patch<BoardsApiResponse>(`/${id}`, rest);
     if (response.status !== "success") {
@@ -49,11 +45,10 @@ export const boardService = {
     await boardsAPI.delete(`/${id}`);
   },
 
-  addColumns: async (data: UpdateBoardDto) => {
-    const { id, ...rest } = data;
+  addColumns: async ({ id, columns }: { id: string; columns: Column[] }) => {
     const response = await boardsAPI.post<BoardsApiResponse>(
       `/${id}/columns`,
-      rest,
+      columns,
     );
     if (response.status !== "success") {
       throw new Error(response.message);

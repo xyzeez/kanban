@@ -5,28 +5,16 @@ export interface Column {
 }
 
 export interface Board {
-  id: string;
+  id?: string;
   name: string;
   columns: Column[];
-  unassignedColumn: Column;
-  ownerId: string;
-  slug: string;
+  ownerId?: string;
+  slug?: string;
 }
 
 export interface AddColumnsButtonProps {
   clickHandler: () => void;
   disabled: boolean;
-}
-
-export interface CreateBoardDto {
-  name: string;
-  columns: Column[];
-}
-
-export interface UpdateBoardDto {
-  id: string;
-  name?: string;
-  columns?: Column[];
 }
 
 export interface BoardsApiResponse {

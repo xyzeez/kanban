@@ -1,17 +1,17 @@
 import { FC } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
-
-// Components
-import { CrossIcon, PlusIcon, SpinnerIcon } from "../../components/Icons";
 
 // Hooks
 import { useApp } from "../../hooks/useApp";
 import { useBoards } from "../../hooks/useBoards";
 
+// Components
+import { CrossIcon, PlusIcon, SpinnerIcon } from "../../components/Icons";
+import FormSkeleton from "../placeholders/FormSkeleton";
+
 // Types
 import { BoardFormInputs } from "../../types/forms";
-import { Board } from "../../types/board";
 
 const CreateBoardForm: FC = () => {
   const navigate = useNavigate();
@@ -121,9 +121,11 @@ const CreateBoardForm: FC = () => {
   );
 };
 
-const EditBoardForm: FC<{ boardData: Board }> = ({ boardData }) => {
-  const { id, name, columns } = boardData;
-  const { updateBoard, isLoading } = useBoards(id);
+const EditBoardForm: FC = () => {
+  const { boardId } = useParams<{
+    boardId: string;
+  }>();
+  const { board, isLoading, updateBoard } = useBoards(boardId);
   const { closeModal } = useApp();
   const {
     register,
@@ -133,8 +135,8 @@ const EditBoardForm: FC<{ boardData: Board }> = ({ boardData }) => {
     formState: { isSubmitting },
   } = useForm<BoardFormInputs>({
     defaultValues: {
-      name: name || "",
-      columns: columns || [{ title: "" }],
+      name: board?.name || "",
+      columns: board?.columns || [{ title: "" }],
     },
   });
 
@@ -146,7 +148,7 @@ const EditBoardForm: FC<{ boardData: Board }> = ({ boardData }) => {
   const onSubmit: SubmitHandler<BoardFormInputs> = async (data) => {
     try {
       const { name, columns } = data;
-      await updateBoard({ id, name, columns });
+      await updateBoard({ id: boardId, name, columns });
       reset();
       closeModal();
     } catch (error) {
@@ -155,7 +157,10 @@ const EditBoardForm: FC<{ boardData: Board }> = ({ boardData }) => {
     }
   };
 
-  if (isLoading) return <SpinnerIcon />;
+  if (!board || isLoading)
+    return (
+      <FormSkeleton type="board" columnCount={board?.columns.length || 3} />
+    );
 
   return (
     <form
@@ -231,9 +236,11 @@ const EditBoardForm: FC<{ boardData: Board }> = ({ boardData }) => {
   );
 };
 
-const AddColumnForm: FC<{ boardData: Board }> = ({ boardData }) => {
-  const { id, name, columns } = boardData;
-  const { addColumns, isLoading } = useBoards(id);
+const AddColumnForm: FC = () => {
+  const { boardId } = useParams<{
+    boardId: string;
+  }>();
+  const { board, isLoading, addColumns } = useBoards(boardId);
   const { closeModal } = useApp();
   const {
     register,
@@ -255,7 +262,8 @@ const AddColumnForm: FC<{ boardData: Board }> = ({ boardData }) => {
 
   const onSubmit: SubmitHandler<BoardFormInputs> = async (data) => {
     try {
-      await addColumns({ id, columns: data.columns });
+      if (!boardId) return;
+      await addColumns({ id: boardId, columns: data.columns });
       reset();
       closeModal();
     } catch (error) {
@@ -264,7 +272,7 @@ const AddColumnForm: FC<{ boardData: Board }> = ({ boardData }) => {
     }
   };
 
-  if (isLoading) return <SpinnerIcon />;
+  if (isLoading) return <FormSkeleton type="column" />;
 
   return (
     <form
@@ -285,7 +293,7 @@ const AddColumnForm: FC<{ boardData: Board }> = ({ boardData }) => {
         <input
           type="text"
           id="name"
-          value={name}
+          value={board?.name}
           className="rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 text-sm font-medium text-black outline-none disabled:text-opacity-25 dark:bg-transparent dark:text-white dark:placeholder:text-white/25 dark:disabled:text-opacity-25"
           disabled
         />
@@ -299,7 +307,7 @@ const AddColumnForm: FC<{ boardData: Board }> = ({ boardData }) => {
           Board Columns
         </label>
         <div className="flex flex-col gap-3">
-          {columns?.map((column, index) => (
+          {board?.columns.map((column, index) => (
             <div
               key={`existing-${index}`}
               className="flex flex-row items-center gap-4"

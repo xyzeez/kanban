@@ -16,3 +16,12 @@ export interface ColumnSkeletonProps {
   taskCount?: number;
   columnIndex?: number;
 }
+
+export interface FormSkeletonProps {
+  type: "board" | "column" | "task";
+  columnCount?: number;
+  subtaskCount?: number;
+  showDescription?: boolean;
+  showStatus?: boolean;
+  showExistingColumns?: boolean;
+}
