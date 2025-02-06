@@ -1,5 +1,6 @@
 import { FC } from "react";
 import { useNavigate } from "react-router";
+import toast from "react-hot-toast";
 
 // Hooks
 import { useBoards } from "../../hooks/useBoards";
@@ -11,15 +12,23 @@ import LoadingModal from "../placeholders/LoadingModal";
 // Components
 import { SpinnerIcon } from "../../components/Icons";
 
+// Utils
+import { getErrorMessage } from "../../utils/error";
+
 const DeleteBoard: FC<{ id: string }> = ({ id }) => {
   const navigate = useNavigate();
   const { board, deleteBoard, isLoading } = useBoards(id);
   const { closeModal } = useApp();
 
   const handleDelete = async () => {
-    await deleteBoard(id);
-    closeModal();
-    void navigate("/");
+    try {
+      await deleteBoard(id);
+      toast.success("Board deleted successfully!");
+      closeModal();
+      void navigate("/");
+    } catch (error) {
+      toast.error(getErrorMessage(error));
+    }
   };
 
   if (!board || isLoading) return <LoadingModal />;

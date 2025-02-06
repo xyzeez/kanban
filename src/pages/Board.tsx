@@ -73,7 +73,7 @@ const ColumnItem: FC<{
           <li key={task.id} className={cn(tasks?.length && "pb-5")}>
             <button
               onClick={() => {
-                if (boardId && column.id) {
+                if (boardId && column.id && task.id) {
                   openModal(
                     <ViewTask
                       taskId={task.id}

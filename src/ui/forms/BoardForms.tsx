@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { useNavigate, useParams } from "react-router";
 import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
 // Hooks
 import { useApp } from "../../hooks/useApp";
@@ -12,7 +13,10 @@ import FormSkeleton from "../placeholders/FormSkeleton";
 
 // Types
 import { BoardFormInputs } from "../../types/forms";
-import { cn } from "../../utils";
+
+// Utils
+import { cn } from "../../utils/styles";
+import { getErrorMessage } from "../../utils/error";
 
 const CreateBoardForm: FC = () => {
   const navigate = useNavigate();
@@ -49,12 +53,12 @@ const CreateBoardForm: FC = () => {
   const onSubmit: SubmitHandler<BoardFormInputs> = async (data) => {
     try {
       const board = await createBoard(data);
+      toast.success("Board created successfully!");
       reset();
       closeModal();
       void navigate(`boards/${board?.slug}`);
     } catch (error) {
-      console.error("Creating board failed");
-      console.error(error);
+      toast.error(getErrorMessage(error));
     }
   };
 
@@ -206,13 +210,12 @@ const EditBoardForm: FC = () => {
 
   const onSubmit: SubmitHandler<BoardFormInputs> = async (data) => {
     try {
-      const { name, columns } = data;
-      await updateBoard({ id: boardId, name, columns });
+      await updateBoard({ id: boardId, ...data });
+      toast.success("Board updated successfully!");
       reset();
       closeModal();
     } catch (error) {
-      console.error("Editing board failed");
-      console.error(error);
+      toast.error(getErrorMessage(error));
     }
   };
 
@@ -383,11 +386,11 @@ const AddColumnForm: FC = () => {
     try {
       if (!boardId) return;
       await addColumns({ id: boardId, columns: data.columns });
+      toast.success("Columns added successfully!");
       reset();
       closeModal();
     } catch (error) {
-      console.error("Adding columns failed");
-      console.error(error);
+      toast.error(getErrorMessage(error));
     }
   };
 

@@ -1,5 +1,6 @@
 import { FC } from "react";
 import { useNavigate, useParams } from "react-router";
+import toast from "react-hot-toast";
 
 // Hooks
 import { useTasks } from "../../hooks/useTasks";
@@ -11,6 +12,9 @@ import LoadingModal from "../placeholders/LoadingModal";
 // Components
 import { SpinnerIcon } from "../../components/Icons";
 
+// Utils
+import { getErrorMessage } from "../../utils/error";
+
 const DeleteTask: FC<{ id: string; columnId: string }> = ({ id, columnId }) => {
   const navigate = useNavigate();
   const { boardId } = useParams<{
@@ -20,9 +24,14 @@ const DeleteTask: FC<{ id: string; columnId: string }> = ({ id, columnId }) => {
   const { closeModal } = useApp();
 
   const handleDelete = async () => {
-    await deleteTask(id);
-    closeModal();
-    void navigate("/");
+    try {
+      await deleteTask(id);
+      toast.success("Task deleted successfully!");
+      closeModal();
+      void navigate("/");
+    } catch (error) {
+      toast.error(getErrorMessage(error));
+    }
   };
 
   if (!boardId || !task || isLoading) return <LoadingModal />;

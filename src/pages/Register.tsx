@@ -2,6 +2,7 @@ import { FC, useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { isEmail } from "validator";
+import toast from "react-hot-toast";
 
 // Hooks
 import { useAuth } from "../hooks/useAuth";
@@ -14,7 +15,8 @@ import { HideIcon, ShowIcon, SpinnerIcon } from "../components/Icons";
 import { RegisterFormInputs } from "../types/forms";
 
 // Utils
-import { cn } from "../utils";
+import { cn } from "../utils/styles";
+import { getErrorMessage } from "../utils/error";
 
 const Register: FC = () => {
   const navigate = useNavigate();
@@ -60,11 +62,11 @@ const Register: FC = () => {
     try {
       const { email, password, passwordConfirm } = data;
       await registerUser({ email, password, passwordConfirm });
+      toast.success("Successfully registered! Welcome aboard!");
       reset();
       void navigate("/");
     } catch (error) {
-      console.error("Registration failed");
-      console.error(error);
+      toast.error(getErrorMessage(error));
     }
   };
 

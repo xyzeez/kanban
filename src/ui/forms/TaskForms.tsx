@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { useParams } from "react-router";
 import { useForm, useFieldArray, SubmitHandler } from "react-hook-form";
+import toast from "react-hot-toast";
 
 // Hooks
 import { useApp } from "../../hooks/useApp";
@@ -20,7 +21,8 @@ import FormSkeleton from "../placeholders/FormSkeleton";
 
 // Types
 import { TaskFormInputs } from "../../types/forms";
-import { cn } from "../../utils";
+import { cn } from "../../utils/styles";
+import { getErrorMessage } from "../../utils/error";
 
 const CreateTaskForm: FC = () => {
   const { boardId } = useParams<{
@@ -67,12 +69,13 @@ const CreateTaskForm: FC = () => {
 
   const onSubmit: SubmitHandler<TaskFormInputs> = async (data) => {
     try {
-      if (boardId) await createTask({ ...data, boardId });
+      if (!boardId) return;
+      await createTask({ ...data, boardId });
+      toast.success("Task created successfully!");
       reset();
       closeModal();
     } catch (error) {
-      console.error("Creating task failed");
-      console.error(error);
+      toast.error(getErrorMessage(error));
     }
   };
 
@@ -295,21 +298,12 @@ const EditTaskForm: FC<{
 
   const onSubmit: SubmitHandler<TaskFormInputs> = async (data) => {
     try {
-      if (!task) return;
-      const { title, description, subtasks, columnId } = data;
-      await updateTask({
-        id: task.id,
-        title,
-        description,
-        boardId,
-        subtasks,
-        columnId,
-      });
+      await updateTask({ id: taskId, ...data });
+      toast.success("Task updated successfully!");
       reset();
       closeModal();
     } catch (error) {
-      console.error("Editing task failed");
-      console.error(error);
+      toast.error(getErrorMessage(error));
     }
   };
 

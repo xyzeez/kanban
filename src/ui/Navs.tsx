@@ -1,5 +1,7 @@
 import { FC } from "react";
 import { NavLink } from "react-router";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router";
 
 // Hooks
 import { useApp } from "../hooks/useApp.ts";
@@ -22,6 +24,9 @@ import { CreateBoardForm } from "./forms/BoardForms.tsx";
 
 // Types
 import { BoardItemProps } from "../types/navs.ts";
+
+// Utils
+import { getErrorMessage } from "../utils/error";
 
 const BoardItem: FC<BoardItemProps> = ({ title, to }) => (
   <NavLink
@@ -95,12 +100,23 @@ const ThemeToggle: FC = () => {
 
 const LogoutButton: FC = () => {
   const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      toast.success("Successfully logged out!");
+      void navigate("/login");
+    } catch (error) {
+      toast.error(getErrorMessage(error));
+    }
+  };
 
   return (
     <button
-      onClick={logout}
+      onClick={handleLogout}
       className="flex w-fit flex-row items-center gap-[10px] font-sans text-base font-bold text-red"
-      aria-label="HideIcon sidebar"
+      aria-label="Logout"
     >
       <LogoutIcon className="size-5" />
       <span>Logout</span>

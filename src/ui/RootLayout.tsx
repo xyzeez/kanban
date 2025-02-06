@@ -7,6 +7,9 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { AuthProvider } from "../contexts/AuthContext";
 import { AppProvider } from "../contexts/AppContext";
 
+// Components
+import Toaster from "../components/Toaster";
+
 // Query Client instance
 const queryClient = new QueryClient();
 
@@ -15,6 +18,7 @@ const RootLayout: FC = () => {
     <AuthProvider>
       <QueryClientProvider client={queryClient}>
         <AppProvider>
+          <Toaster />
           <Outlet />
           <ReactQueryDevtools />
         </AppProvider>

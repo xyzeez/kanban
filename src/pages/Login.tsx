@@ -1,6 +1,7 @@
 import { FC, useState } from "react";
 import { Link, Navigate } from "react-router";
 import { SubmitHandler, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
 // Hooks
 import { useAuth } from "../hooks/useAuth";
@@ -18,7 +19,8 @@ import {
 import { LoginFormInputs } from "../types/forms";
 
 // Utils
-import { cn } from "../utils";
+import { cn } from "../utils/styles";
+import { getErrorMessage } from "../utils/error";
 
 const Login: FC = () => {
   const { login, isAuthenticated } = useAuth();
@@ -36,13 +38,12 @@ const Login: FC = () => {
 
   const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
     try {
-      // TODO: Add remember me functionality
       const { email, password, remember } = data;
       await login({ email, password });
+      toast.success("Successfully logged in!");
       reset();
     } catch (error) {
-      console.error("Login failed");
-      console.error(error);
+      toast.error(getErrorMessage(error));
     }
   };
 
