@@ -23,6 +23,17 @@ import { Task } from "../types/task";
 import { cn } from "../utils/styles";
 import { stringToSlug } from "../utils/string";
 
+const COLUMN_COLORS = [
+  "bg-column-blue",
+  "bg-column-purple",
+  "bg-column-green",
+  "bg-column-coral",
+  "bg-column-teal",
+  "bg-column-indigo",
+  "bg-column-amber",
+  "bg-column-rose",
+];
+
 const AddColumnButton: FC<AddColumnsButtonProps> = ({
   clickHandler,
   disabled,
@@ -69,11 +80,13 @@ const TaskItem: FC<{
 
 const ColumnItem: FC<{
   column: Column;
-}> = ({ column }) => {
+  index: number;
+}> = ({ column, index }) => {
   const { boardId } = useParams() as {
     boardId: string;
   };
   const { tasks, isLoading } = useTasks(boardId, column.id);
+  const columnColor = COLUMN_COLORS[index % COLUMN_COLORS.length];
 
   return (
     <li
@@ -83,7 +96,7 @@ const ColumnItem: FC<{
       )}
     >
       <h3 className="column-header-bg sticky top-0 flex flex-row items-center gap-3 py-6 font-sans text-xs font-bold uppercase tracking-[2.4px] text-grey-500">
-        <span className="block size-4 rounded-full bg-red" />
+        <span className={cn("block size-4 rounded-full", columnColor)} />
         {!isLoading && (
           <span>
             {column.title} ({tasks?.length})
@@ -147,8 +160,8 @@ const Board: FC = () => {
 
   return (
     <ul className="scrollbar flex flex-row items-stretch justify-stretch gap-6 overflow-auto px-4 pb-6">
-      {board?.columns.map((column: Column) => (
-        <ColumnItem key={column.id} column={column} />
+      {board?.columns.map((column: Column, index: number) => (
+        <ColumnItem key={column.id} column={column} index={index} />
       ))}
       <li className="sticky top-0 flex h-full shrink-0 grow-0 basis-[280px] flex-col gap-6 pt-6">
         <h3 className="invisible flex flex-row items-center gap-3 font-sans text-xs font-bold uppercase tracking-[2.4px] text-grey-500">

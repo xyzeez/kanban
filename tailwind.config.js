@@ -25,6 +25,16 @@ export default {
         DEFAULT: "#EA5555", // main-red
         light: "#FF9898", // red
       },
+      column: {
+        blue: "#49C4E5",
+        purple: "#8471F2",
+        green: "#67E2AE",
+        coral: "#FF8F8F",
+        teal: "#2DD4BF",
+        indigo: "#818CF8",
+        amber: "#FCD34D",
+        rose: "#FB7185",
+      },
       transparent: "transparent",
       current: "currentColor",
     },
