@@ -34,10 +34,9 @@ export const boardService = {
   },
 
   addColumns: async ({ id, columns }: { id: string; columns: Column[] }) => {
-    const response = await boardsAPI.post<BoardsApiResponse>(
-      `/${id}/columns`,
+    const response = await boardsAPI.post<BoardsApiResponse>(`/${id}/columns`, {
       columns,
-    );
+    });
     return response.data.board;
   },
 
