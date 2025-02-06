@@ -150,7 +150,7 @@ const ToggleSidebarButton: FC = () => {
 
 export const MobileNav: FC = () => {
   return (
-    <div className="flex max-h-[calc(100vh-102px)] w-full max-w-[264px] flex-col gap-4 rounded-lg bg-white pb-4 font-sans transition-colors dark:bg-grey-800">
+    <div className="flex max-h-[calc(100vh-102px)] min-h-[338px] w-full max-w-[264px] flex-col gap-4 rounded-lg bg-white pb-4 font-sans transition-colors dark:bg-grey-800">
       <BoardList />
       <div className="flex flex-col gap-4 pl-4 pr-3">
         <ThemeToggle />
@@ -166,7 +166,7 @@ export const SideBarNav: FC = () => {
   return (
     <div className="relative grid">
       <div
-        className={`grid max-h-[calc(100vh-81px)] grid-rows-[1fr_auto] gap-6 overflow-hidden whitespace-nowrap border-r border-grey-100 bg-white pb-4 transition-all dark:border-grey-700 dark:bg-grey-800 xl:max-h-[calc(100vh-97px)] ${openSideBar ? "w-[260px] max-w-[260px] xl:w-[300px] xl:max-w-[300px]" : "w-0 max-w-0 border-none"}`}
+        className={`grid max-h-[calc(100vh-81px)] min-h-[359px] grid-rows-[1fr_auto] gap-6 overflow-hidden whitespace-nowrap border-r border-grey-100 bg-white pb-4 transition-all dark:border-grey-700 dark:bg-grey-800 xl:max-h-[calc(100vh-97px)] xl:min-h-[343px] ${openSideBar ? "w-[260px] max-w-[260px] xl:w-[300px] xl:max-w-[300px]" : "w-0 max-w-0 border-none"}`}
       >
         <BoardList />
         <div className="flex flex-col gap-4 px-3 xl:gap-2 xl:px-6">
