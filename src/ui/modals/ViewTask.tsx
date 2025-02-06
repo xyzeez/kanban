@@ -47,7 +47,7 @@ const ViewTask: FC<{ taskId: string; columnId: string; boardId: string }> = ({
   return (
     <div className="flex flex-col gap-6 font-sans">
       <div className="relative flex flex-row items-center justify-between gap-4">
-        <h2 className="text-lg font-bold text-black transition-colors dark:text-white">
+        <h2 className="text-lg font-bold capitalize text-black transition-colors dark:text-white">
           {title}
         </h2>
         <button onClick={() => setOpenTaskOptions(!openTaskOptions)}>
@@ -71,9 +71,11 @@ const ViewTask: FC<{ taskId: string; columnId: string; boardId: string }> = ({
                 Edit Task
               </button>
               <button
-                onClick={() =>
-                  openModal(<DeleteTask id={task.id} columnId={columnId} />)
-                }
+                onClick={() => {
+                  if (task.id) {
+                    openModal(<DeleteTask id={task.id} columnId={columnId} />);
+                  }
+                }}
                 className="text-btn text-red"
               >
                 Delete Task
@@ -121,7 +123,7 @@ const ViewTask: FC<{ taskId: string; columnId: string; boardId: string }> = ({
               <span className="text-sm font-medium capitalize text-black dark:text-white">
                 {selectedColumnTitle}
               </span>
-              <div className="pointer-events-none absolute right-4 top-[calc(50%+3px)] size-3 -translate-y-1/2">
+              <div className="pointer-events-none absolute right-4 top-[calc(50%+3px)] size-4 -translate-y-1/2">
                 <ChevronDownIcon className="text-purple" />
               </div>
             </summary>

@@ -37,7 +37,8 @@ const DeleteBoard: FC<{ id: string }> = ({ id }) => {
     <div className="flex flex-col gap-6 font-sans">
       <h2 className="text-lg font-bold text-red">Delete this board?</h2>
       <p className="text-sm font-medium text-grey-500">
-        Are you sure you want to delete the &apos;<span>{board.name}</span>
+        Are you sure you want to delete the &apos;
+        <span className="capitalize">{board.name}</span>
         &apos; board? This action will remove all columns and tasks and cannot
         be reversed.
       </p>

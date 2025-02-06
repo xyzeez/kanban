@@ -17,6 +17,7 @@ import ViewTask from "../ui/modals/ViewTask";
 
 // Types
 import { Column, AddColumnsButtonProps } from "../types/board";
+import { Task } from "../types/task";
 
 // Utils
 import { cn } from "../utils/styles";
@@ -38,14 +39,41 @@ const AddColumnButton: FC<AddColumnsButtonProps> = ({
   </button>
 );
 
+const TaskItem: FC<{
+  task: Task;
+  columnId: string;
+  boardId: string;
+}> = ({ task, columnId, boardId }) => {
+  const { openModal } = useApp();
+
+  return (
+    <button
+      onClick={() => {
+        if (task.id) {
+          openModal(
+            <ViewTask taskId={task.id} columnId={columnId} boardId={boardId} />,
+          );
+        }
+      }}
+      className="flex w-full flex-col gap-2 rounded-lg bg-white px-4 py-6 font-sans shadow-md shadow-[#364E7E1A] transition-colors dark:bg-grey-800"
+    >
+      <h4 className="text-base font-bold text-[#000112] dark:text-white">
+        {task.title}
+      </h4>
+      <p className="text-xs font-bold text-grey-500">
+        {task.doneSubtaskCount} of {task.subtasks.length} subtasks
+      </p>
+    </button>
+  );
+};
+
 const ColumnItem: FC<{
   column: Column;
 }> = ({ column }) => {
-  const { boardId } = useParams<{
+  const { boardId } = useParams() as {
     boardId: string;
-  }>();
-  const { tasks, isLoading } = useTasks(boardId ?? "", column.id);
-  const { openModal } = useApp();
+  };
+  const { tasks, isLoading } = useTasks(boardId, column.id);
 
   return (
     <li
@@ -69,31 +97,14 @@ const ColumnItem: FC<{
             "gap-5 rounded-md border-2 border-dashed border-grey-500/25",
         )}
       >
-        {tasks?.map((task) => (
-          <li key={task.id} className={cn(tasks?.length && "pb-5")}>
-            <button
-              onClick={() => {
-                if (boardId && column.id && task.id) {
-                  openModal(
-                    <ViewTask
-                      taskId={task.id}
-                      columnId={column.id}
-                      boardId={boardId}
-                    />,
-                  );
-                }
-              }}
-              className="flex w-full flex-col gap-2 rounded-lg bg-white px-4 py-6 font-sans shadow-md shadow-[#364E7E1A] transition-colors dark:bg-grey-800"
-            >
-              <h4 className="text-base font-bold text-[#000112] dark:text-white">
-                {task.title}
-              </h4>
-              <p className="text-xs font-bold text-grey-500">
-                {task.doneSubtaskCount} of {task.subtasks.length} subtasks
-              </p>
-            </button>
-          </li>
-        ))}
+        {tasks?.map(
+          (task) =>
+            column.id && (
+              <li key={task.id} className={cn(tasks?.length && "pb-5")}>
+                <TaskItem task={task} columnId={column.id} boardId={boardId} />
+              </li>
+            ),
+        )}
       </ul>
     </li>
   );
