@@ -5,7 +5,7 @@ import { useAuth } from "./useAuth";
 import { taskService } from "../services/taskService";
 
 // Types
-import { CreateTaskDto, UpdateTaskDto } from "../types/task";
+import { Task } from "../types/task";
 
 export const useTasks = (
   boardId: string,
@@ -30,7 +30,7 @@ export const useTasks = (
   });
 
   const createTaskMutation = useMutation({
-    mutationFn: (task: CreateTaskDto) => taskService.createTask(task),
+    mutationFn: (task: Task) => taskService.createTask(task),
     onSuccess: (_, variables) => {
       void queryClient.invalidateQueries({
         queryKey: ["tasks", boardId, variables.columnId],
@@ -39,7 +39,7 @@ export const useTasks = (
   });
 
   const updateTaskMutation = useMutation({
-    mutationFn: (data: UpdateTaskDto) => taskService.updateTask(data),
+    mutationFn: (data: Task) => taskService.updateTask(data),
     onSuccess: (_, variables) => {
       void queryClient.invalidateQueries({
         queryKey: ["tasks", variables.boardId, variables.columnId],

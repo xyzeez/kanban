@@ -15,13 +15,11 @@ export const authAPI = apiService("auth");
 export const authService = {
   register: async (data: RegisterData): Promise<AuthResponse> => {
     const response = await authAPI.post<AuthResponse>("/register", data);
-    if (response.status !== "success") throw new Error(response.message);
     return response.data;
   },
 
   login: async (credentials: LoginCredentials): Promise<AuthResponse> => {
     const response = await authAPI.post<AuthResponse>("/login", credentials);
-    if (response.status !== "success") throw new Error(response.message);
     return response.data;
   },
 
@@ -31,7 +29,6 @@ export const authService = {
 
   getCurrentUser: async (): Promise<User> => {
     const response = await authAPI.get<{ user: User }>("/me");
-    if (response.status !== "success") throw new Error(response.message);
     return response.data.user;
   },
 };

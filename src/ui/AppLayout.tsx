@@ -1,9 +1,8 @@
 import { FC, useEffect } from "react";
-import { Navigate, Outlet, useLocation, useNavigate } from "react-router";
+import { Outlet, useLocation, useNavigate } from "react-router";
 
 // Hooks
 import { useBoards } from "../hooks/useBoards";
-import { useAuth } from "../hooks/useAuth";
 
 // UIs
 import Header from "./Header";
@@ -11,7 +10,6 @@ import { SideBarNav } from "./Navs";
 import LoadingScreen from "./placeholders/LoadingScreen";
 
 const AppLayout: FC = () => {
-  const { isAuthenticated } = useAuth();
   const { boards } = useBoards();
   const location = useLocation();
   const navigate = useNavigate();
@@ -21,9 +19,6 @@ const AppLayout: FC = () => {
       void navigate(`/boards/${boards[0].slug}`);
     }
   }, [boards, location.pathname, navigate]);
-
-  if (!isAuthenticated)
-    return <Navigate to="/login" state={{ from: location }} replace />;
 
   if (!boards) return <LoadingScreen type="App" />;
 

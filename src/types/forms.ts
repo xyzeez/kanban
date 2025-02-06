@@ -1,4 +1,6 @@
+// Types
 import { Column } from "./board";
+import { Subtask } from "./task";
 
 export interface RegisterFormInputs {
   email: string;
@@ -20,7 +22,7 @@ export interface BoardFormInputs {
 export interface TaskFormInputs {
   title: string;
   description: string;
-  subtasks: { title: string }[];
+  subtasks: Subtask[];
   columnId: string;
   boardId: string;
 }

@@ -2,7 +2,7 @@
 import { apiService } from "./apiService";
 
 // Types
-import { CreateTaskDto, UpdateTaskDto, TasksApiResponse } from "../types/task";
+import { Task, TasksApiResponse } from "../types/task";
 
 // API Service
 export const tasksAPI = apiService("tasks");
@@ -12,43 +12,27 @@ export const taskService = {
     const response = await tasksAPI.get<TasksApiResponse>(
       `/?columnId=${columnId}`,
     );
-    if (response.status !== "success") {
-      throw new Error(response.message);
-    }
     return response.data.tasks;
   },
 
   getTask: async (id: string) => {
     const response = await tasksAPI.get<TasksApiResponse>(`/${id}`);
-    if (response.status !== "success") {
-      throw new Error(response.message);
-    }
     return response.data.task;
   },
 
-  createTask: async (task: CreateTaskDto) => {
+  createTask: async (task: Task) => {
     const columnId = task.columnId;
     const boardId = task.boardId;
     const response = await tasksAPI.post<TasksApiResponse>(
       `/?columnId=${columnId}&boardId=${boardId}`,
       task,
     );
-
-    if (response.status !== "success") {
-      throw new Error(response.message);
-    }
-
     return response.data.task;
   },
 
-  updateTask: async (task: UpdateTaskDto) => {
+  updateTask: async (task: Task) => {
     const { id, ...rest } = task;
     const response = await tasksAPI.patch<TasksApiResponse>(`/${id}`, rest);
-
-    if (response.status !== "success") {
-      throw new Error(response.message);
-    }
-
     return response.data.task;
   },
 

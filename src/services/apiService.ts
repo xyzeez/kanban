@@ -1,16 +1,33 @@
-import axios, { AxiosRequestConfig } from "axios";
+import axios, { AxiosError, AxiosRequestConfig } from "axios";
 
 // Config
 import { API } from "../config";
 
 // Types
-import { ApiResponse, ApiService } from "../types/api";
+import { ApiResponse, ApiService, ErrorResponse } from "../types/api";
 
 // Axios Instance
 const axiosInstance = axios.create({
   baseURL: API,
   withCredentials: true,
 });
+
+// Response Interceptor
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  (error: AxiosError<ErrorResponse>) => {
+    if (
+      error.response?.status === 401 &&
+      !window.location.pathname.includes("/login")
+    ) {
+      window.location.href = "/login";
+    }
+
+    return Promise.reject(
+      new Error(error.response?.data?.message || error.message),
+    );
+  },
+);
 
 // API Service Factory
 export const apiService = (baseEndpoint: string): ApiService => {

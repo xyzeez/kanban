@@ -1,35 +1,18 @@
 export type Subtask = {
-  id: string;
+  id?: string;
   title: string;
-  completed: boolean;
+  completed?: boolean;
 };
 
 export type Task = {
-  id: string;
+  id?: string;
   title: string;
   description: string;
   subtasks: Subtask[];
-  doneSubtaskCount: number;
+  doneSubtaskCount?: number;
   columnId: string;
   boardId: string;
 };
-
-export interface CreateTaskDto {
-  title: string;
-  description: string;
-  subtasks: { title: string }[];
-  columnId: string;
-  boardId: string;
-}
-
-export interface UpdateTaskDto {
-  id: string;
-  title: string;
-  description: string;
-  subtasks: { title: string }[];
-  columnId: string;
-  boardId: string;
-}
 
 export interface TasksApiResponse {
   task?: Task;

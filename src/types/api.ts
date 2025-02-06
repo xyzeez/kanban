@@ -1,10 +1,13 @@
 import { AxiosRequestConfig } from "axios";
 
-// Types
 export interface ApiResponse<T = unknown> {
   status: string;
   data: T;
   message?: string;
+}
+
+export interface ErrorResponse {
+  message: string;
 }
 
 export interface ApiService {
