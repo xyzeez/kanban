@@ -104,9 +104,9 @@ const Header: FC = () => {
                 <button
                   disabled={isLoading || !board}
                   onClick={() => {
-                    if (board) {
+                    if (board?.id) {
                       toggleBoardOptions(false);
-                      openModal(<DeleteBoard boardData={board} />);
+                      openModal(<DeleteBoard id={board.id} />);
                     }
                   }}
                   className="text-btn text-red"

@@ -153,8 +153,8 @@ export const CrossIcon = ({ className }: Icon) => {
   );
 };
 
-export const SpinnerIcon = () => {
-  return <l-ring-2 size={24} color="currentColor" />;
+export const SpinnerIcon = ({ size = 24 }: { size?: number }) => {
+  return <l-ring-2 size={size} color="currentColor" />;
 };
 
 export const LoaderIcon = () => {

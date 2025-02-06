@@ -71,7 +71,9 @@ const ViewTask: FC<{ taskId: string; columnId: string; boardId: string }> = ({
                 Edit Task
               </button>
               <button
-                onClick={() => openModal(<DeleteTask taskData={task} />)}
+                onClick={() =>
+                  openModal(<DeleteTask id={task.id} columnId={columnId} />)
+                }
                 className="text-btn text-red"
               >
                 Delete Task
