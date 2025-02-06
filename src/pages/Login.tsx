@@ -17,6 +17,9 @@ import {
 // Types
 import { LoginFormInputs } from "../types/forms";
 
+// Utils
+import { cn } from "../utils";
+
 const Login: FC = () => {
   const { login, isAuthenticated } = useAuth();
   const [showPassword, setShowPasswords] = useState(false);
@@ -24,7 +27,7 @@ const Login: FC = () => {
     register,
     handleSubmit,
     reset,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = useForm<LoginFormInputs>();
 
   const togglePassword = () => {
@@ -48,12 +51,13 @@ const Login: FC = () => {
   return (
     <main className="flex items-center justify-center">
       <form
+        noValidate
         onSubmit={handleSubmit(onSubmit)}
-        className="flex w-full max-w-96 flex-col gap-8 font-sans text-black transition-colors dark:text-grey-500"
+        className="flex w-full max-w-96 flex-col gap-8 font-sans"
       >
         <Logo full={true} />
         <div className="flex flex-col gap-4">
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 text-grey-500">
             <label htmlFor="email" className="font-bold">
               Email
             </label>
@@ -61,31 +65,45 @@ const Login: FC = () => {
               type="email"
               id="email"
               placeholder="example@example.com"
-              className="rounded-3xl bg-white px-5 py-3 text-purple outline-none ring-purple transition-colors focus:ring-1 dark:bg-grey-800"
-              {...register("email", { required: true })}
+              className={cn(
+                "rounded-[4px] bg-white px-5 py-3 text-sm font-medium text-purple outline-none ring-1 ring-grey-500/25 transition-colors focus:ring-purple dark:bg-grey-800",
+                errors.email && "ring-1 ring-red",
+              )}
+              {...register("email", { required: "Email is required" })}
             />
+
+            {errors.email && (
+              <p className="text-xs text-red">{errors.email.message}</p>
+            )}
           </div>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 text-grey-500">
             <label htmlFor="password" className="font-bold">
               Password
             </label>
-            <div className="relative rounded-3xl bg-white px-5 py-3 text-purple outline-none ring-purple transition-colors focus-within:ring-1 dark:bg-grey-800">
+            <div
+              className={cn(
+                "relative rounded-[4px] bg-white px-5 py-3 text-sm font-medium text-purple outline-none ring-1 ring-grey-500/25 transition-colors focus-within:ring-1 focus-within:ring-purple dark:bg-grey-800",
+                errors.password && "ring-1 ring-red",
+              )}
+            >
               <input
                 type={showPassword ? "text" : "password"}
                 id="password"
                 placeholder="********************************"
                 className="w-full bg-transparent outline-none"
-                {...register("password", { required: true })}
+                {...register("password", { required: "Password is required" })}
               />
               <span className="absolute inset-y-0 right-5 flex items-center justify-center">
                 <button type="button" onClick={togglePassword}>
-                  {showPassword && <ShowIcon />}
-                  {!showPassword && <HideIcon />}
+                  {showPassword ? <ShowIcon /> : <HideIcon />}
                 </button>
               </span>
             </div>
+            {errors.password && (
+              <p className="text-xs text-red">{errors.password.message}</p>
+            )}
           </div>
-          <div className="flex flex-row items-center justify-between gap-4 text-xs">
+          <div className="flex flex-row items-center justify-between gap-4 text-xs text-grey-500">
             <label
               htmlFor="remember"
               className="group relative flex flex-row items-center gap-2"
@@ -108,12 +126,12 @@ const Login: FC = () => {
         </div>
         <button
           type="submit"
-          disabled={isSubmitting}
+          disabled={!!errors.email || !!errors.password || isSubmitting}
           className="btn btn-primary btn-large"
         >
           {isSubmitting ? <SpinnerIcon /> : <span>Sign In</span>}
         </button>
-        <p className="inline-flex flex-wrap justify-center gap-1 text-sm">
+        <p className="inline-flex flex-wrap justify-center gap-1 text-sm text-grey-500">
           Don&apos;t have an account?
           <Link to="/register" className="text-purple">
             Create an account
