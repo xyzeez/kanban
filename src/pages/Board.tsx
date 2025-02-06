@@ -19,7 +19,8 @@ import ViewTask from "../ui/modals/ViewTask";
 import { Column, AddColumnsButtonProps } from "../types/board";
 
 // Utils
-import { cn, stringToSlug } from "../utils";
+import { cn } from "../utils/styles";
+import { stringToSlug } from "../utils/string";
 
 const AddColumnButton: FC<AddColumnsButtonProps> = ({
   clickHandler,

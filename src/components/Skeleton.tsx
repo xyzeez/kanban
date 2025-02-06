@@ -4,7 +4,7 @@ import { FC } from "react";
 import { SkeletonProps } from "../types/components";
 
 // Utils
-import { cn } from "../utils";
+import { cn } from "../utils/styles";
 
 const Skeleton: FC<SkeletonProps> = ({ className }) => {
   return <div className={cn("animate-pulse rounded bg-current", className)} />;

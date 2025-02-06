@@ -12,7 +12,7 @@ import {
 } from "../types/contexts";
 
 // Utils
-import { getTheme } from "../utils";
+import { getTheme } from "../utils/theme";
 
 // Initialize theme
 document.documentElement.classList.add(getTheme());

@@ -9,7 +9,7 @@ dotPulse.register();
 import { Icon } from "../types/components";
 
 // Utils
-import { cn } from "../utils";
+import { cn } from "../utils/styles";
 
 const SVG: FC<PropsWithChildren<Icon>> = ({ className, viewBox, children }) => {
   return (

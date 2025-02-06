@@ -10,7 +10,7 @@ import {
 } from "../../types/placeholders";
 
 // Utils
-import { cn } from "../../utils";
+import { cn } from "../../utils/styles";
 
 const TaskSkeleton: FC = () => (
   <div className="flex w-full flex-col gap-2 rounded-lg bg-white px-4 py-6 text-grey-500/25 shadow-md shadow-[#364E7E1A] transition-colors dark:bg-grey-800 dark:text-grey-700">
