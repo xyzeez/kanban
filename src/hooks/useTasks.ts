@@ -1,11 +1,14 @@
+import { useState, useCallback, useRef } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
+// Services
+import { taskService } from "../services/taskService";
 
 // Hooks
 import { useAuth } from "./useAuth";
-import { taskService } from "../services/taskService";
 
 // Types
-import { Task } from "../types/task";
+import { Task, Subtask } from "../types/task";
 
 export const useTasks = (
   boardId: string,
@@ -16,6 +19,38 @@ export const useTasks = (
   const queryClient = useQueryClient();
   const tasksQueryKey = ["tasks", boardId, columnId];
   const taskQueryKey = ["task", taskId];
+  const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
+
+  const [subtasksByTaskId, setSubtasksByTaskId] = useState<
+    Record<string, Subtask[]>
+  >({});
+
+  const updateSubtasks = useCallback(
+    (taskId: string, subtasks: Subtask[]) => {
+      setSubtasksByTaskId((prev) => ({
+        ...prev,
+        [taskId]: subtasks,
+      }));
+
+      // Clear any existing timeout
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+
+      // Set a new timeout to debounce the API call
+      timeoutRef.current = setTimeout(() => {
+        void taskService.updateSubtasksWithAbort(taskId, subtasks).then(() => {
+          void queryClient.invalidateQueries({
+            queryKey: ["tasks", boardId, columnId],
+          });
+          void queryClient.invalidateQueries({
+            queryKey: ["task", taskId],
+          });
+        });
+      }, 500); // 500ms debounce delay
+    },
+    [boardId, columnId, queryClient],
+  );
 
   const tasksQuery = useQuery({
     queryKey: tasksQueryKey,
@@ -73,12 +108,14 @@ export const useTasks = (
     // Queries
     tasks: tasksQuery.data,
     task: taskQuery.data,
-    isLoading: tasksQuery.isLoading || (!!taskId && taskQuery.isLoading),
-    isError: tasksQuery.isError || (!!taskId && taskQuery.isError),
+    subtasksByTaskId,
+    isLoading: tasksQuery.isLoading || taskQuery.isLoading,
+    isError: tasksQuery.isError || taskQuery.isError,
 
     // Mutations
     createTask: createTaskMutation.mutateAsync,
     updateTask: updateTaskMutation.mutateAsync,
+    updateSubtasks,
     deleteTask: deleteTaskMutation.mutateAsync,
   };
 };

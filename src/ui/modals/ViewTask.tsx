@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useState, useEffect } from "react";
 
 // Hooks
 import { useBoards } from "../../hooks/useBoards";
@@ -23,9 +23,17 @@ const ViewTask: FC<{ taskId: string; columnId: string; boardId: string }> = ({
   boardId,
 }) => {
   const [openTaskOptions, setOpenTaskOptions] = useState(false);
+  const [selectedColumnId, setSelectedColumnId] = useState(columnId);
   const { board } = useBoards(boardId);
-  const { task, isLoading } = useTasks(boardId, columnId, taskId);
+  const { task, isLoading, updateSubtasks, subtasksByTaskId, updateTask } =
+    useTasks(boardId, columnId, taskId);
   const { openModal } = useApp();
+
+  useEffect(() => {
+    if (task) {
+      setSelectedColumnId(task.columnId);
+    }
+  }, [task]);
 
   const columns = board?.columns || [];
 
@@ -36,13 +44,41 @@ const ViewTask: FC<{ taskId: string; columnId: string; boardId: string }> = ({
   const {
     title,
     description,
-    subtasks,
-    doneSubtaskCount,
+    subtasks: initialSubtasks,
     columnId: taskColumnId,
   } = task;
+
+  const subtasks = subtasksByTaskId[taskId] || initialSubtasks;
+
+  const handleSubtaskToggle = (index: number) => {
+    const newSubtasks = [...subtasks];
+    newSubtasks[index] = {
+      ...newSubtasks[index],
+      completed: !newSubtasks[index].completed,
+    };
+    updateSubtasks(taskId, newSubtasks);
+  };
+
+  const handleColumnChange = async (newColumnId: string) => {
+    if (!task || !task.id || newColumnId === task.columnId) return;
+    setSelectedColumnId(newColumnId);
+
+    // TODO: Optimistically update columnId
+    await updateTask({
+      ...task,
+      id: task.id,
+      columnId: newColumnId,
+      boardId: task.boardId,
+    });
+  };
+
   const selectedColumnTitle = columns.find(
     (column) => column.id === taskColumnId,
   )?.title;
+
+  const doneSubtaskCount = subtasks.filter(
+    (subtask) => subtask.completed,
+  ).length;
 
   return (
     <div className="flex flex-col gap-6 font-sans">
@@ -92,18 +128,18 @@ const ViewTask: FC<{ taskId: string; columnId: string; boardId: string }> = ({
           Subtasks ({doneSubtaskCount} of {subtasks.length})
         </h3>
         <ul className="flex flex-col gap-2">
-          {subtasks.map((subtask) => (
-            <li key={subtask.id}>
+          {subtasks.map((subtask, index) => (
+            <li key={index}>
               <label
-                htmlFor={subtask.id}
+                htmlFor={`subtask-${index}`}
                 className="group flex cursor-pointer flex-row items-center gap-4 rounded bg-grey-100 pb-4 pl-3 pr-2 pt-3 text-xs font-bold capitalize text-[#000111] transition-colors hover:bg-purple/25 has-[:checked]:text-opacity-50 has-[:checked]:line-through has-[:checked]:hover:bg-grey-100 dark:bg-grey-900 dark:text-white dark:hover:bg-purple/25 dark:has-[:checked]:text-opacity-50 dark:has-[:checked]:hover:bg-grey-900"
               >
                 <input
                   type="checkbox"
-                  id={subtask.id}
+                  id={`subtask-${index}`}
                   className="sr-only"
-                  // TODO: Add substask status toggle functionality
-                  // checked={subtask.completed}
+                  onChange={() => handleSubtaskToggle(index)}
+                  checked={subtask.completed}
                   aria-label={subtask.title}
                 />
                 <span className="grid size-4 place-content-center rounded-sm border border-grey-500 bg-white transition-colors group-has-[:checked]:border-transparent group-has-[:checked]:bg-purple dark:border-white">
@@ -128,22 +164,26 @@ const ViewTask: FC<{ taskId: string; columnId: string; boardId: string }> = ({
               </div>
             </summary>
             <fieldset className="absolute top-[calc(100%+8px)] flex w-full flex-col gap-2 rounded-lg border border-grey-500/25 bg-white p-4 shadow-sm dark:border-grey-900 dark:bg-grey-900">
-              {columns.map((column) => (
+              {columns.map((column, index) => (
                 <label
-                  key={columnId}
-                  htmlFor={columnId}
+                  key={`column-${index}`}
+                  htmlFor={column.id}
                   className="w-fit cursor-pointer font-sans text-sm font-medium capitalize text-grey-500 has-[:checked]:text-purple"
                 >
                   <input
                     type="radio"
-                    id={columnId}
-                    value={columnId}
-                    name={columnId}
-                    // TODO: Add column switch functionality
-                    // onChange={() => setSelectedColumnId(column?.id)}
-                    // checked={columnId === columnId}
+                    id={column.id}
+                    value={column.id}
+                    name="column-status"
+                    onChange={() => {
+                      if (column && column.id) {
+                        void handleColumnChange(column.id);
+                      }
+                    }}
+                    checked={column.id === selectedColumnId}
                     className="sr-only"
                   />
+
                   {column.title}
                 </label>
               ))}

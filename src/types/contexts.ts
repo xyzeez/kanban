@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 export type Theme = "light" | "dark";
 
 export type ModalType = ReactNode;
+
 export interface AppContextType {
   theme: Theme;
   toggleTheme: () => void;
