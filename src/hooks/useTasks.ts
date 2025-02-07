@@ -24,6 +24,9 @@ export const useTasks = (
   const [subtasksByTaskId, setSubtasksByTaskId] = useState<
     Record<string, Subtask[]>
   >({});
+  const [taskColumnIds, setTaskColumnIds] = useState<Record<string, string>>(
+    {},
+  );
 
   const updateSubtasks = useCallback(
     (taskId: string, subtasks: Subtask[]) => {
@@ -50,6 +53,69 @@ export const useTasks = (
       }, 500); // 500ms debounce delay
     },
     [boardId, columnId, queryClient],
+  );
+
+  const updateTaskColumn = useCallback(
+    (taskId: string, newColumnId: string) => {
+      const task = queryClient.getQueryData<Task>(["task", taskId]);
+      if (!task) return;
+
+      const oldColumnId = task.columnId;
+      if (oldColumnId === newColumnId) return;
+
+      // Optimistically update local state
+      setTaskColumnIds((prev) => ({
+        ...prev,
+        [taskId]: newColumnId,
+      }));
+
+      // Optimistically update queries
+      const previousSourceTasks = queryClient.getQueryData<Task[]>([
+        "tasks",
+        boardId,
+        oldColumnId,
+      ]);
+      const previousDestTasks = queryClient.getQueryData<Task[]>([
+        "tasks",
+        boardId,
+        newColumnId,
+      ]);
+
+      if (previousSourceTasks) {
+        queryClient.setQueryData(
+          ["tasks", boardId, oldColumnId],
+          previousSourceTasks.filter((t) => t.id !== taskId),
+        );
+      }
+
+      if (previousDestTasks) {
+        queryClient.setQueryData(
+          ["tasks", boardId, newColumnId],
+          [{ ...task, columnId: newColumnId }, ...previousDestTasks],
+        );
+      }
+
+      // Clear any existing timeout
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+
+      // Set a new timeout to debounce the API call
+      timeoutRef.current = setTimeout(() => {
+        void taskService.updateColumnWithAbort(taskId, newColumnId).then(() => {
+          void queryClient.invalidateQueries({
+            queryKey: ["tasks", boardId, oldColumnId],
+          });
+          void queryClient.invalidateQueries({
+            queryKey: ["tasks", boardId, newColumnId],
+          });
+          void queryClient.invalidateQueries({
+            queryKey: ["task", taskId],
+          });
+        });
+      }, 500);
+    },
+    [boardId, queryClient],
   );
 
   const tasksQuery = useQuery({
@@ -109,6 +175,7 @@ export const useTasks = (
     tasks: tasksQuery.data,
     task: taskQuery.data,
     subtasksByTaskId,
+    taskColumnIds,
     isLoading: tasksQuery.isLoading || taskQuery.isLoading,
     isError: tasksQuery.isError || taskQuery.isError,
 
@@ -116,6 +183,7 @@ export const useTasks = (
     createTask: createTaskMutation.mutateAsync,
     updateTask: updateTaskMutation.mutateAsync,
     updateSubtasks,
+    updateTaskColumn,
     deleteTask: deleteTaskMutation.mutateAsync,
   };
 };

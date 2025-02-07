@@ -81,4 +81,46 @@ export const taskService = {
       }
     };
   })(),
+
+  updateColumn: async (
+    taskId: string,
+    columnId: string,
+    signal?: AbortSignal,
+  ) => {
+    const response = await tasksAPI.patch<TasksApiResponse>(
+      `/${taskId}/column`,
+      {
+        columnId,
+      },
+      { signal },
+    );
+    return response.data.task;
+  },
+
+  updateColumnWithAbort: (() => {
+    let controller: AbortController | null = null;
+
+    return async (taskId: string, columnId: string) => {
+      // Abort previous request if it exists
+      if (controller) {
+        controller.abort();
+      }
+
+      // Create new controller for this request
+      controller = new AbortController();
+
+      try {
+        return await taskService.updateColumn(
+          taskId,
+          columnId,
+          controller.signal,
+        );
+      } catch (error) {
+        if (error instanceof Error && error.name !== "AbortError") {
+          console.error("Failed to update column:", error);
+        }
+        throw error;
+      }
+    };
+  })(),
 };

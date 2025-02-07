@@ -23,10 +23,17 @@ const ViewTask: FC<{ taskId: string; columnId: string; boardId: string }> = ({
   boardId,
 }) => {
   const [openTaskOptions, setOpenTaskOptions] = useState(false);
+  const [isColumnDropdownOpen, setIsColumnDropdownOpen] = useState(false);
   const [selectedColumnId, setSelectedColumnId] = useState(columnId);
   const { board } = useBoards(boardId);
-  const { task, isLoading, updateSubtasks, subtasksByTaskId, updateTask } =
-    useTasks(boardId, columnId, taskId);
+  const {
+    task,
+    isLoading,
+    updateSubtasks,
+    subtasksByTaskId,
+    updateTask,
+    updateTaskColumn,
+  } = useTasks(boardId, columnId, taskId);
   const { openModal } = useApp();
 
   useEffect(() => {
@@ -59,22 +66,11 @@ const ViewTask: FC<{ taskId: string; columnId: string; boardId: string }> = ({
     updateSubtasks(taskId, newSubtasks);
   };
 
-  const handleColumnChange = async (newColumnId: string) => {
+  const handleColumnChange = (newColumnId: string) => {
     if (!task || !task.id || newColumnId === task.columnId) return;
     setSelectedColumnId(newColumnId);
-
-    // TODO: Optimistically update columnId
-    await updateTask({
-      ...task,
-      id: task.id,
-      columnId: newColumnId,
-      boardId: task.boardId,
-    });
+    updateTaskColumn(task.id, newColumnId);
   };
-
-  const selectedColumnTitle = columns.find(
-    (column) => column.id === taskColumnId,
-  )?.title;
 
   const doneSubtaskCount = subtasks.filter(
     (subtask) => subtask.completed,
@@ -154,41 +150,42 @@ const ViewTask: FC<{ taskId: string; columnId: string; boardId: string }> = ({
           <h3 className="text-xs font-bold text-grey-500 transition-colors dark:text-white">
             Current Status
           </h3>
-          <details className="relative">
-            <summary className="relative cursor-pointer list-none rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 ring-purple group-focus:border-transparent dark:bg-transparent">
+          <div className="relative">
+            <button
+              onClick={() => setIsColumnDropdownOpen(!isColumnDropdownOpen)}
+              className="relative flex w-full cursor-pointer items-center justify-between rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 text-left ring-purple group-focus:border-transparent dark:bg-transparent"
+            >
               <span className="text-sm font-medium capitalize text-black dark:text-white">
-                {selectedColumnTitle}
+                {columns.find((col) => col.id === selectedColumnId)?.title}
               </span>
-              <div className="pointer-events-none absolute right-4 top-[calc(50%+3px)] size-4 -translate-y-1/2">
+              <div className="pointer-events-none size-4">
                 <ChevronDownIcon className="text-purple" />
               </div>
-            </summary>
-            <fieldset className="absolute top-[calc(100%+8px)] flex w-full flex-col gap-2 rounded-lg border border-grey-500/25 bg-white p-4 shadow-sm dark:border-grey-900 dark:bg-grey-900">
-              {columns.map((column, index) => (
-                <label
-                  key={`column-${index}`}
-                  htmlFor={column.id}
-                  className="w-fit cursor-pointer font-sans text-sm font-medium capitalize text-grey-500 has-[:checked]:text-purple"
-                >
-                  <input
-                    type="radio"
-                    id={column.id}
-                    value={column.id}
-                    name="column-status"
-                    onChange={() => {
-                      if (column && column.id) {
-                        void handleColumnChange(column.id);
+            </button>
+
+            {isColumnDropdownOpen && (
+              <div className="absolute top-[calc(100%+8px)] z-10 flex w-full flex-col gap-2 rounded-lg border border-grey-500/25 bg-white p-4 shadow-sm dark:border-grey-900 dark:bg-grey-900">
+                {columns.map((column) => (
+                  <button
+                    key={column.id}
+                    onClick={() => {
+                      if (column.id) {
+                        handleColumnChange(column.id);
+                        setIsColumnDropdownOpen(false);
                       }
                     }}
-                    checked={column.id === selectedColumnId}
-                    className="sr-only"
-                  />
-
-                  {column.title}
-                </label>
-              ))}
-            </fieldset>
-          </details>
+                    className={`w-fit text-left text-sm font-medium capitalize transition-colors ${
+                      column.id === selectedColumnId
+                        ? "text-purple"
+                        : "text-grey-500 hover:text-purple"
+                    }`}
+                  >
+                    {column.title}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
