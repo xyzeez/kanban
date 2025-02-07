@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { useParams } from "react-router";
 import { useForm, useFieldArray, SubmitHandler } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -38,6 +38,7 @@ const CreateTaskForm: FC = () => {
     reset,
     watch,
     formState: { isSubmitting, errors },
+    setValue,
   } = useForm<TaskFormInputs>({
     defaultValues: {
       title: "",
@@ -55,6 +56,8 @@ const CreateTaskForm: FC = () => {
   const selectedColumnTitle =
     board?.columns.find((column) => column.id === watch("columnId"))?.title ||
     "";
+
+  const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
 
   if (!board || isLoading) {
     return (
@@ -201,42 +204,50 @@ const CreateTaskForm: FC = () => {
         <p className="text-xs font-bold text-grey-500 transition-colors dark:text-white">
           Status
         </p>
-        <details className="relative">
-          <summary
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setIsStatusDropdownOpen(!isStatusDropdownOpen)}
             className={cn(
-              "relative cursor-pointer list-none rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 ring-purple group-focus:border-transparent dark:bg-transparent",
+              "relative flex w-full cursor-pointer items-center justify-between rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 text-left ring-purple group-focus:border-transparent dark:bg-transparent",
               errors.columnId && "ring-1 ring-red",
             )}
           >
             <span className="text-sm font-medium capitalize text-black dark:text-white">
               {selectedColumnTitle}
             </span>
-            <div className="pointer-events-none absolute right-4 top-[calc(50%+3px)] size-4 -translate-y-1/2">
+            <div className="pointer-events-none size-4">
               <ChevronDownIcon className="text-purple" />
             </div>
-          </summary>
-          <fieldset className="absolute top-[calc(100%+8px)] flex w-full flex-col gap-2 rounded-lg border border-grey-500/25 bg-white p-4 shadow-sm dark:border-grey-900 dark:bg-grey-900">
-            {board.columns.map((column) => (
-              <label
-                key={column.id}
-                htmlFor={column.id}
-                className="w-fit cursor-pointer font-sans text-sm font-medium capitalize text-grey-500 has-[:checked]:text-purple"
-              >
-                <input
-                  type="radio"
-                  id={column.id}
-                  value={column.id}
-                  checked={watch("columnId") === column.id}
-                  className="sr-only"
-                  {...register("columnId", {
-                    required: "Please select a status",
-                  })}
-                />
-                {column.title}
-              </label>
-            ))}
-          </fieldset>
-        </details>
+          </button>
+
+          {isStatusDropdownOpen && (
+            <div className="absolute top-[calc(100%+8px)] z-10 flex w-full flex-col gap-2 rounded-lg border border-grey-500/25 bg-white p-4 shadow-sm dark:border-grey-900 dark:bg-grey-900">
+              {board.columns.map((column) => (
+                <button
+                  key={column.id}
+                  type="button"
+                  onClick={() => {
+                    if (column.id) {
+                      setValue("columnId", column.id, {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                      });
+                      setIsStatusDropdownOpen(false);
+                    }
+                  }}
+                  className={`w-fit text-left text-sm font-medium capitalize transition-colors ${
+                    watch("columnId") === column.id
+                      ? "text-purple"
+                      : "text-grey-500 hover:text-purple"
+                  }`}
+                >
+                  {column.title}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
         {errors.columnId && (
           <span className="text-xs text-red">{errors.columnId.message}</span>
         )}
@@ -279,6 +290,7 @@ const EditTaskForm: FC<{
     reset,
     watch,
     formState: { isSubmitting, errors },
+    setValue,
   } = useForm<TaskFormInputs>({
     defaultValues: {
       title: task?.title || "",
@@ -295,6 +307,8 @@ const EditTaskForm: FC<{
 
   const selectedColumnTitle =
     columns.find((column) => column.id === watch("columnId"))?.title || "";
+
+  const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
 
   const onSubmit: SubmitHandler<TaskFormInputs> = async (data) => {
     try {
@@ -440,42 +454,50 @@ const EditTaskForm: FC<{
         <p className="text-xs font-bold text-grey-500 transition-colors dark:text-white">
           Status
         </p>
-        <details className="relative">
-          <summary
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setIsStatusDropdownOpen(!isStatusDropdownOpen)}
             className={cn(
-              "relative cursor-pointer list-none rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 ring-purple group-focus:border-transparent dark:bg-transparent",
+              "relative flex w-full cursor-pointer items-center justify-between rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 text-left ring-purple group-focus:border-transparent dark:bg-transparent",
               errors.columnId && "ring-1 ring-red",
             )}
           >
             <span className="text-sm font-medium capitalize text-black dark:text-white">
               {selectedColumnTitle}
             </span>
-            <div className="pointer-events-none absolute right-4 top-[calc(50%+3px)] size-3 -translate-y-1/2">
+            <div className="pointer-events-none size-4">
               <ChevronDownIcon className="text-purple" />
             </div>
-          </summary>
-          <fieldset className="absolute top-[calc(100%+8px)] flex w-full flex-col gap-2 rounded-lg border border-grey-500/25 bg-white p-4 shadow-sm dark:border-grey-900 dark:bg-grey-900">
-            {columns.map((column) => (
-              <label
-                key={column.id}
-                htmlFor={column.id}
-                className="w-fit cursor-pointer font-sans text-sm font-medium capitalize text-grey-500 has-[:checked]:text-purple"
-              >
-                <input
-                  type="radio"
-                  id={column.id}
-                  value={column.id}
-                  checked={watch("columnId") === column.id}
-                  className="sr-only"
-                  {...register("columnId", {
-                    required: "Please select a status",
-                  })}
-                />
-                {column.title}
-              </label>
-            ))}
-          </fieldset>
-        </details>
+          </button>
+
+          {isStatusDropdownOpen && (
+            <div className="absolute top-[calc(100%+8px)] z-10 flex w-full flex-col gap-2 rounded-lg border border-grey-500/25 bg-white p-4 shadow-sm dark:border-grey-900 dark:bg-grey-900">
+              {columns.map((column) => (
+                <button
+                  key={column.id}
+                  type="button"
+                  onClick={() => {
+                    if (column.id) {
+                      setValue("columnId", column.id, {
+                        shouldValidate: true,
+                        shouldDirty: true,
+                      });
+                      setIsStatusDropdownOpen(false);
+                    }
+                  }}
+                  className={`w-fit text-left text-sm font-medium capitalize transition-colors ${
+                    watch("columnId") === column.id
+                      ? "text-purple"
+                      : "text-grey-500 hover:text-purple"
+                  }`}
+                >
+                  {column.title}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
         {errors.columnId && (
           <span className="text-xs text-red">{errors.columnId.message}</span>
         )}
