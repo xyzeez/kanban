@@ -136,10 +136,6 @@ const Login: FC = () => {
           <Link to="/register" className="text-purple">
             Create an account
           </Link>
-          or
-          <Link to="/" className="text-purple">
-            Continue as a guest.
-          </Link>
         </p>
       </form>
     </main>

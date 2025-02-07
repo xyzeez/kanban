@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useState, useEffect } from "react";
 import { Link, Navigate, useNavigate } from "react-router";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { isEmail } from "validator";
@@ -6,10 +6,12 @@ import toast from "react-hot-toast";
 
 // Hooks
 import { useAuth } from "../hooks/useAuth";
+import { useApp } from "../hooks/useApp";
 
 // Components
 import Logo from "../components/Logo";
 import { HideIcon, ShowIcon, SpinnerIcon } from "../components/Icons";
+import WelcomeModal from "../ui/modals/WelcomeModal";
 
 // Types
 import { RegisterFormInputs } from "../types/forms";
@@ -21,8 +23,10 @@ import { getErrorMessage } from "../utils/error";
 const Register: FC = () => {
   const navigate = useNavigate();
   const { register: registerUser, isAuthenticated } = useAuth();
+  const { openModal } = useApp();
   const [showPassword, setShowPasswords] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -30,6 +34,10 @@ const Register: FC = () => {
     getValues,
     formState: { isSubmitting, errors },
   } = useForm<RegisterFormInputs>();
+
+  useEffect(() => {
+    openModal(<WelcomeModal />);
+  }, []);
 
   const togglePassword = () => {
     return setShowPasswords((prev) => !prev);
