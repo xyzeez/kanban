@@ -35,12 +35,10 @@ export const useTasks = (
         [taskId]: subtasks,
       }));
 
-      // Clear any existing timeout
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
 
-      // Set a new timeout to debounce the API call
       timeoutRef.current = setTimeout(() => {
         void taskService.updateSubtasksWithAbort(taskId, subtasks).then(() => {
           void queryClient.invalidateQueries({
@@ -50,7 +48,7 @@ export const useTasks = (
             queryKey: ["task", taskId],
           });
         });
-      }, 500); // 500ms debounce delay
+      }, 500);
     },
     [boardId, columnId, queryClient],
   );
@@ -58,18 +56,30 @@ export const useTasks = (
   const updateTaskColumn = useCallback(
     (taskId: string, newColumnId: string) => {
       const task = queryClient.getQueryData<Task>(["task", taskId]);
-      if (!task) return;
+      if (!task) return false;
 
       const oldColumnId = task.columnId;
-      if (oldColumnId === newColumnId) return;
+      if (oldColumnId === newColumnId) return false;
 
-      // Optimistically update local state
+      const targetColumnTasks = queryClient.getQueryData<Task[]>([
+        "tasks",
+        boardId,
+        newColumnId,
+      ]);
+
+      if (
+        targetColumnTasks?.some(
+          (t) => t.title.toLowerCase() === task.title.toLowerCase(),
+        )
+      ) {
+        return false;
+      }
+
       setTaskColumnIds((prev) => ({
         ...prev,
         [taskId]: newColumnId,
       }));
 
-      // Optimistically update queries
       const previousSourceTasks = queryClient.getQueryData<Task[]>([
         "tasks",
         boardId,
@@ -95,12 +105,10 @@ export const useTasks = (
         );
       }
 
-      // Clear any existing timeout
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
 
-      // Set a new timeout to debounce the API call
       timeoutRef.current = setTimeout(() => {
         void taskService.updateColumnWithAbort(taskId, newColumnId).then(() => {
           void queryClient.invalidateQueries({
@@ -114,6 +122,8 @@ export const useTasks = (
           });
         });
       }, 500);
+
+      return true;
     },
     [boardId, queryClient],
   );
@@ -152,7 +162,6 @@ export const useTasks = (
         });
       }
 
-      // Invalidate single task query if it exists
       if (taskId) {
         void queryClient.invalidateQueries({
           queryKey: ["task", taskId],

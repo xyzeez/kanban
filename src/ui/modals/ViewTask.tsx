@@ -1,4 +1,5 @@
 import { FC, useState, useEffect } from "react";
+import toast from "react-hot-toast";
 
 // Hooks
 import { useBoards } from "../../hooks/useBoards";
@@ -31,7 +32,6 @@ const ViewTask: FC<{ taskId: string; columnId: string; boardId: string }> = ({
     isLoading,
     updateSubtasks,
     subtasksByTaskId,
-    updateTask,
     updateTaskColumn,
   } = useTasks(boardId, columnId, taskId);
   const { openModal } = useApp();
@@ -48,12 +48,7 @@ const ViewTask: FC<{ taskId: string; columnId: string; boardId: string }> = ({
     return <ViewTaskSkeleton />;
   }
 
-  const {
-    title,
-    description,
-    subtasks: initialSubtasks,
-    columnId: taskColumnId,
-  } = task;
+  const { title, description, subtasks: initialSubtasks } = task;
 
   const subtasks = subtasksByTaskId[taskId] || initialSubtasks;
 
@@ -68,8 +63,16 @@ const ViewTask: FC<{ taskId: string; columnId: string; boardId: string }> = ({
 
   const handleColumnChange = (newColumnId: string) => {
     if (!task || !task.id || newColumnId === task.columnId) return;
+
+    const updateAllowed = updateTaskColumn(task.id, newColumnId);
+    if (!updateAllowed) {
+      toast.error(
+        `A task with name "${task.title}" already exists in this column`,
+      );
+      return;
+    }
+
     setSelectedColumnId(newColumnId);
-    updateTaskColumn(task.id, newColumnId);
   };
 
   const doneSubtaskCount = subtasks.filter(
