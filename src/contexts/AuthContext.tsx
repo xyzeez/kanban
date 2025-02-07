@@ -1,4 +1,5 @@
 import { createContext, useCallback, useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 // Services
 import { authService } from "../services/authService";
@@ -11,6 +12,9 @@ import {
   RegisterData,
   User,
 } from "../types/contexts";
+
+// Utils
+import { getErrorMessage } from "../utils/error";
 
 // Context
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -26,8 +30,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     try {
       const user = await authService.getCurrentUser();
       setUser(user);
-    } catch {
+    } catch (error) {
       setUser(null);
+      if (error instanceof Error) {
+        if (!error.message.includes("401")) {
+          toast.error(getErrorMessage(error));
+          console.error("Auth check failed:", error);
+        }
+      }
     } finally {
       setIsLoading(false);
     }

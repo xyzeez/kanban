@@ -16,6 +16,7 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error: AxiosError<ErrorResponse>) => {
+    // Handle authentication errors
     if (
       error.response?.status === 401 &&
       !window.location.pathname.includes("/login")
@@ -23,9 +24,33 @@ axiosInstance.interceptors.response.use(
       window.location.href = "/login";
     }
 
-    return Promise.reject(
-      new Error(error.response?.data?.message || error.message),
-    );
+    // Handle network errors
+    if (!error.response) {
+      // Redirect to login if not already on login page
+      if (!window.location.pathname.includes("/login")) {
+        window.location.href = "/login";
+      }
+
+      if (error.code === "ERR_NETWORK") {
+        return Promise.reject(
+          new Error(
+            "Unable to connect to server. Please check your internet connection and try again.",
+          ),
+        );
+      }
+      return Promise.reject(
+        new Error("A network error occurred. Please try again later."),
+      );
+    }
+
+    // Handle other API errors
+    const errorMessage =
+      error.response?.data?.message ||
+      error.response?.statusText ||
+      error.message ||
+      "An unexpected error occurred";
+
+    return Promise.reject(new Error(errorMessage));
   },
 );
 
