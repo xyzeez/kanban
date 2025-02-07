@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 // Services
@@ -6,6 +6,7 @@ import { taskService } from "../services/taskService";
 
 // Hooks
 import { useAuth } from "./useAuth";
+import { useDebounce } from "./useDebounce";
 
 // Types
 import { Task, Subtask } from "../types/task";
@@ -19,13 +20,48 @@ export const useTasks = (
   const queryClient = useQueryClient();
   const tasksQueryKey = ["tasks", boardId, columnId];
   const taskQueryKey = ["task", taskId];
-  const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
 
   const [subtasksByTaskId, setSubtasksByTaskId] = useState<
     Record<string, Subtask[]>
   >({});
   const [taskColumnIds, setTaskColumnIds] = useState<Record<string, string>>(
     {},
+  );
+
+  const debouncedUpdateSubtasks = useDebounce(
+    async (signal: AbortSignal, taskId: string, subtasks: Subtask[]) => {
+      const result = await taskService.updateSubtasks(taskId, subtasks, signal);
+      void queryClient.invalidateQueries({
+        queryKey: ["tasks", boardId, columnId],
+      });
+      void queryClient.invalidateQueries({
+        queryKey: ["task", taskId],
+      });
+      return result;
+    },
+  );
+
+  const debouncedUpdateColumn = useDebounce(
+    async (signal: AbortSignal, taskId: string, newColumnId: string) => {
+      const task = queryClient.getQueryData<Task>(["task", taskId]);
+      if (!task) return;
+
+      const result = await taskService.updateColumn(
+        taskId,
+        newColumnId,
+        signal,
+      );
+      void queryClient.invalidateQueries({
+        queryKey: ["tasks", boardId, task.columnId],
+      });
+      void queryClient.invalidateQueries({
+        queryKey: ["tasks", boardId, newColumnId],
+      });
+      void queryClient.invalidateQueries({
+        queryKey: ["task", taskId],
+      });
+      return result;
+    },
   );
 
   const updateSubtasks = useCallback(
@@ -35,22 +71,9 @@ export const useTasks = (
         [taskId]: subtasks,
       }));
 
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-
-      timeoutRef.current = setTimeout(() => {
-        void taskService.updateSubtasksWithAbort(taskId, subtasks).then(() => {
-          void queryClient.invalidateQueries({
-            queryKey: ["tasks", boardId, columnId],
-          });
-          void queryClient.invalidateQueries({
-            queryKey: ["task", taskId],
-          });
-        });
-      }, 500);
+      void debouncedUpdateSubtasks(taskId, subtasks);
     },
-    [boardId, columnId, queryClient],
+    [debouncedUpdateSubtasks],
   );
 
   const updateTaskColumn = useCallback(
@@ -105,27 +128,11 @@ export const useTasks = (
         );
       }
 
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-
-      timeoutRef.current = setTimeout(() => {
-        void taskService.updateColumnWithAbort(taskId, newColumnId).then(() => {
-          void queryClient.invalidateQueries({
-            queryKey: ["tasks", boardId, oldColumnId],
-          });
-          void queryClient.invalidateQueries({
-            queryKey: ["tasks", boardId, newColumnId],
-          });
-          void queryClient.invalidateQueries({
-            queryKey: ["task", taskId],
-          });
-        });
-      }, 500);
+      void debouncedUpdateColumn(taskId, newColumnId);
 
       return true;
     },
-    [boardId, queryClient],
+    [boardId, queryClient, debouncedUpdateColumn],
   );
 
   const tasksQuery = useQuery({
