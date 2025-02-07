@@ -38,8 +38,7 @@ const Login: FC = () => {
 
   const onSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
     try {
-      const { email, password, remember } = data;
-      await login({ email, password });
+      await login(data);
       toast.success("Successfully logged in!");
       reset();
     } catch (error) {
