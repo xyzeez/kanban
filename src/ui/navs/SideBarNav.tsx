@@ -15,7 +15,7 @@ const SideBarNav: FC = () => {
   return (
     <div className="relative grid">
       <div
-        className={`grid max-h-[calc(100vh-81px)] min-h-[359px] grid-rows-[1fr_auto] gap-6 overflow-hidden whitespace-nowrap border-r border-grey-100 bg-white pb-4 transition-all dark:border-grey-700 dark:bg-grey-800 xl:max-h-[calc(100vh-97px)] xl:min-h-[343px] ${
+        className={`grid max-h-[calc(100dvh-81px)] min-h-[359px] grid-rows-[1fr_auto] gap-6 overflow-hidden whitespace-nowrap border-r border-grey-100 bg-white pb-4 transition-all dark:border-grey-700 dark:bg-grey-800 xl:max-h-[calc(100dvh-97px)] xl:min-h-[343px] ${
           openSideBar
             ? "w-[260px] max-w-[260px] xl:w-[300px] xl:max-w-[300px]"
             : "w-0 max-w-0 border-none"
