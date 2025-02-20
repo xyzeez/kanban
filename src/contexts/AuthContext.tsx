@@ -34,7 +34,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setUser(null);
       if (error instanceof Error) {
         if (!error.message.includes("401")) {
-          toast.error(getErrorMessage(error));
           console.error("Auth check failed:", error);
         }
       }
