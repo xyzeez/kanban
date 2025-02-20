@@ -1,9 +1,9 @@
 import { createBrowserRouter } from "react-router";
 
 // UIs
-import RootLayout from "./ui/RootLayout";
-import AuthLayout from "./ui/AuthLayout";
-import AppLayout from "./ui/AppLayout";
+import RootLayout from "./ui/layouts/RootLayout";
+import AuthLayout from "./ui/layouts/AuthLayout";
+import AppLayout from "./ui/layouts/AppLayout";
 import EmptyState from "./ui/placeholders/EmptyState";
 
 // Pages

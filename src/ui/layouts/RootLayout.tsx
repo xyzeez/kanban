@@ -4,11 +4,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 // Contexts
-import { AuthProvider } from "../contexts/AuthContext";
-import { AppProvider } from "../contexts/AppContext";
+import { AuthProvider } from "../../contexts/AuthContext";
+import { AppProvider } from "../../contexts/AppContext";
 
 // Components
-import Toaster from "../components/Toaster";
+import Toaster from "../../components/Toaster";
 
 // Query Client instance
 const queryClient = new QueryClient();

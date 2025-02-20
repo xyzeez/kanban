@@ -1,13 +1,12 @@
 import { FC, useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router";
 
-// Hooks
-import { useBoards } from "../hooks/useBoards";
-
+// Hook
+import { useBoards } from "../../hooks/useBoards";
 // UIs
-import Header from "./Header";
-import { SideBarNav } from "./Navs";
-import LoadingScreen from "./placeholders/LoadingScreen";
+import Header from "../Header";
+import { SideBarNav } from "../Navs";
+import LoadingScreen from "../placeholders/LoadingScreen";
 
 const AppLayout: FC = () => {
   const { boards } = useBoards();

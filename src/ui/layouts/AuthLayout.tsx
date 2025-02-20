@@ -2,10 +2,10 @@ import { FC } from "react";
 import { Navigate, Outlet } from "react-router";
 
 // Hooks
-import { useAuth } from "../hooks/useAuth";
+import { useAuth } from "../../hooks/useAuth";
 
 // UIs
-import LoadingScreen from "./placeholders/LoadingScreen";
+import LoadingScreen from "../placeholders/LoadingScreen";
 
 const AuthLayout: FC = () => {
   const { isAuthenticated, isLoading } = useAuth();
