@@ -10,7 +10,7 @@ import Logo from "../components/Logo";
 import { ChevronDownIcon, EllipsisIcon, PlusIcon } from "../components/Icons";
 
 // UIs
-import { MobileNav } from "./Navs";
+import MobileNav from "./navs/MobileNav";
 import { EditBoardForm } from "./forms/BoardForms";
 import DeleteBoard from "./modals/DeleteBoard";
 import { CreateTaskForm } from "./forms/TaskForms";

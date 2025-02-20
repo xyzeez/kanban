@@ -3,9 +3,10 @@ import { Outlet, useLocation, useNavigate } from "react-router";
 
 // Hook
 import { useBoards } from "../../hooks/useBoards";
+
 // UIs
 import Header from "../Header";
-import { SideBarNav } from "../Navs";
+import SideBarNav from "../navs/SideBarNav";
 import LoadingScreen from "../placeholders/LoadingScreen";
 
 const AppLayout: FC = () => {
