@@ -31,7 +31,7 @@ const BoardList: FC = () => {
   const { boards } = useBoards();
 
   return (
-    <menu className="hover-scrollbar relative overflow-y-auto overflow-x-hidden pr-3 font-sans">
+    <menu className="scrollbar md:hover-scrollbar relative overflow-y-auto overflow-x-hidden pr-3 font-sans">
       <li className="nav-header-bg sticky top-0 py-4 pl-6">
         <h2 className="text-xs font-bold uppercase tracking-[2.4px] text-grey-500">
           All Boards ({boards?.length || 0})

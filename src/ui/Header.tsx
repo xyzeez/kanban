@@ -50,7 +50,7 @@ const Header: FC = () => {
           </button>
 
           {openMobileNav && (
-            <div className="absolute left-0 top-[calc(100%+16px)] z-10 w-full">
+            <div className="absolute left-0 top-[calc(100%+16px)] z-20 w-full">
               <MobileNav />
             </div>
           )}
@@ -121,7 +121,7 @@ const Header: FC = () => {
       {openMobileNav && (
         <div
           onClick={() => toggleMobileNav(false)}
-          className="absolute inset-0 top-full h-[calc(100vh-69px)] bg-black/50 md:hidden"
+          className="absolute inset-0 top-full z-10 h-[calc(100vh-69px)] bg-black/50 md:hidden"
         />
       )}
     </header>
