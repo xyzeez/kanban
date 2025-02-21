@@ -20,12 +20,12 @@ const ToggleSidebarButton: FC = () => {
       aria-label={openSideBar ? "Hide Sidebar" : "Show Sidebar"}
     >
       <HideIcon
-        className={`col-start-1 col-end-2 row-start-1 row-end-2 size-5 transition-all ${
+        className={`col-start-1 col-end-2 row-start-1 row-end-2 size-5 transition-[opacity,transform] ${
           openSideBar ? "opacity-100" : "opacity-0"
         }`}
       />
       <ShowIcon
-        className={`col-start-1 col-end-2 row-start-1 row-end-2 size-5 transition-all ${
+        className={`col-start-1 col-end-2 row-start-1 row-end-2 size-5 transition-[opacity,transform] ${
           openSideBar ? "opacity-0" : "opacity-100"
         }`}
       />
