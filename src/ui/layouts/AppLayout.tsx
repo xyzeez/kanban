@@ -23,7 +23,7 @@ const AppLayout: FC = () => {
   if (!boards) return <LoadingScreen type="App" />;
 
   return (
-    <div className="grid h-screen min-h-[440px] grid-cols-1 grid-rows-[auto_1fr] md:grid-cols-[auto_1fr]">
+    <div className="grid h-dvh min-h-[440px] grid-cols-1 grid-rows-[auto_1fr] md:grid-cols-[auto_1fr]">
       <div className="col-start-1 col-end-2 row-start-1 row-end-2 md:col-end-3">
         <Header />
       </div>
