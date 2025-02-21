@@ -46,7 +46,7 @@
   }
 
   .column-header-bg {
-    @apply bg-gradient-to-b from-grey-100 from-50% via-grey-100/90 dark:from-grey-900 dark:via-grey-900/90;
+    @apply inset-0 w-[110%] -translate-x-[5%] bg-gradient-to-b from-grey-100 from-50% via-grey-100/90 pl-[5%] dark:from-grey-900 dark:via-grey-900/90;
   }
 
   .add-column-bg {
