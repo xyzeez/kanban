@@ -42,11 +42,11 @@
   }
 
   .nav-header-bg {
-    @apply bg-gradient-to-b from-white from-60% to-transparent dark:from-grey-800;
+    @apply bg-gradient-to-b from-white from-40% via-white/65 dark:from-grey-800 dark:via-grey-800/65;
   }
 
   .column-header-bg {
-    @apply bg-gradient-to-b from-grey-100 from-50% to-transparent to-100% dark:from-grey-900 dark:to-transparent;
+    @apply bg-gradient-to-b from-grey-100 from-50% via-grey-100/90 dark:from-grey-900 dark:via-grey-900/90;
   }
 
   .add-column-bg {
