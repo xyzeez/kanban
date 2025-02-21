@@ -50,7 +50,7 @@ const Header: FC = () => {
           </button>
 
           {openMobileNav && (
-            <div className="absolute left-0 top-[calc(100%+16px)] z-20 w-full">
+            <div className="absolute left-0 top-[calc(100%+16px)] z-20">
               <MobileNav />
             </div>
           )}
