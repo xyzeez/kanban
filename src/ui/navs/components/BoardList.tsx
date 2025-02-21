@@ -11,15 +11,20 @@ import CreateBoardButton from "./CreateBoardButton";
 // Types
 import { BoardItemProps } from "../../../types/navs";
 
+// Utils
+import { cn } from "../../../utils/styles";
+
 const BoardItem: FC<BoardItemProps> = ({ title, to }) => (
   <NavLink
     to={to}
     className={({ isActive }) =>
-      `text-btn w-full max-w-[276px] rounded-r-full px-6 py-4 font-bold capitalize transition-colors xl:px-8 ${
+      cn(
+        "flex flex-row items-center gap-3 text-base font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-25 xl:gap-4",
+        "w-full max-w-[276px] rounded-r-full px-6 py-4 font-bold capitalize text-grey-500 transition-colors xl:px-8",
         isActive
           ? "bg-purple text-white"
-          : "text-grey-500 enabled:hover:bg-purple-light/10 enabled:hover:text-purple"
-      } `
+          : "hover:bg-purple-light/10 hover:text-purple",
+      )
     }
   >
     <BoardIcon />
