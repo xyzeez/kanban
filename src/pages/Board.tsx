@@ -95,7 +95,7 @@ const ColumnItem: FC<{
         !tasks?.length && "sticky top-0",
       )}
     >
-      <h3 className="column-header-bg sticky top-0 flex flex-row items-center gap-3 py-6 font-sans text-xs font-bold uppercase tracking-[2.4px] text-grey-500">
+      <h3 className="column-header-bg sticky top-0 flex flex-row items-center gap-3 py-5 font-sans text-xs font-bold uppercase tracking-[2.4px] text-grey-500">
         <span className={cn("block size-4 rounded-full", columnColor)} />
         {!isLoading && (
           <span>
@@ -105,15 +105,15 @@ const ColumnItem: FC<{
       </h3>
       <ul
         className={cn(
-          "flex h-full flex-col",
+          "flex h-full flex-col gap-[22px]",
           !tasks?.length &&
-            "gap-5 rounded-md border-2 border-dashed border-grey-500/25",
+            "rounded-md border-2 border-dashed border-grey-500/25",
         )}
       >
         {tasks?.map(
           (task) =>
             column.id && (
-              <li key={task.id} className={cn(tasks?.length && "pb-5")}>
+              <li key={task.id} className="last-of-type:pb-5">
                 <TaskItem task={task} columnId={column.id} boardId={boardId} />
               </li>
             ),
@@ -159,11 +159,11 @@ const Board: FC = () => {
   }
 
   return (
-    <ul className="scrollbar flex flex-row items-stretch justify-stretch gap-6 overflow-auto px-4 pb-6">
+    <ul className="scrollbar flex flex-row items-stretch gap-6 overflow-auto px-4 pb-5">
       {board?.columns.map((column: Column, index: number) => (
         <ColumnItem key={column.id} column={column} index={index} />
       ))}
-      <li className="sticky top-0 flex h-full shrink-0 grow-0 basis-[280px] flex-col gap-6 pt-6">
+      <li className="sticky top-0 flex h-full shrink-0 grow-0 basis-[280px] flex-col gap-6 pt-5">
         <h3 className="invisible flex flex-row items-center gap-3 font-sans text-xs font-bold uppercase tracking-[2.4px] text-grey-500">
           Add a new column
         </h3>
