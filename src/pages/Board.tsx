@@ -66,7 +66,7 @@ const TaskItem: FC<{
           );
         }
       }}
-      className="flex w-full flex-col gap-2 rounded-lg bg-white px-4 py-6 font-sans shadow-md shadow-[#364E7E1A] transition-colors dark:bg-grey-800"
+      className="flex w-full flex-col gap-2 rounded-lg bg-white px-4 py-6 text-start font-sans shadow-md shadow-[#364E7E1A] transition-colors dark:bg-grey-800"
     >
       <h4 className="text-base font-bold text-[#000112] dark:text-white">
         {task.title}
