@@ -312,7 +312,7 @@ const EditTaskForm: FC<{
 
   const onSubmit: SubmitHandler<TaskFormInputs> = async (data) => {
     try {
-      await updateTask({ id: taskId, ...data });
+      await updateTask({ id: taskId, ...data, boardId });
       toast.success("Task updated successfully!");
       reset();
       closeModal();
