@@ -111,6 +111,18 @@ const Board: FC = () => {
         ? (over.data.current as DragData).task.columnId
         : (over.id as string);
 
+    const targetTasks =
+      queryClient.getQueryData<Task[]>(["tasks", boardId, targetColumnId]) ||
+      [];
+
+    if (
+      activeColumnId !== targetColumnId &&
+      targetTasks.some((task) => task.title === dragData.task.title)
+    ) {
+      toast.error("A task with same title already exists in target column");
+      return;
+    }
+
     const tasks =
       queryClient.getQueryData<Task[]>(["tasks", boardId, activeColumnId]) ||
       [];
