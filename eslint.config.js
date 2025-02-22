@@ -43,8 +43,11 @@ export default tseslint.config(
           },
         },
       ],
-      "no-unused-vars": "warn",
-      "@typescript-eslint/no-unused-vars": "warn",
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        { varsIgnorePattern: ".*[rR]ef.*", argsIgnorePattern: ".*[rR]ef.*" },
+      ],
     },
   },
 );
