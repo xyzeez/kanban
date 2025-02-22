@@ -1,3 +1,6 @@
+import { HTMLMotionProps } from "framer-motion";
+
+// Types
 import { Task } from "./task";
 
 export interface Column {
@@ -29,10 +32,16 @@ export interface DragData {
   task: Task;
 }
 
+export type SortableTaskListProps = HTMLMotionProps<"ul">;
+
 export interface ColumnItemProps {
   column: Column;
   index: number;
   boardId: string;
+}
+
+export interface TaskPreviewProps {
+  task: Task;
 }
 
 export interface TaskItemProps {

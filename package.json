@@ -17,6 +17,7 @@
     "@tanstack/react-query-devtools": "^5.64.2",
     "axios": "^1.7.9",
     "clsx": "^2.1.1",
+    "framer-motion": "^12.4.7",
     "ldrs": "^1.0.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
