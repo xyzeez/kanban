@@ -1,5 +1,4 @@
 import { createContext, useCallback, useEffect, useState } from "react";
-import toast from "react-hot-toast";
 
 // Services
 import { authService } from "../services/authService";
@@ -12,9 +11,6 @@ import {
   RegisterData,
   User,
 } from "../types/contexts";
-
-// Utils
-import { getErrorMessage } from "../utils/error";
 
 // Context
 export const AuthContext = createContext<AuthContextType | undefined>(
