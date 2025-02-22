@@ -119,4 +119,47 @@ export const taskService = {
       }
     };
   })(),
+
+  updatePosition: async (
+    taskId: string,
+    position: number,
+    columnId?: string,
+    signal?: AbortSignal,
+  ) => {
+    const response = await tasksAPI.patch<TasksApiResponse>(
+      `/${taskId}/position`,
+      {
+        position,
+        columnId,
+      },
+      { signal },
+    );
+    return response.data.task;
+  },
+
+  updatePositionWithAbort: (() => {
+    let controller: AbortController | null = null;
+
+    return async (taskId: string, position: number, columnId?: string) => {
+      if (controller) {
+        controller.abort();
+      }
+
+      controller = new AbortController();
+
+      try {
+        return await taskService.updatePosition(
+          taskId,
+          position,
+          columnId,
+          controller.signal,
+        );
+      } catch (error) {
+        if (error instanceof Error && error.name !== "AbortError") {
+          console.error("Failed to update position:", error);
+        }
+        throw error;
+      }
+    };
+  })(),
 };

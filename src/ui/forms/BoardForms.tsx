@@ -336,10 +336,11 @@ const EditBoardForm: FC = () => {
   );
 };
 
-const AddColumnForm: FC = () => {
-  const { boardId } = useParams<{
-    boardId: string;
-  }>();
+interface AddColumnFormProps {
+  boardId: string;
+}
+
+const AddColumnForm: FC<AddColumnFormProps> = ({ boardId }) => {
   const { board, isLoading, addColumns } = useBoards(boardId);
   const { closeModal } = useApp();
   const {
