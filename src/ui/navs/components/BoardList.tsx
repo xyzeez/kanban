@@ -20,10 +20,15 @@ const itemVariants = {
   visible: { opacity: 1, x: 0 },
 };
 
-const BoardItem: FC<BoardItemProps> = ({ title, to }) => (
+interface BoardItemExtendedProps extends BoardItemProps {
+  onNavigate?: () => void;
+}
+
+const BoardItem: FC<BoardItemExtendedProps> = ({ title, to, onNavigate }) => (
   <motion.li variants={itemVariants}>
     <NavLink
       to={to}
+      onClick={onNavigate}
       className={({ isActive }) =>
         cn(
           "block w-full max-w-[276px] rounded-r-full text-grey-500 transition-colors",
@@ -46,7 +51,11 @@ const BoardItem: FC<BoardItemProps> = ({ title, to }) => (
   </motion.li>
 );
 
-const BoardList: FC = () => {
+interface BoardListProps {
+  onNavigate?: () => void;
+}
+
+const BoardList: FC<BoardListProps> = ({ onNavigate }) => {
   const { boards } = useBoards();
 
   return (
@@ -75,6 +84,7 @@ const BoardList: FC = () => {
           key={board.id}
           title={board.name}
           to={`/boards/${board.slug}`}
+          onNavigate={onNavigate}
         />
       ))}
       <motion.li

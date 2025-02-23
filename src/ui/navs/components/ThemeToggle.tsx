@@ -7,9 +7,18 @@ import { useApp } from "../../../hooks/useApp";
 // Components
 import { DarkThemeIcon, LightThemeIcon } from "../../../components/Icons";
 
-const ThemeToggle: FC = () => {
+interface ThemeToggleProps {
+  onToggle?: () => void;
+}
+
+const ThemeToggle: FC<ThemeToggleProps> = ({ onToggle }) => {
   const { theme, toggleTheme } = useApp();
   const isDark = theme === "dark";
+
+  const handleToggle = () => {
+    toggleTheme();
+    onToggle?.();
+  };
 
   return (
     <div className="flex w-full flex-row items-center justify-center gap-6 rounded-md bg-grey-100 py-[14px] text-grey-500 transition-colors dark:bg-grey-900">
@@ -34,7 +43,7 @@ const ThemeToggle: FC = () => {
           transition={{ type: "spring", stiffness: 400, damping: 20 }}
         />
         <button
-          onClick={toggleTheme}
+          onClick={handleToggle}
           className="absolute inset-0"
           aria-label={`Switch to ${isDark ? "light" : "dark"} theme`}
         />

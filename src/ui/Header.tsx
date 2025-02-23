@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { useParams } from "react-router";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 // Hooks
 import { useApp } from "../hooks/useApp";
@@ -138,7 +138,7 @@ const Header: FC = () => {
       {openMobileNav && (
         <div
           onClick={() => toggleMobileNav(false)}
-          className="absolute inset-0 top-full z-10 h-[calc(100vh-69px)] bg-black/50 md:hidden"
+          className="absolute inset-0 top-full z-10 h-[calc(100vh-69px)] bg-black/50 backdrop-blur-sm md:hidden"
         />
       )}
     </header>
