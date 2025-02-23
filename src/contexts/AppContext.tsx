@@ -44,7 +44,10 @@ const AppProvider = ({ children }: AppProviderProps) => {
   };
 
   const openModal = (element: ModalType) => {
-    setModalElement(element);
+    setModalElement(null);
+    setTimeout(() => {
+      setModalElement(element);
+    }, 100);
   };
 
   const closeModal = () => {

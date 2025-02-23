@@ -1,5 +1,6 @@
 import { FC, useState, useEffect } from "react";
 import toast from "react-hot-toast";
+import { motion, AnimatePresence } from "framer-motion";
 
 // Hooks
 import { useBoards } from "../../hooks/useBoards";
@@ -80,55 +81,88 @@ const ViewTask: FC<{ taskId: string; columnId: string; boardId: string }> = ({
   ).length;
 
   return (
-    <div className="flex flex-col gap-6 font-sans">
-      <div className="relative flex flex-row items-center justify-between gap-4">
-        <h2 className="text-lg font-bold capitalize text-black transition-colors dark:text-white">
+    <motion.div
+      layout
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="flex flex-col gap-6 font-sans"
+    >
+      <motion.div
+        layout
+        className="relative flex flex-row items-center justify-between gap-4"
+      >
+        <motion.h2
+          layout
+          className="text-lg font-bold capitalize text-black transition-colors dark:text-white"
+        >
           {title}
-        </h2>
-        <button onClick={() => setOpenTaskOptions(!openTaskOptions)}>
+        </motion.h2>
+        <motion.button
+          layout
+          onClick={() => setOpenTaskOptions(!openTaskOptions)}
+        >
           <EllipsisIcon className="h-6 w-[6px] text-grey-500" />
-        </button>
-        {openTaskOptions && (
-          <div className="absolute -right-4 top-[calc(100%+16px)] z-10 flex w-[calc(100%-32px)] justify-end md:-right-1/4 md:w-[calc(100%-48px)]">
-            <div className="flex w-full max-w-48 flex-col gap-4 rounded-lg border-grey-500/25 bg-white p-4 shadow-lg transition-colors dark:border-grey-900 dark:bg-grey-900">
-              <button
-                onClick={() =>
-                  openModal(
-                    <EditTaskForm
-                      taskId={taskId}
-                      boardId={boardId}
-                      columnId={columnId}
-                    />,
-                  )
-                }
-                className="text-btn text-grey-500"
-              >
-                Edit Task
-              </button>
-              <button
-                onClick={() => {
-                  if (task.id) {
-                    openModal(<DeleteTask id={task.id} columnId={columnId} />);
+        </motion.button>
+        <AnimatePresence>
+          {openTaskOptions && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="absolute -right-4 top-[calc(100%+16px)] z-10 flex w-[calc(100%-32px)] justify-end md:-right-1/4 md:w-[calc(100%-48px)]"
+            >
+              <div className="flex w-full max-w-48 flex-col gap-4 rounded-lg border-grey-500/25 bg-white p-4 shadow-lg transition-colors dark:border-grey-900 dark:bg-grey-900">
+                <button
+                  onClick={() =>
+                    openModal(
+                      <EditTaskForm
+                        taskId={taskId}
+                        boardId={boardId}
+                        columnId={columnId}
+                      />,
+                    )
                   }
-                }}
-                className="text-btn text-red"
-              >
-                Delete Task
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-      <p className="text-sm font-medium capitalize text-grey-500">
+                  className="text-btn text-grey-500"
+                >
+                  Edit Task
+                </button>
+                <button
+                  onClick={() => {
+                    if (task.id) {
+                      openModal(
+                        <DeleteTask id={task.id} columnId={columnId} />,
+                      );
+                    }
+                  }}
+                  className="text-btn text-red"
+                >
+                  Delete Task
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+      <motion.p layout className="text-sm font-medium capitalize text-grey-500">
         {description}
-      </p>
-      <div className="flex flex-col gap-4">
-        <h3 className="text-xs font-bold text-grey-500 transition-colors dark:text-white">
+      </motion.p>
+      <motion.div layout className="flex flex-col gap-4">
+        <motion.h3
+          layout
+          className="text-xs font-bold text-grey-500 transition-colors dark:text-white"
+        >
           Subtasks ({doneSubtaskCount} of {subtasks.length})
-        </h3>
-        <ul className="flex flex-col gap-2">
+        </motion.h3>
+        <motion.ul layout className="flex flex-col gap-2">
           {subtasks.map((subtask, index) => (
-            <li key={index}>
+            <motion.li
+              layout
+              key={index}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: index * 0.1 }}
+            >
               <label
                 htmlFor={`subtask-${index}`}
                 className="group flex cursor-pointer flex-row items-center gap-4 rounded bg-grey-100 pb-4 pl-3 pr-2 pt-3 text-xs font-bold capitalize text-[#000111] transition-colors hover:bg-purple/25 has-[:checked]:text-opacity-50 has-[:checked]:line-through has-[:checked]:hover:bg-grey-100 dark:bg-grey-900 dark:text-white dark:hover:bg-purple/25 dark:has-[:checked]:text-opacity-50 dark:has-[:checked]:hover:bg-grey-900"
@@ -146,14 +180,17 @@ const ViewTask: FC<{ taskId: string; columnId: string; boardId: string }> = ({
                 </span>
                 <span>{subtask.title}</span>
               </label>
-            </li>
+            </motion.li>
           ))}
-        </ul>
-        <div className="flex flex-col gap-2">
-          <h3 className="text-xs font-bold text-grey-500 transition-colors dark:text-white">
+        </motion.ul>
+        <motion.div layout className="flex flex-col gap-2">
+          <motion.h3
+            layout
+            className="text-xs font-bold text-grey-500 transition-colors dark:text-white"
+          >
             Current Status
-          </h3>
-          <div className="relative">
+          </motion.h3>
+          <motion.div layout className="relative">
             <button
               onClick={() => setIsColumnDropdownOpen(!isColumnDropdownOpen)}
               className="relative flex w-full cursor-pointer items-center justify-between rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 text-left ring-purple group-focus:border-transparent dark:bg-transparent"
@@ -161,37 +198,48 @@ const ViewTask: FC<{ taskId: string; columnId: string; boardId: string }> = ({
               <span className="text-sm font-medium capitalize text-black dark:text-white">
                 {columns.find((col) => col.id === selectedColumnId)?.title}
               </span>
-              <div className="pointer-events-none size-4">
+              <motion.div
+                animate={{ rotate: isColumnDropdownOpen ? 180 : 0 }}
+                className="pointer-events-none size-4"
+              >
                 <ChevronDownIcon className="text-purple" />
-              </div>
+              </motion.div>
             </button>
 
-            {isColumnDropdownOpen && (
-              <div className="absolute top-[calc(100%+8px)] z-10 flex w-full flex-col gap-2 rounded-lg border border-grey-500/25 bg-white p-4 shadow-sm dark:border-grey-900 dark:bg-grey-900">
-                {columns.map((column) => (
-                  <button
-                    key={column.id}
-                    onClick={() => {
-                      if (column.id) {
-                        handleColumnChange(column.id);
-                        setIsColumnDropdownOpen(false);
-                      }
-                    }}
-                    className={`w-fit text-left text-sm font-medium capitalize transition-colors ${
-                      column.id === selectedColumnId
-                        ? "text-purple"
-                        : "text-grey-500 hover:text-purple"
-                    }`}
-                  >
-                    {column.title}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
+            <AnimatePresence>
+              {isColumnDropdownOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="absolute top-[calc(100%+8px)] z-10 flex w-full flex-col gap-2 rounded-lg border border-grey-500/25 bg-white p-4 shadow-sm dark:border-grey-900 dark:bg-grey-900"
+                >
+                  {columns.map((column) => (
+                    <motion.button
+                      key={column.id}
+                      onClick={() => {
+                        if (column.id) {
+                          handleColumnChange(column.id);
+                          setIsColumnDropdownOpen(false);
+                        }
+                      }}
+                      whileHover={{ x: 2 }}
+                      className={`w-fit text-left text-sm font-medium capitalize transition-colors ${
+                        column.id === selectedColumnId
+                          ? "text-purple"
+                          : "text-grey-500 hover:text-purple"
+                      }`}
+                    >
+                      {column.title}
+                    </motion.button>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
+        </motion.div>
+      </motion.div>
+    </motion.div>
   );
 };
 
