@@ -1,5 +1,5 @@
-import { FC } from "react";
-import { NavLink } from "react-router";
+import { FC, useRef, useEffect } from "react";
+import { NavLink, useLocation } from "react-router";
 import { motion } from "framer-motion";
 
 // Hooks
@@ -20,36 +20,47 @@ const itemVariants = {
   visible: { opacity: 1, x: 0 },
 };
 
-interface BoardItemExtendedProps extends BoardItemProps {
-  onNavigate?: () => void;
-}
+const BoardItem: FC<BoardItemProps> = ({ title, to, onNavigate }) => {
+  const location = useLocation();
+  const itemRef = useRef<HTMLLIElement>(null);
+  const isActive = location.pathname === to;
 
-const BoardItem: FC<BoardItemExtendedProps> = ({ title, to, onNavigate }) => (
-  <motion.li variants={itemVariants}>
-    <NavLink
-      to={to}
-      onClick={onNavigate}
-      className={({ isActive }) =>
-        cn(
-          "block w-full max-w-[276px] rounded-r-full text-grey-500 transition-colors",
-          isActive
-            ? "bg-purple text-white"
-            : "hover:bg-purple-light/10 hover:text-purple",
-        )
-      }
-    >
-      <motion.div
-        className="flex flex-row items-center gap-3 px-6 py-4 text-base font-bold capitalize xl:gap-4 xl:px-8"
-        whileHover={{ x: 4 }}
-        whileTap={{ x: 2 }}
-        transition={{ type: "spring", stiffness: 400, damping: 17 }}
+  useEffect(() => {
+    if (isActive && itemRef.current) {
+      itemRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+      });
+    }
+  }, [isActive]);
+
+  return (
+    <motion.li ref={itemRef} variants={itemVariants}>
+      <NavLink
+        to={to}
+        onClick={onNavigate}
+        className={({ isActive }) =>
+          cn(
+            "block w-full max-w-[276px] rounded-r-full text-grey-500 transition-colors",
+            isActive
+              ? "bg-purple text-white"
+              : "hover:bg-purple-light/10 hover:text-purple",
+          )
+        }
       >
-        <BoardIcon />
-        <span>{title}</span>
-      </motion.div>
-    </NavLink>
-  </motion.li>
-);
+        <motion.div
+          className="flex flex-row items-center gap-3 px-6 py-4 text-base font-bold capitalize xl:gap-4 xl:px-8"
+          whileHover={{ x: 4 }}
+          whileTap={{ x: 2 }}
+          transition={{ type: "spring", stiffness: 400, damping: 17 }}
+        >
+          <BoardIcon />
+          <span>{title}</span>
+        </motion.div>
+      </NavLink>
+    </motion.li>
+  );
+};
 
 interface BoardListProps {
   onNavigate?: () => void;
