@@ -12,7 +12,7 @@ const ToggleSidebarButton: FC = () => {
   return (
     <button
       onClick={() => toggleSidebar(!openSideBar)}
-      className={`fixed left-0 grid h-12 grid-cols-[24px_auto] items-center gap-3 rounded-r-full px-6 font-sans text-base font-bold capitalize transition-all enabled:hover:bg-purple enabled:hover:text-white xl:px-8 ${
+      className={`fixed left-0 z-20 grid h-12 grid-cols-[24px_auto] items-center gap-3 rounded-r-full px-6 font-sans text-base font-bold capitalize transition-all enabled:hover:bg-purple enabled:hover:text-white xl:px-8 ${
         openSideBar
           ? "w-[248px] max-w-[248px] bg-transparent text-grey-500 xl:w-[275px] xl:max-w-[275px]"
           : "w-14 max-w-14 bg-purple pl-[18px] pr-[22px] text-white xl:w-14 xl:max-w-14 xl:pl-[18px] xl:pr-[22px]"
