@@ -1,4 +1,5 @@
 import { FC } from "react";
+import { motion } from "framer-motion";
 
 // Components
 import { PlusIcon } from "../../components/Icons";
@@ -21,20 +22,40 @@ const content = {
 
 const EmptyState: FC<EmptyStateProps> = ({ type, actionHandler }) => {
   return (
-    <div className="flex h-full flex-col items-center justify-center gap-6 p-4">
-      <p className="text-center text-lg font-bold text-grey-500">
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
+      className="flex h-full flex-col items-center justify-center gap-6 p-4"
+    >
+      <motion.p
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2, duration: 0.4 }}
+        className="text-center text-lg font-bold text-grey-500"
+      >
         {content[type].message}
-      </p>
+      </motion.p>
       {actionHandler && (
-        <button
+        <motion.button
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          transition={{
+            delay: 0.3,
+            type: "spring",
+            stiffness: 400,
+            damping: 17,
+          }}
           onClick={actionHandler}
           className="btn btn-primary enabled:hover:bg-purple-600 btn-large"
         >
           <PlusIcon />
           {content[type].action}
-        </button>
+        </motion.button>
       )}
-    </div>
+    </motion.div>
   );
 };
 
