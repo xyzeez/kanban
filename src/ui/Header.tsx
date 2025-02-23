@@ -1,6 +1,7 @@
-import { FC } from "react";
+import { FC, useRef } from "react";
 import { useParams } from "react-router";
 import { motion } from "framer-motion";
+import { useClickOutside } from "react-haiku";
 
 // Hooks
 import { useApp } from "../hooks/useApp";
@@ -32,6 +33,9 @@ const Header: FC = () => {
     toggleBoardOptions,
     openModal,
   } = useApp();
+  const boardOptionsRef = useRef<HTMLDivElement>(null);
+
+  useClickOutside(boardOptionsRef, () => toggleBoardOptions(false));
 
   return (
     <header className="relative grid grid-cols-[auto_1fr] bg-white transition-colors dark:bg-grey-800">
@@ -104,7 +108,10 @@ const Header: FC = () => {
             <EllipsisIcon />
           </button>
           {openBoardOptions && (
-            <div className="absolute right-1 top-[calc(100%+16px)] z-10 flex w-[calc(100%-32px)] justify-end md:right-3 md:w-[calc(100%-48px)]">
+            <div
+              ref={boardOptionsRef}
+              className="absolute right-1 top-[calc(100%+16px)] z-10 flex w-[calc(100%-32px)] justify-end md:right-3 md:w-[calc(100%-48px)]"
+            >
               <div className="flex w-full max-w-48 flex-col gap-4 rounded-lg bg-white p-4 shadow-lg transition-colors dark:bg-grey-800">
                 <button
                   disabled={isLoading || !board}

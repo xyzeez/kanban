@@ -1,6 +1,11 @@
-import { FC, useState } from "react";
+import { FC, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useClickOutside } from "react-haiku";
+
+// Components
 import { ChevronDownIcon } from "./Icons";
+
+// Types
 import { StatusDropdownProps } from "../types/components";
 
 const StatusDropdown: FC<StatusDropdownProps> = ({
@@ -9,9 +14,12 @@ const StatusDropdown: FC<StatusDropdownProps> = ({
   onColumnChange,
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropDownRef = useRef<HTMLDivElement>(null);
+
+  useClickOutside(dropDownRef, () => setIsDropdownOpen(false));
 
   return (
-    <motion.div layout className="relative">
+    <motion.div layout className="relative" ref={dropDownRef}>
       <button
         type="button"
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
