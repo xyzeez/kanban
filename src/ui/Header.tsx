@@ -67,7 +67,7 @@ const Header: FC = () => {
             </motion.div>
           </motion.button>
           {openMobileNav && (
-            <div className="absolute left-0 top-[calc(100%+16px)] z-20">
+            <div className="absolute left-0 top-[calc(100%+16px)] z-20 md:hidden">
               <MobileNav />
             </div>
           )}
