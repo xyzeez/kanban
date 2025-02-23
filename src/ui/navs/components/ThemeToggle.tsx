@@ -7,22 +7,26 @@ import { useApp } from "../../../hooks/useApp";
 // Components
 import { DarkThemeIcon, LightThemeIcon } from "../../../components/Icons";
 
-interface ThemeToggleProps {
-  onToggle?: () => void;
-}
+// Types
+import { ThemeToggleProps } from "../../../types/navs";
 
 const ThemeToggle: FC<ThemeToggleProps> = ({ onToggle }) => {
   const { theme, toggleTheme } = useApp();
   const isDark = theme === "dark";
 
-  const handleToggle = () => {
-    toggleTheme();
-    onToggle?.();
+  const handleToggle = (targetTheme: "light" | "dark") => {
+    if (targetTheme !== theme) {
+      toggleTheme();
+      onToggle?.();
+    }
   };
 
   return (
     <div className="flex w-full flex-row items-center justify-center gap-6 rounded-md bg-grey-100 py-[14px] text-grey-500 transition-colors dark:bg-grey-900">
-      <motion.div
+      <motion.button
+        onClick={() => handleToggle("light")}
+        className="appearance-none border-none bg-transparent p-0"
+        aria-label="Switch to light theme"
         initial={false}
         animate={{
           scale: isDark ? 0.8 : 1,
@@ -32,7 +36,7 @@ const ThemeToggle: FC<ThemeToggleProps> = ({ onToggle }) => {
         transition={{ type: "spring", stiffness: 300, damping: 15 }}
       >
         <LightThemeIcon />
-      </motion.div>
+      </motion.button>
       <div className="relative h-5 w-10 rounded-full bg-purple">
         <motion.div
           initial={false}
@@ -43,12 +47,15 @@ const ThemeToggle: FC<ThemeToggleProps> = ({ onToggle }) => {
           transition={{ type: "spring", stiffness: 400, damping: 20 }}
         />
         <button
-          onClick={handleToggle}
+          onClick={() => handleToggle(isDark ? "light" : "dark")}
           className="absolute inset-0"
           aria-label={`Switch to ${isDark ? "light" : "dark"} theme`}
         />
       </div>
-      <motion.div
+      <motion.button
+        onClick={() => handleToggle("dark")}
+        className="appearance-none border-none bg-transparent p-0"
+        aria-label="Switch to dark theme"
         initial={false}
         animate={{
           scale: isDark ? 1 : 0.8,
@@ -58,7 +65,7 @@ const ThemeToggle: FC<ThemeToggleProps> = ({ onToggle }) => {
         transition={{ type: "spring", stiffness: 300, damping: 15 }}
       >
         <DarkThemeIcon />
-      </motion.div>
+      </motion.button>
     </div>
   );
 };
