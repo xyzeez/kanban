@@ -1,8 +1,7 @@
 <div align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="./public/assets/logo-dark.svg" />
-    <source media="(prefers-color-scheme: light)" srcset="./public/assets/logo-light.svg" />
-    <img alt="Kanban Logo" src="./public/assets/logo-light.svg" width="300" />
+    <source media="(prefers-color-scheme: dark)" srcset="./public/assets/logo-light.svg" />
+    <img alt="Kanban Logo" src="./public/assets/logo-dark.svg" width="300" />
   </picture>
   <p align="center">
     A modern task management application built with React, TypeScript, and Tanstack Query
