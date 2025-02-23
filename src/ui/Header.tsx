@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { useParams } from "react-router";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 // Hooks
 import { useApp } from "../hooks/useApp";
