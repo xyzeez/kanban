@@ -1,5 +1,6 @@
 import { FC } from "react";
 import { NavLink } from "react-router";
+import { motion } from "framer-motion";
 
 // Hooks
 import { useBoards } from "../../../hooks/useBoards";
@@ -14,43 +15,75 @@ import { BoardItemProps } from "../../../types/navs";
 // Utils
 import { cn } from "../../../utils/styles";
 
+const itemVariants = {
+  hidden: { opacity: 0, x: -20 },
+  visible: { opacity: 1, x: 0 },
+};
+
 const BoardItem: FC<BoardItemProps> = ({ title, to }) => (
-  <NavLink
-    to={to}
-    className={({ isActive }) =>
-      cn(
-        "flex flex-row items-center gap-3 text-base font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-25 xl:gap-4",
-        "w-full max-w-[276px] rounded-r-full px-6 py-4 font-bold capitalize text-grey-500 transition-colors xl:px-8",
-        isActive
-          ? "bg-purple text-white"
-          : "hover:bg-purple-light/10 hover:text-purple",
-      )
-    }
-  >
-    <BoardIcon />
-    <span>{title}</span>
-  </NavLink>
+  <motion.li variants={itemVariants}>
+    <NavLink
+      to={to}
+      className={({ isActive }) =>
+        cn(
+          "block w-full max-w-[276px] rounded-r-full text-grey-500 transition-colors",
+          isActive
+            ? "bg-purple text-white"
+            : "hover:bg-purple-light/10 hover:text-purple",
+        )
+      }
+    >
+      <motion.div
+        className="flex flex-row items-center gap-3 px-6 py-4 text-base font-bold capitalize xl:gap-4 xl:px-8"
+        whileHover={{ x: 4 }}
+        whileTap={{ x: 2 }}
+        transition={{ type: "spring", stiffness: 400, damping: 17 }}
+      >
+        <BoardIcon />
+        <span>{title}</span>
+      </motion.div>
+    </NavLink>
+  </motion.li>
 );
 
 const BoardList: FC = () => {
   const { boards } = useBoards();
 
   return (
-    <menu className="scrollbar md:hover-scrollbar relative overflow-y-auto overflow-x-hidden pr-3 font-sans">
-      <li className="nav-header-bg sticky top-0 py-4 pl-6">
+    <motion.menu
+      initial="hidden"
+      animate="visible"
+      variants={{
+        visible: {
+          transition: {
+            staggerChildren: 0.05,
+          },
+        },
+      }}
+      className="scrollbar md:hover-scrollbar relative overflow-y-auto overflow-x-hidden pr-3 font-sans"
+    >
+      <motion.li
+        variants={itemVariants}
+        className="nav-header-bg sticky top-0 py-4 pl-6"
+      >
         <h2 className="text-xs font-bold uppercase tracking-[2.4px] text-grey-500">
           All Boards ({boards?.length || 0})
         </h2>
-      </li>
+      </motion.li>
       {boards?.map((board) => (
-        <li key={board.id}>
-          <BoardItem title={board.name} to={`/boards/${board.slug}`} />
-        </li>
+        <BoardItem
+          key={board.id}
+          title={board.name}
+          to={`/boards/${board.slug}`}
+        />
       ))}
-      <li className="w-full max-w-[276px] px-6 py-4 xl:px-8">
+      <motion.li
+        variants={itemVariants}
+        className="w-full max-w-[276px] px-6 py-4 xl:px-8"
+      >
         <CreateBoardButton />
-      </li>
-    </menu>
+      </motion.li>
+    </motion.menu>
   );
 };
 
