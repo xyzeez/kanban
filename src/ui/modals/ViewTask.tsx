@@ -8,11 +8,8 @@ import { useApp } from "../../hooks/useApp";
 import { useTasks } from "../../hooks/useTasks";
 
 // Components
-import {
-  CheckIcon,
-  ChevronDownIcon,
-  EllipsisIcon,
-} from "../../components/Icons";
+import { CheckIcon, EllipsisIcon } from "../../components/Icons";
+import StatusDropdown from "../../components/StatusDropdown";
 
 // UIs
 import { EditTaskForm } from "../forms/TaskForms";
@@ -25,7 +22,6 @@ const ViewTask: FC<{ taskId: string; columnId: string; boardId: string }> = ({
   boardId,
 }) => {
   const [openTaskOptions, setOpenTaskOptions] = useState(false);
-  const [isColumnDropdownOpen, setIsColumnDropdownOpen] = useState(false);
   const [selectedColumnId, setSelectedColumnId] = useState(columnId);
   const { board } = useBoards(boardId);
   const {
@@ -190,53 +186,11 @@ const ViewTask: FC<{ taskId: string; columnId: string; boardId: string }> = ({
           >
             Current Status
           </motion.h3>
-          <motion.div layout className="relative">
-            <button
-              onClick={() => setIsColumnDropdownOpen(!isColumnDropdownOpen)}
-              className="relative flex w-full cursor-pointer items-center justify-between rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 text-left ring-purple group-focus:border-transparent dark:bg-transparent"
-            >
-              <span className="text-sm font-medium capitalize text-black dark:text-white">
-                {columns.find((col) => col.id === selectedColumnId)?.title}
-              </span>
-              <motion.div
-                animate={{ rotate: isColumnDropdownOpen ? 180 : 0 }}
-                className="pointer-events-none size-4"
-              >
-                <ChevronDownIcon className="text-purple" />
-              </motion.div>
-            </button>
-
-            <AnimatePresence>
-              {isColumnDropdownOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="absolute top-[calc(100%+8px)] z-10 flex w-full flex-col gap-2 rounded-lg border border-grey-500/25 bg-white p-4 shadow-sm dark:border-grey-900 dark:bg-grey-900"
-                >
-                  {columns.map((column) => (
-                    <motion.button
-                      key={column.id}
-                      onClick={() => {
-                        if (column.id) {
-                          handleColumnChange(column.id);
-                          setIsColumnDropdownOpen(false);
-                        }
-                      }}
-                      whileHover={{ x: 2 }}
-                      className={`w-fit text-left text-sm font-medium capitalize transition-colors ${
-                        column.id === selectedColumnId
-                          ? "text-purple"
-                          : "text-grey-500 hover:text-purple"
-                      }`}
-                    >
-                      {column.title}
-                    </motion.button>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.div>
+          <StatusDropdown
+            columns={columns}
+            selectedColumnId={selectedColumnId}
+            onColumnChange={handleColumnChange}
+          />
         </motion.div>
       </motion.div>
     </motion.div>

@@ -1,5 +1,8 @@
 import { ReactNode } from "react";
 
+// Types
+import { Column } from "./board";
+
 export interface Icon {
   className?: string;
   viewBox?: string;
@@ -17,4 +20,10 @@ export interface ModalWrapperProps {
 
 export interface SkeletonProps {
   className?: string;
+}
+
+export interface StatusDropdownProps {
+  columns: Column[];
+  selectedColumnId: string;
+  onColumnChange: (columnId: string) => void;
 }

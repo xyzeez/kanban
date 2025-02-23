@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import { useParams } from "react-router";
 import { useForm, useFieldArray, SubmitHandler } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -9,18 +9,16 @@ import { useTasks } from "../../hooks/useTasks";
 import { useBoards } from "../../hooks/useBoards";
 
 // Components
-import {
-  CrossIcon,
-  PlusIcon,
-  SpinnerIcon,
-  ChevronDownIcon,
-} from "../../components/Icons";
+import { CrossIcon, PlusIcon, SpinnerIcon } from "../../components/Icons";
+import StatusDropdown from "../../components/StatusDropdown";
 
 // UIs
 import FormSkeleton from "../placeholders/FormSkeleton";
 
 // Types
 import { TaskFormInputs } from "../../types/forms";
+
+// Utils
 import { cn } from "../../utils/styles";
 import { getErrorMessage } from "../../utils/error";
 
@@ -53,12 +51,6 @@ const CreateTaskForm: FC = () => {
     name: "subtasks",
   });
 
-  const selectedColumnTitle =
-    board?.columns.find((column) => column.id === watch("columnId"))?.title ||
-    "";
-
-  const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
-
   if (!board || isLoading) {
     return (
       <FormSkeleton
@@ -80,6 +72,13 @@ const CreateTaskForm: FC = () => {
     } catch (error) {
       toast.error(getErrorMessage(error));
     }
+  };
+
+  const handleColumnChange = (columnId: string) => {
+    setValue("columnId", columnId, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
   };
 
   return (
@@ -204,50 +203,11 @@ const CreateTaskForm: FC = () => {
         <p className="text-xs font-bold text-grey-500 transition-colors dark:text-white">
           Status
         </p>
-        <div className="relative">
-          <button
-            type="button"
-            onClick={() => setIsStatusDropdownOpen(!isStatusDropdownOpen)}
-            className={cn(
-              "relative flex w-full cursor-pointer items-center justify-between rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 text-left ring-purple group-focus:border-transparent dark:bg-transparent",
-              errors.columnId && "ring-1 ring-red",
-            )}
-          >
-            <span className="text-sm font-medium capitalize text-black dark:text-white">
-              {selectedColumnTitle}
-            </span>
-            <div className="pointer-events-none size-4">
-              <ChevronDownIcon className="text-purple" />
-            </div>
-          </button>
-
-          {isStatusDropdownOpen && (
-            <div className="absolute top-[calc(100%+8px)] z-10 flex w-full flex-col gap-2 rounded-lg border border-grey-500/25 bg-white p-4 shadow-sm dark:border-grey-900 dark:bg-grey-900">
-              {board.columns.map((column) => (
-                <button
-                  key={column.id}
-                  type="button"
-                  onClick={() => {
-                    if (column.id) {
-                      setValue("columnId", column.id, {
-                        shouldValidate: true,
-                        shouldDirty: true,
-                      });
-                      setIsStatusDropdownOpen(false);
-                    }
-                  }}
-                  className={`w-fit text-left text-sm font-medium capitalize transition-colors ${
-                    watch("columnId") === column.id
-                      ? "text-purple"
-                      : "text-grey-500 hover:text-purple"
-                  }`}
-                >
-                  {column.title}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
+        <StatusDropdown
+          columns={board.columns}
+          selectedColumnId={watch("columnId")}
+          onColumnChange={handleColumnChange}
+        />
         {errors.columnId && (
           <span className="text-xs text-red">{errors.columnId.message}</span>
         )}
@@ -305,11 +265,6 @@ const EditTaskForm: FC<{
     name: "subtasks",
   });
 
-  const selectedColumnTitle =
-    columns.find((column) => column.id === watch("columnId"))?.title || "";
-
-  const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
-
   const onSubmit: SubmitHandler<TaskFormInputs> = async (data) => {
     try {
       await updateTask({ id: taskId, ...data, boardId });
@@ -319,6 +274,13 @@ const EditTaskForm: FC<{
     } catch (error) {
       toast.error(getErrorMessage(error));
     }
+  };
+
+  const handleColumnChange = (columnId: string) => {
+    setValue("columnId", columnId, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
   };
 
   if (!board || !task || isTaskLoading || isBoardLoading) {
@@ -454,50 +416,11 @@ const EditTaskForm: FC<{
         <p className="text-xs font-bold text-grey-500 transition-colors dark:text-white">
           Status
         </p>
-        <div className="relative">
-          <button
-            type="button"
-            onClick={() => setIsStatusDropdownOpen(!isStatusDropdownOpen)}
-            className={cn(
-              "relative flex w-full cursor-pointer items-center justify-between rounded-[4px] border border-grey-500/25 bg-white px-4 py-2 text-left ring-purple group-focus:border-transparent dark:bg-transparent",
-              errors.columnId && "ring-1 ring-red",
-            )}
-          >
-            <span className="text-sm font-medium capitalize text-black dark:text-white">
-              {selectedColumnTitle}
-            </span>
-            <div className="pointer-events-none size-4">
-              <ChevronDownIcon className="text-purple" />
-            </div>
-          </button>
-
-          {isStatusDropdownOpen && (
-            <div className="absolute top-[calc(100%+8px)] z-10 flex w-full flex-col gap-2 rounded-lg border border-grey-500/25 bg-white p-4 shadow-sm dark:border-grey-900 dark:bg-grey-900">
-              {columns.map((column) => (
-                <button
-                  key={column.id}
-                  type="button"
-                  onClick={() => {
-                    if (column.id) {
-                      setValue("columnId", column.id, {
-                        shouldValidate: true,
-                        shouldDirty: true,
-                      });
-                      setIsStatusDropdownOpen(false);
-                    }
-                  }}
-                  className={`w-fit text-left text-sm font-medium capitalize transition-colors ${
-                    watch("columnId") === column.id
-                      ? "text-purple"
-                      : "text-grey-500 hover:text-purple"
-                  }`}
-                >
-                  {column.title}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
+        <StatusDropdown
+          columns={columns}
+          selectedColumnId={watch("columnId")}
+          onColumnChange={handleColumnChange}
+        />
         {errors.columnId && (
           <span className="text-xs text-red">{errors.columnId.message}</span>
         )}
