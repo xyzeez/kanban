@@ -15,7 +15,7 @@ const ModalWrapper: FC<ModalWrapperProps> = ({
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         onClick={clickHandler}
-        className="absolute inset-0 grid overflow-y-auto overflow-x-hidden bg-black/50 p-4 backdrop-blur-sm"
+        className="absolute inset-0 z-20 grid overflow-y-auto overflow-x-hidden bg-black/50 p-4 backdrop-blur-sm"
       >
         <motion.div
           initial={{ scale: 0.95, opacity: 0 }}
