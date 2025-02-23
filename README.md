@@ -1,8 +1,8 @@
 <div align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="./assets/logo-dark.svg" />
-    <source media="(prefers-color-scheme: light)" srcset="./assets/logo-light.svg" />
-    <img alt="Kanban Board Logo" src="./assets/logo-light.svg" width="300" />
+    <source media="(prefers-color-scheme: dark)" srcset="./public/assets/logo-dark.svg" />
+    <source media="(prefers-color-scheme: light)" srcset="./public/assets/logo-light.svg" />
+    <img alt="Kanban Logo" src="./public/assets/logo-light.svg" width="300" />
   </picture>
   <p align="center">
     A modern task management application built with React, TypeScript, and Tanstack Query
@@ -11,16 +11,16 @@
   <!-- Project Links -->
   <p align="center">
     <br />
-    <a href="https://kanban-web.netlify.app" target="_blank">View Demo</a>
+    <a href="https://xyz-kanban.netlify.app" target="_blank">View Demo</a>
     ·
-    <a href="https://github.com/xyzeez/kanban-web/issues/new?template=bug_report.md" target="_blank">Report Bug</a>
+    <a href="https://github.com/xyzeez/kanban/issues/issues/new?template=bug_report.md" target="_blank">Report Bug</a>
     ·
-    <a href="https://github.com/xyzeez/kanban-web/issues/new?template=feature_request.md" target="_blank">Request Feature</a>
+    <a href="https://github.com/xyzeez/kanban/issues/new?template=feature_request.md" target="_blank">Request Feature</a>
   </p>
 
   <!-- Project Screenshot -->
   <div align="center">
-    <img src="./assets/screenshot.png" alt="Kanban Board Screenshot" width="100%" />
+    <img src="./public/assets/screenshot.png" alt="Kanban Board Screenshot" width="100%" />
   </div>
 </div>
 
@@ -62,7 +62,7 @@ This is a task management tool that helps teams organize and track their work ef
 
 - Node.js (v18 or higher)
 - npm or yarn
-- A running instance of the Kanban backend server
+- A running instance of the [Kanban backend server](https://github.com/xyzeez/kanban-server)
 
 ### Installation
 
